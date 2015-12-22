@@ -18,6 +18,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ['lib']
 
+  gem.add_runtime_dependency 'hashie', '~> 3.4.3'
   gem.add_development_dependency 'rspec', '~> 3.2'
   gem.add_development_dependency 'rake', '~> 0'
   gem.add_development_dependency 'pry', '~> 0'

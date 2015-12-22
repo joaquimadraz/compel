@@ -41,7 +41,7 @@ module Compel
     end
 
     def to_hash
-      @errors.symbolize_keys
+      Hashie.symbolize_keys(@errors)
     end
 
   end

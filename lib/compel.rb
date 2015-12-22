@@ -1,6 +1,11 @@
-require 'compel/no_resource_defined'
-require 'compel/no_resource_definition'
-require 'compel/resource_definition'
+require 'hashie'
+require 'hashie/extensions/symbolize_keys'
+
+require 'compel/contract'
+require 'compel/coercion'
+require 'compel/validation'
+require 'compel/errors'
+require 'compel/invalid_parameter_error'
 
 module Compel
 
