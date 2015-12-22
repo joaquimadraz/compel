@@ -5,24 +5,24 @@ describe Compel::Coercion do
     context 'Integer' do
 
       it 'should coerce' do
-        value = Compel::Coercion.coerce(123, Integer)
+        value = Compel::Coercion.coerce!(123, Integer)
         expect(value).to eq(123)
       end
 
       it 'should coerce 1' do
-        value = Compel::Coercion.coerce('123', Integer)
+        value = Compel::Coercion.coerce!('123', Integer)
         expect(value).to eq(123)
       end
 
       it 'should coerce 2' do
-        value = Compel::Coercion.coerce(123.3, Integer)
+        value = Compel::Coercion.coerce!(123.3, Integer)
         expect(value).to eq(123)
       end
 
       it 'should not coerce' do
         expect(Compel::Coercion.valid?('123abc', Integer)).to eq(false)
 
-        expect { Compel::Coercion.coerce('123abc', Integer) }.to \
+        expect { Compel::Coercion.coerce!('123abc', Integer) }.to \
           raise_error Compel::InvalidParameterError, "'123abc' is not a valid Integer"
       end
 
@@ -31,7 +31,7 @@ describe Compel::Coercion do
     context 'Hash' do
 
       it 'should coerce' do
-        value = Compel::Coercion.coerce({
+        value = Compel::Coercion.coerce!({
           first_name: 'Joaquim',
           last_name: 'Adráz'
         }, Hash)
@@ -43,7 +43,7 @@ describe Compel::Coercion do
       end
 
       it 'should coerce 1' do
-        value = Compel::Coercion.coerce({
+        value = Compel::Coercion.coerce!({
           'first_name' => 'Joaquim',
           'last_name' => 'Adráz'
         }, Hash)
@@ -55,7 +55,7 @@ describe Compel::Coercion do
       end
 
       it 'should coerce 2' do
-        value = Compel::Coercion.coerce(Hashie::Mash.new({
+        value = Compel::Coercion.coerce!(Hashie::Mash.new({
           first_name: 'Joaquim',
           last_name: 'Adráz'
         }), Hash)
@@ -67,17 +67,17 @@ describe Compel::Coercion do
       end
 
       it 'should not coerce' do
-        expect { Compel::Coercion.coerce(123, Hash) }.to \
+        expect { Compel::Coercion.coerce!(123, Hash) }.to \
           raise_error Compel::InvalidParameterError, "'123' is not a valid Hash"
       end
 
       it 'should not coerce 1' do
-        expect { Compel::Coercion.coerce('hash', Hash) }.to \
+        expect { Compel::Coercion.coerce!('hash', Hash) }.to \
           raise_error Compel::InvalidParameterError, "'hash' is not a valid Hash"
       end
 
       it 'should not coerce 2' do
-        expect { Compel::Coercion.coerce(['hash'], Hash) }.to \
+        expect { Compel::Coercion.coerce!(['hash'], Hash) }.to \
           raise_error Compel::InvalidParameterError, "'[\"hash\"]' is not a valid Hash"
       end
 
@@ -86,7 +86,7 @@ describe Compel::Coercion do
     context 'JSON' do
 
       it 'should coerce' do
-        value = Compel::Coercion.coerce \
+        value = Compel::Coercion.coerce! \
           "{\"first_name\":\"Joaquim\",\"last_name\":\"Adráz\"}", JSON
 
         expect(value).to eq({

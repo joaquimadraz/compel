@@ -2,17 +2,14 @@ module Compel
 
   module Coercion
 
-    def self.valid?(value, type, options = {})
-      begin
-        coerce(value, type, options)
-        true
-      rescue Compel::InvalidParameterError
-        false
-      end
+    def valid?(value, type, options = {})
+      !!coerce!(value, type, options) rescue false
     end
 
-    # from sinatra-param, give kudos
-    def self.coerce(value, type, options = {})
+    def coerce!(value, type, options = {})
+      # most of this code snippet is from sinatra-param gem
+      # https://github.com/mattt/sinatra-param
+      # by Mattt Thompson (@mattt)
       begin
         return nil if value.nil?
         return value if (value.is_a?(type) rescue false)
@@ -30,6 +27,8 @@ module Compel
         raise InvalidParameterError, "'#{value}' is not a valid #{type}"
       end
     end
+
+    extend self
 
   end
 

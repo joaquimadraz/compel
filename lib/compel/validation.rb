@@ -2,15 +2,25 @@ module Compel
 
   module Validation
 
-    def self.valid?(value, options)
+    def valid?(value, options)
       validate(value, options).length == 0
     end
 
-    # from sinatra-param, give kudos
-    def self.validate(value, options)
+    def validate!(value, options)
+      errors = validate(value, options)
+
+      if errors.length > 0
+        raise InvalidParameterError, errors[0]
+      end
+    end
+
+    def validate(value, options)
       errors = []
 
       options.each do |option, option_value|
+        # most of this code snippet is from sinatra-param gem
+        # https://github.com/mattt/sinatra-param
+        # by Mattt Thompson (@mattt)
         begin
           case option.to_sym
           when :required
@@ -54,6 +64,8 @@ module Compel
 
       errors
     end
+
+    extend self
 
   end
 
