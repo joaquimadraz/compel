@@ -28,7 +28,7 @@ describe Compel::Errors do
     expect(errors.to_hash[:address][:post_code]).to include('must be an Hash')
   end
 
-  it 'should add neste Compel::Errors' do
+  it 'should add nested Compel::Errors' do
     post_code_errors = Compel::Errors.new
     post_code_errors.add(:prefix, 'is invalid')
     post_code_errors.add(:suffix, 'is required')
