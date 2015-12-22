@@ -23,7 +23,7 @@ describe Compel::Coercion do
         expect(Compel::Coercion.valid?('123abc', Integer)).to eq(false)
 
         expect { Compel::Coercion.coerce!('123abc', Integer) }.to \
-          raise_error Compel::InvalidParameterError, "'123abc' is not a valid Integer"
+          raise_error Compel::ParamTypeError, "'123abc' is not a valid Integer"
       end
 
     end
@@ -68,17 +68,17 @@ describe Compel::Coercion do
 
       it 'should not coerce' do
         expect { Compel::Coercion.coerce!(123, Hash) }.to \
-          raise_error Compel::InvalidParameterError, "'123' is not a valid Hash"
+          raise_error Compel::ParamTypeError, "'123' is not a valid Hash"
       end
 
       it 'should not coerce 1' do
         expect { Compel::Coercion.coerce!('hash', Hash) }.to \
-          raise_error Compel::InvalidParameterError, "'hash' is not a valid Hash"
+          raise_error Compel::ParamTypeError, "'hash' is not a valid Hash"
       end
 
       it 'should not coerce 2' do
         expect { Compel::Coercion.coerce!(['hash'], Hash) }.to \
-          raise_error Compel::InvalidParameterError, "'[\"hash\"]' is not a valid Hash"
+          raise_error Compel::ParamTypeError, "'[\"hash\"]' is not a valid Hash"
       end
 
     end

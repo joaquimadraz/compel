@@ -16,7 +16,13 @@ module Compel
     end
 
     def value
-      @value || options[:default]
+      default_value = if options[:default].is_a?(Proc)
+        options[:default].call
+      else
+        options[:default]
+      end
+
+      @value || default_value
     end
 
     def required?

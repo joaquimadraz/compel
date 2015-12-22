@@ -14,6 +14,12 @@ describe Compel::Param do
       expect(param.value).to eq(123)
     end
 
+    it 'should allow proc as default value' do
+      param = Compel::Param.new(:year, Integer, nil, { default: Proc.new { Time.now.year } })
+
+      expect(param.value).to eq(Time.now.year)
+    end
+
   end
 
 end

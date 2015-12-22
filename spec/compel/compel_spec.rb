@@ -1,16 +1,41 @@
 describe Compel do
 
-  context '#compel' do
+  def make_the_call(method, params)
+    Compel.send(method, params) do
+      param :first_name, String, required: true
+      param :last_name, String, required: true
+      param :birth_date, DateTime
+    end
+  end
 
-    def make_the_call(method, params)
-      Compel.send(method, params) do
-        param :first_name, String, required: true
-        param :last_name, String, required: true
-        param :birth_date, DateTime
+  context '#compel!' do
+
+    it 'should raise InvalidParamsError exception' do
+      params = {
+        first_name: 'Joaquim'
+      }
+
+      expect{ make_the_call(:compel!, params) }.to \
+        raise_error Compel::InvalidParamsError, 'params are invalid'
+    end
+
+    it 'shoudl raise InvalidParamsError exception with errors' do
+      params = {
+        first_name: 'Joaquim'
+      }
+
+      expect{ make_the_call(:compel!, params) }.to raise_error do |exception|
+        expect(exception.errors).to eq({
+          last_name: ['is required']
+        })
       end
     end
 
-    it 'should compel' do
+  end
+
+  context '#compel?' do
+
+    it 'should return true' do
       params = {
         first_name: 'Joaquim',
         last_name: 'Adráz',
@@ -20,14 +45,26 @@ describe Compel do
       expect(make_the_call(:compel?, params)).to eq(true)
     end
 
+    it 'should return false' do
+      params = {
+        first_name: 'Joaquim'
+      }
+
+      expect(make_the_call(:compel?, params)).to eq(false)
+    end
+
+  end
+
+  context '#compel' do
+
     it 'should not compel for invalid params' do
       expect{ make_the_call(:compel, 1) }.to \
-        raise_error Compel::InvalidParameterError, 'Compel params must be an Hash'
+        raise_error Compel::ParamTypeError, 'Compel params must be an Hash'
     end
 
     it 'should not compel for invalid params 1' do
       expect{ make_the_call(:compel, nil) }.to \
-        raise_error Compel::InvalidParameterError, 'Compel params must be an Hash'
+        raise_error Compel::ParamTypeError, 'Compel params must be an Hash'
     end
 
     it 'should not compel'  do
@@ -60,25 +97,11 @@ describe Compel do
         end
       end
 
-      it 'should compel' do
+      it 'should compel?' do
         params = {
           address: {
             line_one: 'Lisbon',
             line_two: 'Portugal',
-            post_code: {
-              prefix: 1100,
-              suffix: 100
-            }
-          }
-        }
-
-        expect(make_the_call(:compel?, params)).to eq(true)
-      end
-
-      it 'should compel 1' do
-        params = {
-          address: {
-            line_one: 'Lisbon',
             post_code: {
               prefix: 1100,
               suffix: 100

@@ -23,7 +23,7 @@ module Compel
         return (/(false|f|no|n|0)$/i === value.to_s ? false : (/(true|t|yes|y|1)$/i === value.to_s ? true : nil)) if type == TrueClass || type == FalseClass || type == Boolean
         return nil
       rescue
-        raise InvalidParameterError, "'#{value}' is not a valid #{type}"
+        raise ParamTypeError, "'#{value}' is not a valid #{type}"
       end
     end
 
