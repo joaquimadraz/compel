@@ -30,12 +30,16 @@ module Compel
       @errors.empty?
     end
 
-    private
-
     def complete_params
+      if @params.nil? || !Coercion.valid?(@params, Hash)
+        raise InvalidParameterError, 'Compel params must be an Hash'
+      end
+
+      params = Hashie::Mash.new(@params)
+
       {}.tap do |h|
         @contract.keys.each do |key|
-          h[key] = @params[key]
+          h[key] = params[key]
         end
       end
     end

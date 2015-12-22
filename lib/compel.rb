@@ -11,14 +11,14 @@ require 'compel/invalid_parameter_error'
 module Compel
 
   def self.compel?(params, &block)
-    Contract.new(Hashie::Mash.new(params), &block)
+    Contract.new(params, &block)
       .coerce
       .validate
       .valid?
   end
 
   def self.compel(params, &block)
-    Contract.new(Hashie::Mash.new(params), &block)
+    Contract.new(params, &block)
       .coerce
       .validate
       .errors
