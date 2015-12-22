@@ -12,18 +12,22 @@ module Compel
       instance_eval(&block)
     end
 
+    def coerce_and_validate
+      complete_params.each do |param, value|
+        begin
+          Coercion.coerce(value, @contract[param][:type], @contract[param][:options])
+
+          @errors.add(param, Validation.validate(value, @contract[param][:options]))
+        rescue Compel::InvalidParameterError => exception
+          @errors.add(param, exception.message)
+        end
+      end
+
+      self
+    end
+
     def param(name, type, options = {})
       @contract[name] = Hashie::Mash.new(type: type, options: options)
-    end
-
-    def coerce
-      @errors.merge Coercion.new(complete_params, @contract).run
-      self
-    end
-
-    def validate
-      @errors.merge Validation.new(complete_params, @contract).run
-      self
     end
 
     def valid?

@@ -12,15 +12,13 @@ module Compel
 
   def self.compel?(params, &block)
     Contract.new(params, &block)
-      .coerce
-      .validate
+      .coerce_and_validate
       .valid?
   end
 
   def self.compel(params, &block)
     Contract.new(params, &block)
-      .coerce
-      .validate
+      .coerce_and_validate
       .errors
       .to_hash
   end

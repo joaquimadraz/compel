@@ -1,26 +1,6 @@
 module Compel
 
-  class Coercion
-
-    attr_reader :errors
-
-    def initialize(params, contract)
-      @errors = Errors.new
-      @params = params
-      @contract = contract
-    end
-
-    def run
-      @params.each do |param, value|
-        begin
-          Coercion.coerce(value, @contract[param][:type], @contract[param][:options])
-        rescue Compel::InvalidParameterError => exception
-          @errors.add(param, exception.message)
-        end
-      end
-
-      @errors
-    end
+  module Coercion
 
     def self.valid?(value, type, options = {})
       begin

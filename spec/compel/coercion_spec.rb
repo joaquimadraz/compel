@@ -1,50 +1,5 @@
 describe Compel::Coercion do
 
-  context '#run' do
-
-    def coerce(params, contract)
-      coercion = Compel::Coercion.new(params, contract)
-      coercion.run
-      coercion
-    end
-
-    it 'should coerce a list of params' do
-      params = {
-        age: 26,
-        year: 2015
-      }
-
-      contract = {
-        age: { type: Integer },
-        year: { type: Integer }
-      }
-
-      coercion = coerce(params, contract)
-
-      expect(coercion.errors.empty?).to eq(true)
-    end
-
-    it 'should not coerce a list of params' do
-      params = {
-        year: 2015,
-        month: 'December'
-      }
-
-      contract = {
-        year: { type: Integer },
-        month: { type: Integer }
-      }
-
-      coercion = coerce(params, contract)
-
-      expect(coercion.errors.empty?).to eq(false)
-      expect(coercion.errors.to_hash).to eq({
-        month: ["'December' is not a valid Integer"]
-      })
-    end
-
-  end
-
   context 'Type coercion' do
 
     context 'Integer' do

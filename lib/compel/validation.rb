@@ -1,23 +1,6 @@
 module Compel
 
-  class Validation
-
-    attr_reader :errors
-
-    def initialize(params, contract)
-      @errors = Errors.new
-      @params = params
-      @contract = contract
-    end
-
-    def run
-      @params.each do |param, value|
-        @errors.add \
-          param, Validation.validate(value, @contract[param][:options])
-      end
-
-      @errors
-    end
+  module Validation
 
     def self.valid?(value, options)
       validate(value, options).length == 0
