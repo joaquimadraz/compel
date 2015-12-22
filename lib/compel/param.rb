@@ -2,11 +2,14 @@ module Compel
 
   class Param
 
-    attr_reader :type,
+    attr_reader :name,
+                :type,
+                :value,
                 :options,
                 :conditions
 
-    def initialize(type, value, options = {}, &conditions)
+    def initialize(name, type, value, options = {}, &conditions)
+      @name = name
       @type = type
       @value = value
       @options = options

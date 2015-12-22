@@ -2,6 +2,7 @@ require 'json'
 require 'hashie'
 require 'hashie/extensions/symbolize_keys'
 
+require 'compel/param'
 require 'compel/contract'
 require 'compel/coercion'
 require 'compel/validation'
