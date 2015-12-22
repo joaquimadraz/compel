@@ -73,6 +73,75 @@ describe Compel::Coercion do
 
     end
 
+    context 'Hash' do
+
+      it 'should coerce' do
+        value = Compel::Coercion.coerce({
+          first_name: 'Joaquim',
+          last_name: 'Adráz'
+        }, Hash)
+
+        expect(value).to eq({
+          first_name: 'Joaquim',
+          last_name: 'Adráz'
+        })
+      end
+
+      it 'should coerce 1' do
+        value = Compel::Coercion.coerce({
+          'first_name' => 'Joaquim',
+          'last_name' => 'Adráz'
+        }, Hash)
+
+        expect(value).to eq({
+          'first_name' => 'Joaquim',
+          'last_name' => 'Adráz'
+        })
+      end
+
+      it 'should coerce 2' do
+        value = Compel::Coercion.coerce(Hashie::Mash.new({
+          first_name: 'Joaquim',
+          last_name: 'Adráz'
+        }), Hash)
+
+        expect(value).to eq({
+          'first_name' => 'Joaquim',
+          'last_name' => 'Adráz'
+        })
+      end
+
+      it 'should not coerce' do
+        expect { Compel::Coercion.coerce(123, Hash) }.to \
+          raise_error Compel::InvalidParameterError, "'123' is not a valid Hash"
+      end
+
+      it 'should not coerce 1' do
+        expect { Compel::Coercion.coerce('hash', Hash) }.to \
+          raise_error Compel::InvalidParameterError, "'hash' is not a valid Hash"
+      end
+
+      it 'should not coerce 2' do
+        expect { Compel::Coercion.coerce(['hash'], Hash) }.to \
+          raise_error Compel::InvalidParameterError, "'[\"hash\"]' is not a valid Hash"
+      end
+
+    end
+
+    context 'JSON' do
+
+      it 'should coerce' do
+        value = Compel::Coercion.coerce \
+          "{\"first_name\":\"Joaquim\",\"last_name\":\"Adráz\"}", JSON
+
+        expect(value).to eq({
+          'first_name' => 'Joaquim',
+          'last_name' => 'Adráz'
+        })
+      end
+
+    end
+
   end
 
 end

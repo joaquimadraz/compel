@@ -1,3 +1,4 @@
+require 'json'
 require 'hashie'
 require 'hashie/extensions/symbolize_keys'
 

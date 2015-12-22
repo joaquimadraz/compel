@@ -43,7 +43,7 @@ module Compel
         return Time.parse(value) if type == Time
         return DateTime.parse(value) if type == DateTime
         return Array(value.split(options[:delimiter] || ",")) if type == Array
-        return Hash[value.split(options[:delimiter] || ",").map{|c| c.split(options[:separator] || ":")}] if type == Hash
+        return JSON.parse(value) if type == JSON
         return (/(false|f|no|n|0)$/i === value.to_s ? false : (/(true|t|yes|y|1)$/i === value.to_s ? true : nil)) if type == TrueClass || type == FalseClass || type == Boolean
         return nil
       rescue
