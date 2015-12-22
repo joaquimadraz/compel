@@ -41,7 +41,7 @@ module Compel
           when :max
             raise InvalidParameterError, "cannot be greater than #{option_value}" unless value.nil? || option_value >= value
           when :length
-            raise InvalidParameterError, "cannot have length different than #{option_value}" unless value.nil? || option_value == value.length
+            raise InvalidParameterError, "cannot have length different than #{option_value}" unless value.nil? || option_value == "#{value}".length
           when :min_length
             raise InvalidParameterError, "cannot have length less than #{option_value}" unless value.nil? || option_value <= value.length
           when :max_length

@@ -19,6 +19,16 @@ describe Compel::Validation do
 
     end
 
+    context 'length' do
+
+      it 'should validate without errors' do
+        errors = Compel::Validation.validate(123, { length: 3 })
+
+        expect(errors.empty?).to eq(true)
+      end
+
+    end
+
   end
 
 end
