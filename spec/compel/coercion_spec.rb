@@ -110,6 +110,22 @@ describe Compel::Coercion do
 
     end
 
+    context 'Boolean' do
+
+      it 'should coerce' do
+        value = Compel::Coercion.coerce!('f', Compel::Boolean)
+
+        expect(value).to eq(false)
+      end
+
+      it 'should coerce' do
+        value = Compel::Coercion.coerce!('0', Compel::Boolean)
+
+        expect(value).to eq(false)
+      end
+
+    end
+
   end
 
 end

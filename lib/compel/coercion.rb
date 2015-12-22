@@ -21,7 +21,7 @@ module Compel
         return DateTime.parse(value) if type == DateTime
         return JSON.parse(value) if type == JSON
         return (/(false|f|no|n|0)$/i === value.to_s ? false : (/(true|t|yes|y|1)$/i === value.to_s ? true : nil)) if type == TrueClass || type == FalseClass || type == Boolean
-        return nil
+        fail
       rescue
         raise ParamTypeError, "'#{value}' is not a valid #{type}"
       end

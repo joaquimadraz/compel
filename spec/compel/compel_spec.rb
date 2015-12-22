@@ -57,6 +57,44 @@ describe Compel do
 
   context '#compel' do
 
+    def make_the_call(method, params)
+      Compel.send(method, params) do
+        param :first_name, String, required: true
+        param :last_name, String, required: true
+        param :birth_date, DateTime
+        param :age, Integer
+        param :admin, Compel::Boolean
+        param :blog_role, Hash do
+          param :admin, Compel::Boolean, required: true
+        end
+      end
+    end
+
+    it 'should compel returning coerced values' do
+      params = {
+        first_name: 'Joaquim',
+        last_name: 'Adráz',
+        birth_date: '1989-08-06T09:00:00',
+        age: '26',
+        admin: 'f',
+        blog_role: {
+          admin: '0'
+        }
+      }
+
+      expect(make_the_call(:compel, params)).to eq \
+        Hashie::Mash.new({
+          first_name: 'Joaquim',
+          last_name: 'Adráz',
+          birth_date: DateTime.parse('1989-08-06T09:00:00'),
+          age: 26,
+          admin: false,
+          blog_role: {
+            admin: false
+          }
+        })
+    end
+
     it 'should not compel for invalid params' do
       expect{ make_the_call(:compel, 1) }.to \
         raise_error Compel::ParamTypeError, 'Compel params must be an Hash'

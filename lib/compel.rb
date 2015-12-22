@@ -14,6 +14,8 @@ require 'compel/errors'
 
 module Compel
 
+  Boolean = :boolean
+
   def self.compel!(params, &block)
     Contract.new(params, &block).validate.raise?
   end
