@@ -4,7 +4,6 @@ module Compel
 
     attr_reader :name,
                 :type,
-                :value,
                 :options,
                 :conditions
 
@@ -14,6 +13,10 @@ module Compel
       @value = value
       @options = options
       @conditions = conditions
+    end
+
+    def value
+      @value || options[:default]
     end
 
     def required?
