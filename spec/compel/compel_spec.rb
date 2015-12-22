@@ -72,9 +72,12 @@ describe Compel do
         first_name: 'Joaquim'
       }
 
-      expect(make_the_call(:compel, params)).to \
-        eq({
-          last_name: ['is required']
+      expect(make_the_call(:compel, params)).to eq \
+        Hashie::Mash.new({
+          first_name: 'Joaquim',
+          errors: {
+            last_name: ['is required']
+          }
         })
     end
 
@@ -119,11 +122,16 @@ describe Compel do
           }
         }
 
-        expect(make_the_call(:compel, params)).to \
-          eq({
+        expect(make_the_call(:compel, params)).to eq \
+          Hashie::Mash.new({
             address: {
-              line_one: ['is required'],
-              post_code: ['Compel params must be an Hash']
+              line_two: 'Portugal'
+            },
+            errors: {
+              address: {
+                line_one: ['is required'],
+                post_code: ['Compel params must be an Hash']
+              }
             }
           })
       end
@@ -133,7 +141,7 @@ describe Compel do
           address: {
             line_two: 'Portugal',
             post_code: {
-              prefix: 1,
+              prefix: '1',
               county: {
                 code: 'LX'
               }
@@ -141,12 +149,23 @@ describe Compel do
           }
         }
 
-        expect(make_the_call(:compel, params)).to \
-          eq({
+        expect(make_the_call(:compel, params)).to eq \
+          Hashie::Mash.new({
             address: {
-              line_one: ['is required'],
+              line_two: 'Portugal',
               post_code: {
-                prefix: ['cannot have length different than 4']
+                prefix: 1,
+                county: {
+                  code: 'LX'
+                }
+              }
+            },
+            errors: {
+              address: {
+                line_one: ['is required'],
+                post_code: {
+                  prefix: ['cannot have length different than 4']
+                }
               }
             }
           })
@@ -156,18 +175,25 @@ describe Compel do
         params = {
           address: {
             post_code: {
-              suffix: 1234
+              suffix: '1234'
             }
           }
         }
 
-        expect(make_the_call(:compel, params)).to \
-          eq({
+        expect(make_the_call(:compel, params)).to eq \
+          Hashie::Mash.new({
             address: {
-              line_one: ['is required'],
               post_code: {
-                prefix: ['is required'],
-                suffix: ['cannot have length different than 3']
+                suffix: 1234
+              }
+            },
+            errors: {
+              address: {
+                line_one: ['is required'],
+                post_code: {
+                  prefix: ['is required'],
+                  suffix: ['cannot have length different than 3']
+                }
               }
             }
           })
@@ -177,20 +203,29 @@ describe Compel do
         params = {
           address: {
             post_code: {
-              prefix: 1100,
-              suffix: 100,
+              prefix: '1100',
+              suffix: '100',
               county: {}
             },
           }
         }
 
-        expect(make_the_call(:compel, params)).to \
-          eq({
+        expect(make_the_call(:compel, params)).to eq \
+          Hashie::Mash.new({
             address: {
-              line_one: ['is required'],
               post_code: {
-                county: {
-                  code: ['is required']
+                prefix: 1100,
+                suffix: 100,
+                county: {}
+              }
+            },
+            errors: {
+              address: {
+                line_one: ['is required'],
+                post_code: {
+                  county: {
+                    code: ['is required']
+                  }
                 }
               }
             }

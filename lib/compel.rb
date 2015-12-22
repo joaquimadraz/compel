@@ -23,7 +23,7 @@ module Compel
   end
 
   def self.compel(params, &block)
-    Contract.new(params, &block).validate.serialized_errors
+    Contract.new(params, &block).validate.serialize
   end
 
 end

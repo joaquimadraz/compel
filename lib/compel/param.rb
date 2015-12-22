@@ -25,6 +25,10 @@ module Compel
       @value || default_value
     end
 
+    def value=(value)
+      @value = value
+    end
+
     def required?
       !!@options[:required]
     end

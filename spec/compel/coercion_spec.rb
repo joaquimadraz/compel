@@ -97,6 +97,19 @@ describe Compel::Coercion do
 
     end
 
+    context 'DateTime' do
+
+      it 'should coerce' do
+        value = Compel::Coercion.coerce!('2015-12-22', DateTime)
+
+        expect(value).to be_a DateTime
+        expect(value.year).to eq(2015)
+        expect(value.month).to eq(12)
+        expect(value.day).to eq(22)
+      end
+
+    end
+
   end
 
 end
