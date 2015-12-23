@@ -1,5 +1,3 @@
-require 'pry'
-
 module Compel
 
   class Contract
