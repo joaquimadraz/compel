@@ -60,13 +60,11 @@ Will return an [Hashie::Mash](https://github.com/intridea/hashie) object:
 
 There are 3 ways run validations:
 
-- `#run`  
-  - Validates and returns an Hash with coerced params plus a `:errors` key with a _Rails like_ Hash of errors if any.
-- `#run!`
-  - Validates and raises `Compel::InvalidParamsError` exception with the coerced params and errors.
-- `#run?`
-  - Validates and returns true or false.
-
+Method  | Behaviour
+------------- | -------------
+`#run`  | Validates and returns an Hash with coerced params plus a `:errors` key with a _Rails like_ Hash of errors if any.
+`#run!` | Validates and raises `Compel::InvalidParamsError` exception with the coerced params and errors.
+`#run?` | Validates and returns true or false.
 
 ### Types
 
