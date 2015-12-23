@@ -44,7 +44,7 @@ module Compel
           # raise exception to avoid validation
 
           # If the param value has already been coerced from digging into child Hash
-          # use that value instead, so we don't loose the previous coerced values
+          # use that value instead, so we don't lose the previous coerced values
 
           coerced_value = Coercion.coerce! \
             (@coerced_params[param.name].nil? ? param.value : @coerced_params[param.name]), param.type, param.options
