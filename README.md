@@ -11,16 +11,6 @@ The motivation was to create an integration for [RestMyCase](https://github.com/
 
 Based on the same principle from [Grape](https://github.com/ruby-grape/grape) framework and [sinatra-param](https://github.com/mattt/sinatra-param) gem to validate request params.
 
-###Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'compel'
-
-And then execute:
-
-    $ bundle
-
 ### Example
 
 ```ruby
@@ -76,7 +66,7 @@ There are 3 ways run validations:
   - Validates and raises `Compel::InvalidParamsError` exception with the coerced params and errors.
 - `#run?`
   - Validates and returns true or false.
-  
+
 
 ### Types
 
@@ -118,7 +108,16 @@ class App < Sinatra::Base
   
 end
 ```
+###Installation
 
+Add this line to your application's Gemfile:
+
+    gem 'compel'
+
+And then execute:
+
+    $ bundle
+    
 ### TODO
 
 - Write more Documentation (check specs for now ;)
