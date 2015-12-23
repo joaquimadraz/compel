@@ -27,15 +27,15 @@ module Compel
 
   Boolean = Coercion::Boolean
 
-  def self.compel!(params, &block)
+  def self.run!(params, &block)
     Contract.new(params, &block).validate.raise?
   end
 
-  def self.compel?(params, &block)
+  def self.run?(params, &block)
     Contract.new(params, &block).validate.valid?
   end
 
-  def self.compel(params, &block)
+  def self.run(params, &block)
     Contract.new(params, &block).validate.serialize
   end
 

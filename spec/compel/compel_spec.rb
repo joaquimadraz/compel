@@ -8,14 +8,14 @@ describe Compel do
     end
   end
 
-  context '#compel!' do
+  context '#run!' do
 
     it 'should raise InvalidParamsError exception' do
       params = {
         first_name: 'Joaquim'
       }
 
-      expect{ make_the_call(:compel!, params) }.to \
+      expect{ make_the_call(:run!, params) }.to \
         raise_error Compel::InvalidParamsError, 'params are invalid'
     end
 
@@ -24,7 +24,7 @@ describe Compel do
         first_name: 'Joaquim'
       }
 
-      expect{ make_the_call(:compel!, params) }.to raise_error do |exception|
+      expect{ make_the_call(:run!, params) }.to raise_error do |exception|
         expect(exception.errors).to eq({
           last_name: ['is required']
         })
@@ -33,7 +33,7 @@ describe Compel do
 
   end
 
-  context '#compel?' do
+  context '#run?' do
 
     it 'should return true' do
       params = {
@@ -42,7 +42,7 @@ describe Compel do
         birth_date: '1989-08-06T09:00:00'
       }
 
-      expect(make_the_call(:compel?, params)).to eq(true)
+      expect(make_the_call(:run?, params)).to eq(true)
     end
 
     it 'should return false' do
@@ -50,12 +50,12 @@ describe Compel do
         first_name: 'Joaquim'
       }
 
-      expect(make_the_call(:compel?, params)).to eq(false)
+      expect(make_the_call(:run?, params)).to eq(false)
     end
 
   end
 
-  context '#compel' do
+  context '#run' do
 
     def make_the_call(method, params)
       Compel.send(method, params) do
@@ -82,7 +82,7 @@ describe Compel do
         }
       }
 
-      expect(make_the_call(:compel, params)).to eq \
+      expect(make_the_call(:run, params)).to eq \
         Hashie::Mash.new({
           first_name: 'Joaquim',
           last_name: 'Adráz',
@@ -96,12 +96,12 @@ describe Compel do
     end
 
     it 'should not compel for invalid params' do
-      expect{ make_the_call(:compel, 1) }.to \
+      expect{ make_the_call(:run, 1) }.to \
         raise_error Compel::ParamTypeError, 'Compel params must be an Hash'
     end
 
     it 'should not compel for invalid params 1' do
-      expect{ make_the_call(:compel, nil) }.to \
+      expect{ make_the_call(:run, nil) }.to \
         raise_error Compel::ParamTypeError, 'Compel params must be an Hash'
     end
 
@@ -110,7 +110,7 @@ describe Compel do
         first_name: 'Joaquim'
       }
 
-      expect(make_the_call(:compel, params)).to eq \
+      expect(make_the_call(:run, params)).to eq \
         Hashie::Mash.new({
           first_name: 'Joaquim',
           errors: {
@@ -138,7 +138,7 @@ describe Compel do
         end
       end
 
-      it 'should compel?' do
+      it 'should run?' do
         params = {
           address: {
             line_one: 'Lisbon',
@@ -150,7 +150,7 @@ describe Compel do
           }
         }
 
-        expect(make_the_call(:compel?, params)).to eq(true)
+        expect(make_the_call(:run?, params)).to eq(true)
       end
 
       it 'should not compel' do
@@ -160,7 +160,7 @@ describe Compel do
           }
         }
 
-        expect(make_the_call(:compel, params)).to eq \
+        expect(make_the_call(:run, params)).to eq \
           Hashie::Mash.new({
             address: {
               line_two: 'Portugal'
@@ -187,7 +187,7 @@ describe Compel do
           }
         }
 
-        expect(make_the_call(:compel, params)).to eq \
+        expect(make_the_call(:run, params)).to eq \
           Hashie::Mash.new({
             address: {
               line_two: 'Portugal',
@@ -218,7 +218,7 @@ describe Compel do
           }
         }
 
-        expect(make_the_call(:compel, params)).to eq \
+        expect(make_the_call(:run, params)).to eq \
           Hashie::Mash.new({
             address: {
               post_code: {
@@ -248,7 +248,7 @@ describe Compel do
           }
         }
 
-        expect(make_the_call(:compel, params)).to eq \
+        expect(make_the_call(:run, params)).to eq \
           Hashie::Mash.new({
             address: {
               post_code: {
