@@ -1,3 +1,5 @@
+require 'pry'
+
 module Compel
 
   class Contract
@@ -26,9 +28,9 @@ module Compel
           # build a new Compel::Contract form inner conditions
           if (param.hash? && param.conditions?)
 
-            # If this param is required, build the Compel::Contract,
+            # If this param is required, a value must be given to build the Compel::Contract
             # otherwise, only build it if is given a value for the param
-            if param.required? || !param.value.nil?
+            if (param.required? && !param.value.nil?) || !param.value.nil?
               contract = Contract.new(param.value, &param.conditions).validate
 
               @errors.add(param.name, contract.errors)
@@ -44,7 +46,6 @@ module Compel
 
           # If the param value has already been coerced from digging into child Hash
           # use that value instead, so we don't lose the previous coerced values
-
           coerced_value = Coercion.coerce! \
             (@coerced_params[param.name].nil? ? param.value : @coerced_params[param.name]), param.type, param.options
 

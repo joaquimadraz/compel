@@ -204,7 +204,7 @@ describe Compel do
             errors: {
               address: {
                 line_one: ['is required'],
-                post_code: ['params must be an Hash']
+                post_code: ['is required']
               }
             }
           })
@@ -302,6 +302,29 @@ describe Compel do
                   }
                 }
               }
+            }
+          })
+
+      end
+
+      it 'should not compel 4' do
+        params = {
+          address: nil
+        }
+
+        expect(make_the_call(:run, params)).to eq \
+          Hashie::Mash.new({
+            errors: {
+              address: ['is required']
+            }
+          })
+      end
+
+      it 'should not compel 5' do
+        expect(make_the_call(:run, {})).to eq \
+          Hashie::Mash.new({
+            errors: {
+              address: ['is required']
             }
           })
       end
