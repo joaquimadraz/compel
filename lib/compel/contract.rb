@@ -98,6 +98,8 @@ module Compel
 
         raise exception, 'params are invalid'
       end
+
+      coerced_params
     end
 
   end
