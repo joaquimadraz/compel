@@ -23,9 +23,13 @@ There are 3 ways run validations:
 
 ###Installation
 
-```bash
-$ gem install compel
-```
+Add this line to your application's Gemfile:
+
+    gem 'compel'
+
+And then execute:
+
+    $ bundle
 
 ### Example
 ```ruby
