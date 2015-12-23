@@ -19,7 +19,7 @@ describe Compel do
         raise_error Compel::InvalidParamsError, 'params are invalid'
     end
 
-    it 'shoudl raise InvalidParamsError exception with errors' do
+    it 'should raise InvalidParamsError exception with errors' do
       params = {
         first_name: 'Joaquim'
       }
@@ -61,38 +61,66 @@ describe Compel do
 
     def make_the_call(method, params)
       Compel.send(method, params) do
-        param :first_name, String, required: true
-        param :last_name, String, required: true
-        param :birth_date, DateTime
-        param :age, Integer
-        param :admin, Compel::Boolean
-        param :blog_role, Hash do
-          param :admin, Compel::Boolean, required: true
+        param :user, Hash, required: true do
+          param :first_name, String, required: true
+          param :last_name, String, required: true
+          param :birth_date, DateTime
+          param :age, Integer
+          param :admin, Compel::Boolean
+          param :blog_role, Hash do
+            param :admin, Compel::Boolean, required: true
+          end
         end
       end
     end
 
     it 'should compel returning coerced values' do
       params = {
-        first_name: 'Joaquim',
-        last_name: 'Adráz',
-        birth_date: '1989-08-06T09:00:00',
-        age: '26',
-        admin: 'f',
-        blog_role: {
-          admin: '0'
+        user: {
+          first_name: 'Joaquim',
+          last_name: 'Adráz',
+          birth_date: '1989-08-06T09:00:00',
+          age: '26',
+          admin: 'f',
+          blog_role: {
+            admin: '0'
+          }
         }
       }
 
       expect(make_the_call(:run, params)).to eq \
         Hashie::Mash.new({
-          first_name: 'Joaquim',
-          last_name: 'Adráz',
-          birth_date: DateTime.parse('1989-08-06T09:00:00'),
-          age: 26,
-          admin: false,
-          blog_role: {
-            admin: false
+          user: {
+            first_name: 'Joaquim',
+            last_name: 'Adráz',
+            birth_date: DateTime.parse('1989-08-06T09:00:00'),
+            age: 26,
+            admin: false,
+            blog_role: {
+              admin: false
+            }
+          }
+        })
+    end
+
+    it 'should not compel and leave other params untouched' do
+      params = {
+        other_param: 1,
+        user: {
+          first_name: 'Joaquim'
+        }
+      }
+
+      expect(make_the_call(:run, params)).to eq \
+        Hashie::Mash.new({
+          other_param: 1,
+          user: {
+            first_name: 'Joaquim',
+          },
+          errors: {
+            user: {
+              last_name: ['is required']
+            }
           }
         })
     end
@@ -109,14 +137,20 @@ describe Compel do
 
     it 'should not compel'  do
       params = {
-        first_name: 'Joaquim'
+        user: {
+          first_name: 'Joaquim'
+        }
       }
 
       expect(make_the_call(:run, params)).to eq \
         Hashie::Mash.new({
-          first_name: 'Joaquim',
+          user:{
+            first_name: 'Joaquim',
+          },
           errors: {
-            last_name: ['is required']
+            user: {
+              last_name: ['is required']
+            }
           }
         })
     end

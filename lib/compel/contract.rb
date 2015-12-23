@@ -4,7 +4,6 @@ module Compel
 
     attr_reader :errors,
                 :conditions,
-                :coerced_params,
                 :serialized_errors
 
     def initialize(params, &block)
@@ -67,7 +66,12 @@ module Compel
 
     def param(name, type, options = {}, &block)
       @conditions[name] = \
-        Param.new(name, type, @params[name], options, &block)
+        Param.new(name, type, @params.delete(name), options, &block)
+    end
+
+    def coerced_params
+      # @params has all params that are not affected by the validation
+      @params.merge(@coerced_params)
     end
 
     def serialize
