@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.authors       = ['Joaquim Adráz']
   gem.email         = ['joaquim.adraz@gmail.com']
   gem.description   = %q{Compel}
-  gem.summary       = %q{Ruby hash coercion and validation}
+  gem.summary       = %q{Ruby Hash Coercion and Validation}
   gem.homepage      = 'https://github.com/joaquimadraz/compel'
 
   gem.files         = `git ls-files`.split($/)
