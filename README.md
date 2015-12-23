@@ -11,16 +11,6 @@ The motivation was to create an integration for [RestMyCase](https://github.com/
 
 Based on the same principle from [Grape](https://github.com/ruby-grape/grape) framework and [sinatra-param](https://github.com/mattt/sinatra-param) gem to validate request params.
 
-There are 3 ways run validations:
-
-- `#run`  
-  - Validates and returns an Hash with coerced params plus a `:errors` key with a _Rails like_ Hash of errors if any.
-- `#run!`
-  - Validates and raises `Compel::InvalidParamsError` exception with the coerced params and errors.
-- `#run?`
-  - Validates and returns true or false.
-
-
 ###Installation
 
 Add this line to your application's Gemfile:
@@ -32,6 +22,7 @@ And then execute:
     $ bundle
 
 ### Example
+
 ```ruby
 params= {
   first_name: 'Joaquim',
@@ -76,6 +67,16 @@ Will return an [Hashie::Mash](https://github.com/intridea/hashie) object:
   }
 }
 ```
+
+There are 3 ways run validations:
+
+- `#run`  
+  - Validates and returns an Hash with coerced params plus a `:errors` key with a _Rails like_ Hash of errors if any.
+- `#run!`
+  - Validates and raises `Compel::InvalidParamsError` exception with the coerced params and errors.
+- `#run?`
+  - Validates and returns true or false.
+  
 
 ### Types
 
