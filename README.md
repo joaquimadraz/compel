@@ -11,7 +11,7 @@ Based on the same principle from [Grape](https://github.com/ruby-grape/grape) fr
 There are 3 ways run validations:
 
 - `#run`  
-  - Validates and return an Hash with coerced params plus a `:errors` key with an Hash of errors if any.
+  - Validates and returns an Hash with coerced params plus a `:errors` key with a _Rails like_ Hash of errors if any.
 - `#run!`
   - Validates and raises `Compel::InvalidParamsError` exception the coerced params and generated errors.
 - `#run?`
