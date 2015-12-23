@@ -19,21 +19,61 @@ There are 3 ways run validations:
 
 ### Example
 ```ruby
-Compel.run({ first_name: 'Joaquim', birth_date: '1989-0' }) do
+params= {
+  first_name: 'Joaquim',
+  birth_date: '1989-0',
+  address: {
+    line_one: 'Lisboa',
+    post_code: '1100',
+    country: 'PT'
+  }
+}
+
+Compel.run(params) do
   param :first_name, String, required: true
   param :last_name, String, required: true
   param :birth_date, DateTime
+  param :address, Hash do
+    param :line_one, String, required: true
+    param :line_two, String, default: '-'
+    param :post_code, String, required: true, format: /^\d{4}-\d{3}$/
+    param :country_code, String, in: ['PT', 'GB'], default: 'PT'
+  end
 end
 ```
 
-Will return:
+Will return an [Hashie::Mash](https://github.com/intridea/hashie) object:
 
 ```ruby
 {
-  first_name: 'Joaquim,
-  errors: {
-    last_name: ['is required'],
-    brith_date: ["'1989-0' is not a valid DateTime"]
+  "first_name" => "Joaquim",
+  "address" => {
+    "line_one" => "Lisboa", 
+    "line_two" => "-", # default value
+    "post_code_pfx" => 1100, # Already an Integer
+    "country_code"=> "PT"
+  },
+  "errors" => {
+    "last_name" => ["is required"],
+    "birth_date" => ["'1989-0' is not a valid DateTime"],
+    "address" => {
+      "post_code_sfx" => ["is required"]
+    }
   }
 }
 ```
+
+### Types
+
+- `Integer`
+- `Float`
+- `String`
+- `JSON`
+  - ex: `"{\"a\":1,\"b\":2,\"c\":3}"`
+- `Hash`
+  - ex: `{ a: 1,  b: 2, c: 3 }`
+- `Date`
+- `Time`
+- `DateTime`
+- `Compel::Boolean`, 
+  - ex: `1`/`0`, `true`/`false`, `t`/`f`, `yes`/`no`, `y`/`n`
