@@ -91,7 +91,7 @@ class App < Sinatra::Base
   ...
   
   def compel(&block)
-    Compel.run!(params, &block)
+    params.merge! Compel::run!(params, &block)
   end
 
   error Compel::InvalidParamsError do |exception|
