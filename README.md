@@ -104,6 +104,20 @@ class App < Sinatra::Base
     set :raise_errors, true
   end
   
+  ...
+  
+  post '/api/posts' do
+    compel do
+      param :post, Hash, required: true do
+        param :title, String, required: true
+      end
+    end
+  
+    puts params[:post]      
+  end
+  
+  ...
+
 end
 ```
 ###Installation
