@@ -93,10 +93,36 @@ There are 3 ways run validations:
 - `Compel::Boolean`, 
   - ex: `1`/`0`, `true`/`false`, `t`/`f`, `yes`/`no`, `y`/`n`
 
+### Sinatra Integration
+
+If you want to use with `Sinatra`, just add the following code to your Sinatra app:
+
+```ruby
+class App < Sinatra::Base
+  
+  ...
+  
+  def compel(&block)
+    Compel::run!(params, &block)
+  end
+
+  error Compel::InvalidParamsError do |exception|
+    status 400
+    json errors: exception.errors
+  end
+  
+  configure :development do
+    set :show_exceptions, false
+    set :raise_errors, true
+  end
+  
+end
+```
+
 ### TODO
 
 - Write more Documentation (check specs for now ;)
-- Sinatra and Rails integration
+- Rails integration
 - [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) integration
 
 
