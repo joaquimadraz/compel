@@ -1,6 +1,10 @@
-Compel
+Compel 
 ==========================
+![](https://travis-ci.org/joaquimadraz/compel.svg)
+[![Code Climate](https://codeclimate.com/github/joaquimadraz/compel/badges/gpa.svg)](https://codeclimate.com/github/joaquimadraz/compel)
+
 Ruby Hash Coercion and Validation
+
 
 ```ruby
 Compel.compel({ first_name: 'Joaquim' }) do
