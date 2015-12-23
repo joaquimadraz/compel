@@ -25,9 +25,11 @@ describe Compel do
       }
 
       expect{ make_the_call(:run!, params) }.to raise_error do |exception|
-        expect(exception.errors).to eq({
-          last_name: ['is required']
-        })
+        expect(exception.params).to eq \
+          Hashie::Mash.new(first_name: 'Joaquim')
+
+        expect(exception.errors).to eq \
+          Hashie::Mash.new(last_name: ['is required'])
       end
     end
 
@@ -97,12 +99,12 @@ describe Compel do
 
     it 'should not compel for invalid params' do
       expect{ make_the_call(:run, 1) }.to \
-        raise_error Compel::ParamTypeError, 'Compel params must be an Hash'
+        raise_error Compel::ParamTypeError, 'params must be an Hash'
     end
 
     it 'should not compel for invalid params 1' do
       expect{ make_the_call(:run, nil) }.to \
-        raise_error Compel::ParamTypeError, 'Compel params must be an Hash'
+        raise_error Compel::ParamTypeError, 'params must be an Hash'
     end
 
     it 'should not compel'  do
@@ -168,7 +170,7 @@ describe Compel do
             errors: {
               address: {
                 line_one: ['is required'],
-                post_code: ['Compel params must be an Hash']
+                post_code: ['params must be an Hash']
               }
             }
           })

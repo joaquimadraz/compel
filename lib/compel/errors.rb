@@ -3,7 +3,7 @@ module Compel
   class Errors
 
     def initialize
-      @errors = {}
+      @errors = Hashie::Mash.new
     end
 
     def add(key, error)
@@ -16,7 +16,7 @@ module Compel
           @errors[key] = {}
         end
 
-        @errors[key].merge!(error.to_hash(true))
+        @errors[key].merge!(error.to_hash)
 
         return
       end
@@ -44,12 +44,8 @@ module Compel
       length == 0
     end
 
-    def to_hash(stringify_keys = false)
-      if stringify_keys
-        return @errors
-      end
-
-      Hashie.symbolize_keys(@errors)
+    def to_hash
+      @errors
     end
 
   end

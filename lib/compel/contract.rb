@@ -9,7 +9,7 @@ module Compel
 
     def initialize(params, &block)
       if params.nil? || !Coercion.valid?(params, Hash)
-        raise ParamTypeError, 'Compel params must be an Hash'
+        raise ParamTypeError, 'params must be an Hash'
       end
 
       @errors = Errors.new
@@ -89,6 +89,7 @@ module Compel
     def raise?
       if !valid?
         exception = InvalidParamsError.new
+        exception.params = coerced_params
         exception.errors = serialized_errors
 
         raise exception, 'params are invalid'
