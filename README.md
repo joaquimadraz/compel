@@ -58,7 +58,7 @@ Will return an [Hashie::Mash](https://github.com/intridea/hashie) object:
 }
 ```
 
-There are 3 ways run validations:
+There are 3 ways to run validations:
 
 Method  | Behaviour
 ------------- | -------------
