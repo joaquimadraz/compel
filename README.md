@@ -5,7 +5,7 @@ Compel
 
 Ruby Hash Coercion and Validation
 
-This is a straight forward way to validate a Ruby Hash: just give your object and the schema to validate.
+This is a straight forward way to validate a Ruby Hash: just give an object and the schema.
 
 The motivation was to create an integration for [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) and have validations before any business logic execution.
 
