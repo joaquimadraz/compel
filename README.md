@@ -17,6 +17,13 @@ There are 3 ways run validations:
 - `#run?`
   - Validates and returns true or false.
 
+
+###Installation
+
+```bash
+$ gem install compel
+```
+
 ### Example
 ```ruby
 params= {
