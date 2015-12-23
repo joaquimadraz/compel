@@ -8,7 +8,6 @@ Ruby Hash Coercion and Validation
 This is a straight forward way to validate a Ruby Hash: just give your object and the schema to validate.
 The motivation was to create an integration for [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) and have validations before any business logic execution.
 
-
 Based on the same principle from [Grape](https://github.com/ruby-grape/grape) framework and [sinatra-param](https://github.com/mattt/sinatra-param) gem to validate request params.
 
 There are 3 ways run validations:
