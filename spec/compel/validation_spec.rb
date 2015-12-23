@@ -46,7 +46,7 @@ describe Compel::Validation do
 
       it 'should validate with errors' do
         expect_be_in_within_range(['PT', 'UK'], 'US') do |errors|
-          expect(errors).to eq(['must be within: ["PT", "UK"]'])
+          expect(errors).to eq(['must be within ["PT", "UK"]'])
         end
       end
 
@@ -61,7 +61,7 @@ describe Compel::Validation do
         it 'should validate with errors' do
           errors = Compel::Validation.validate(4, range: (1..3))
 
-          expect(errors).to eq(['must be within: 1..3'])
+          expect(errors).to eq(['must be within 1..3'])
         end
 
       end
