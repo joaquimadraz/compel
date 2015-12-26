@@ -168,13 +168,13 @@ describe Compel::Coercion do
     context 'Boolean' do
 
       it 'should coerce' do
-        value = Compel::Coercion.coerce!('f', Compel::Boolean)
+        value = Compel::Coercion.coerce!('f', Compel::Coercion::Boolean)
 
         expect(value).to eq(false)
       end
 
       it 'should coerce' do
-        value = Compel::Coercion.coerce!('0', Compel::Boolean)
+        value = Compel::Coercion.coerce!('0', Compel::Coercion::Boolean)
 
         expect(value).to eq(false)
       end
