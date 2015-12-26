@@ -3,7 +3,7 @@ module Compel
 
     class Float < Type
 
-      def coerce
+      def coerce!
         Float(value)
       end
 

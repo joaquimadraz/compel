@@ -3,7 +3,7 @@ module Compel
 
     class Time < Type
 
-      def coerce
+      def coerce!
         ::Time.parse(value)
       end
 

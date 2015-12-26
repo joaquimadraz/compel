@@ -3,7 +3,7 @@ module Compel
 
     class JSON < Type
 
-      def coerce
+      def coerce!
         ::JSON.parse(value)
       end
 

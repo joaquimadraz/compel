@@ -3,7 +3,7 @@ module Compel
 
     class Integer < Type
 
-      def coerce
+      def coerce!
         Integer(value)
       end
 

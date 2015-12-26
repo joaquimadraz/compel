@@ -3,7 +3,7 @@ module Compel
 
     class Boolean < Type
 
-      def coerce
+      def coerce!
         if /(false|f|no|n|0)$/i === "#{value}"
           return false
         end

@@ -10,20 +10,14 @@ module Compel
       return nil if value.nil?
 
       begin
-        klass = compel_type?(type) ? type : get_compel_type_klass(type)
-
-        return klass.new(value, options).coerce!
+        coercion_klass(type).new(value, options).coerce!
       rescue
         raise ParamTypeError, "'#{value}' is not a valid #{type}"
       end
     end
 
-    def compel_type?(type)
-      type.to_s.split('::')[0..1].join('::') == 'Compel::Coercion'
-    end
-
-    def get_compel_type_klass(type)
-      const_get("Compel::Coercion::#{type}")
+    def coercion_klass(type)
+      Compel::Coercion.const_get("#{type}")
     end
 
     extend self

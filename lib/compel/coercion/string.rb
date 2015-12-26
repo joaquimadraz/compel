@@ -3,7 +3,7 @@ module Compel
 
     class String < Type
 
-      def coerce
+      def coerce!
         if !value.is_a?(::String)
           fail
         end

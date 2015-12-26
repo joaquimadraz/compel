@@ -3,7 +3,7 @@ module Compel
 
     class Date < Type
 
-      def coerce
+      def coerce!
         ::Date.parse(value)
       end
 

@@ -11,19 +11,6 @@ module Compel
         @options = options
       end
 
-      def parse
-        @value = value
-      end
-
-      def serialize
-        raise '#serialize? should be implemented'
-      end
-
-      def coerce!
-        parse
-        coerce
-      end
-
     end
 
   end
