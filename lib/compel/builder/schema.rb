@@ -17,6 +17,10 @@ module Compel
         !!options[:required]
       end
 
+      def default_value
+        options[:default]
+      end
+
     end
 
   end

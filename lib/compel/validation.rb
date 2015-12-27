@@ -24,15 +24,6 @@ module Compel
         case option.to_sym
         when :required
           errors << 'is required' if option_value && value.nil?
-        when :blank
-          errors << 'cannot be blank' if !option_value && case value
-          when String
-            !(/\S/ === value)
-          when Array, Hash
-            value.empty?
-          else
-            value.nil?
-          end
         when :format
           errors << 'must be a string if using the format validation' unless value.kind_of?(String)
           errors << "must match format #{option_value}" unless value =~ option_value

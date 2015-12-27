@@ -1,10 +1,10 @@
 module Compel
   module Builder
 
-    class DateTime < Schema
+    class Time < Schema
 
       def initialize
-        super(Coercion::DateTime)
+        super(Coercion::Time)
       end
 
       def format(value)

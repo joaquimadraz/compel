@@ -12,6 +12,7 @@ require 'compel/coercion/datetime'
 require 'compel/coercion/hash'
 require 'compel/coercion/json'
 require 'compel/coercion/boolean'
+require 'compel/coercion/regexp'
 
 require 'compel/exceptions/invalid_hash_error'
 require 'compel/exceptions/validation_error'

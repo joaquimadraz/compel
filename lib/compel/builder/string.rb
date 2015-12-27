@@ -10,7 +10,7 @@ module Compel
       end
 
       def format(regex)
-        options[:format] = regex
+        options[:format] = Coercion.coerce!(regex, ::Regexp)
         self
       end
 

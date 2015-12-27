@@ -11,8 +11,10 @@ module Compel
 
       begin
         coercion_klass(type).new(value, options).coerce!
+      rescue Compel::TypeError => exception
+        raise exception
       rescue
-        raise TypeError, "'#{value}' is not a valid #{type}"
+        raise Compel::TypeError, "'#{value}' is not a valid #{type}"
       end
     end
 

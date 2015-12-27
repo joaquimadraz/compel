@@ -7,7 +7,7 @@ module Compel
 
     def initialize(hash, schema)
       if hash.nil? || !Coercion.valid?(hash, Hash)
-        raise TypeError, 'must be an Hash'
+        raise Compel::TypeError, 'must be an Hash'
       end
 
       @hash = Hashie::Mash.new(hash)

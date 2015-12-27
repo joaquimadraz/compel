@@ -1,10 +1,10 @@
 module Compel
   module Builder
 
-    class DateTime < Schema
+    class Date < Schema
 
       def initialize
-        super(Coercion::DateTime)
+        super(Coercion::Date)
       end
 
       def format(value)
@@ -13,7 +13,7 @@ module Compel
       end
 
       def iso8601
-        options[:format] = '%FT%T'
+        options[:format] = '%Y-%m-%d'
         self
       end
 

@@ -4,7 +4,14 @@ module Compel
     class DateTime < Type
 
       def coerce!
-        ::DateTime.parse(value)
+        format = options[:format] || '%FT%T'
+
+        ::DateTime.strptime(value, format)
+
+        rescue
+          raise \
+            Compel::TypeError,
+            "'#{value}' is not a parsable datetime with format: #{format}"
       end
 
     end

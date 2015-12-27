@@ -66,10 +66,16 @@ describe Compel::Coercion do
 
     context 'Date' do
 
-      it 'should coerce' do
+      it 'should coerce with default format' do
         value = Compel::Coercion.coerce!('2015-12-22', Date)
 
         expect(value).to eq(Date.parse('2015-12-22'))
+      end
+
+      it 'should coerce with format' do
+        value = Compel::Coercion.coerce!('22-12-2015', Date, { format: '%d-%m-%Y'})
+
+        expect(value).to eq(Date.strptime('22-12-2015', '%d-%m-%Y'))
       end
 
       it 'should not coerce' do
@@ -78,20 +84,65 @@ describe Compel::Coercion do
         expect(Compel::Coercion.valid?(value, Date)).to eq(false)
 
         expect { Compel::Coercion.coerce!(value, Date) }.to \
-          raise_error Compel::TypeError, "'#{value}' is not a valid Date"
+          raise_error \
+            Compel::TypeError,
+            "'#{value}' is not a parsable date with format: %Y-%m-%d"
+      end
+
+      it 'should not coerce 1' do
+        default_format = '%Y-%m-%d'
+
+        value = Compel::Coercion.coerce!('22-12-2015', Date)
+
+        expect { Compel::Coercion.coerce!(value, Date) }.to \
+          raise_error \
+            Compel::TypeError,
+            "'#{value}' is not a parsable date with format: #{default_format}"
       end
 
     end
 
-    context 'DateTime' do
+    context 'DateTime & Time' do
 
       it 'should coerce' do
-        value = Compel::Coercion.coerce!('2015-12-22', DateTime)
+        [DateTime, Time].each do |time_klass|
+          value = Compel::Coercion.coerce!('2015-12-22', time_klass, format: '%Y-%m-%d')
 
-        expect(value).to be_a DateTime
-        expect(value.year).to eq(2015)
-        expect(value.month).to eq(12)
-        expect(value.day).to eq(22)
+          expect(value).to be_a time_klass
+          expect(value.year).to eq(2015)
+          expect(value.month).to eq(12)
+          expect(value.day).to eq(22)
+        end
+
+      end
+
+      it 'should coerce iso8601 format' do
+        [DateTime, Time].each do |time_klass|
+          value = Compel::Coercion.coerce!('2015-12-22T09:30:10', time_klass)
+
+          expect(value).to be_a time_klass
+          expect(value.year).to eq(2015)
+          expect(value.month).to eq(12)
+          expect(value.day).to eq(22)
+          expect(value.hour).to eq(9)
+          expect(value.min).to eq(30)
+          expect(value.sec).to eq(10)
+        end
+      end
+
+      it 'should not coerce' do
+        default_format = '%FT%T'
+        value = '22-12-2015'
+
+        [DateTime, Time].each do |time_klass|
+          type_down_cased = "#{time_klass}".downcase
+
+          expect { Compel::Coercion.coerce!('22-12-2015', time_klass) }.to \
+            raise_error \
+              Compel::TypeError,
+              "'#{value}' is not a parsable #{type_down_cased} with format: #{default_format}"
+        end
+
       end
 
     end
