@@ -6,7 +6,17 @@ module Compel
       def coerce!
         format = options[:format] || '%FT%T'
 
-        ::Time.strptime(value, format)
+        if value.is_a?(::Time)
+          @value = value.strftime(format)
+        end
+
+        coerced = ::Time.strptime(value, format)
+
+        if coerced.strftime(format) == value
+          return coerced
+        end
+
+        fail
 
         rescue
           raise \

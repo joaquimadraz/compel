@@ -12,9 +12,11 @@ module Compel
       end
 
       def validate
+        value = input.nil? ? schema.default_value : input
+
         begin
-          @output = Coercion.coerce!(input, schema.type, schema.options)
-          @errors = Validation.validate(input, schema.options)
+          @output = Coercion.coerce!(value, schema.type, schema.options)
+          @errors = Validation.validate(value, schema.type, schema.options)
         rescue Compel::TypeError => exception
           @errors = [exception.message]
         end

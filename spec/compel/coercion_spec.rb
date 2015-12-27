@@ -91,8 +91,7 @@ describe Compel::Coercion do
 
       it 'should not coerce 1' do
         default_format = '%Y-%m-%d'
-
-        value = Compel::Coercion.coerce!('22-12-2015', Date)
+        value = '22-12-2015'
 
         expect { Compel::Coercion.coerce!(value, Date) }.to \
           raise_error \

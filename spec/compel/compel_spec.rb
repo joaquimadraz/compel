@@ -2,105 +2,109 @@ describe Compel do
 
   context '#run' do
 
-    def make_the_call(method, hash)
-      schema = Compel.hash.keys({
-        user: Compel.hash.keys({
-          first_name: Compel.string.required,
-          last_name: Compel.string.required,
-          birth_date: Compel.datetime,
-          age: Compel.integer,
-          admin: Compel.boolean,
-          blog_role: Compel.hash.keys({
-            admin: Compel.boolean.required
-          })
-        }).required
-      })
+    context 'User validation example' do
 
-      Compel.send(method, hash, schema)
-    end
+      def make_the_call(method, hash)
+        schema = Compel.hash.keys({
+          user: Compel.hash.keys({
+            first_name: Compel.string.required,
+            last_name: Compel.string.required,
+            birth_date: Compel.datetime,
+            age: Compel.integer,
+            admin: Compel.boolean,
+            blog_role: Compel.hash.keys({
+              admin: Compel.boolean.required
+            })
+          }).required
+        })
 
-    it 'should compel returning coerced values' do
-      hash = {
-        user: {
-          first_name: 'Joaquim',
-          last_name: 'Adráz',
-          birth_date: '1989-08-06T09:00:00',
-          age: '26',
-          admin: 'f',
-          blog_role: {
-            admin: '0'
-          }
-        }
-      }
+        Compel.send(method, hash, schema)
+      end
 
-      expect(make_the_call(:run, hash)).to eq \
-        Hashie::Mash.new({
+      it 'should compel returning coerced values' do
+        hash = {
           user: {
             first_name: 'Joaquim',
             last_name: 'Adráz',
-            birth_date: DateTime.parse('1989-08-06T09:00:00'),
-            age: 26,
-            admin: false,
+            birth_date: '1989-08-06T09:00:00',
+            age: '26',
+            admin: 'f',
             blog_role: {
-              admin: false
+              admin: '0'
             }
           }
-        })
-    end
-
-    it 'should not compel and leave other hash untouched' do
-      hash = {
-        other_param: 1,
-        user: {
-          first_name: 'Joaquim'
         }
-      }
 
-      expect(make_the_call(:run, hash)).to eq \
-        Hashie::Mash.new({
+        expect(make_the_call(:run, hash)).to eq \
+          Hashie::Mash.new({
+            user: {
+              first_name: 'Joaquim',
+              last_name: 'Adráz',
+              birth_date: DateTime.parse('1989-08-06T09:00:00'),
+              age: 26,
+              admin: false,
+              blog_role: {
+                admin: false
+              }
+            }
+          })
+      end
+
+      it 'should not compel and leave other hash untouched' do
+        hash = {
           other_param: 1,
           user: {
-            first_name: 'Joaquim',
-          },
-          errors: {
-            user: {
-              last_name: ['is required']
-            }
+            first_name: 'Joaquim'
           }
-        })
-    end
-
-    it 'should not compel for invalid hash' do
-      expect{ make_the_call(:run, 1) }.to \
-        raise_error Compel::TypeError, 'must be an Hash'
-    end
-
-    it 'should not compel for invalid hash 1' do
-      expect{ make_the_call(:run, nil) }.to \
-        raise_error Compel::TypeError, 'must be an Hash'
-    end
-
-    it 'should not compel'  do
-      hash = {
-        user: {
-          first_name: 'Joaquim'
         }
-      }
 
-      expect(make_the_call(:run, hash)).to eq \
-        Hashie::Mash.new({
-          user:{
-            first_name: 'Joaquim',
-          },
-          errors: {
+        expect(make_the_call(:run, hash)).to eq \
+          Hashie::Mash.new({
+            other_param: 1,
             user: {
-              last_name: ['is required']
+              first_name: 'Joaquim',
+            },
+            errors: {
+              user: {
+                last_name: ['is required']
+              }
             }
+          })
+      end
+
+      it 'should not compel for invalid hash' do
+        expect{ make_the_call(:run, 1) }.to \
+          raise_error Compel::TypeError, 'must be an Hash'
+      end
+
+      it 'should not compel for invalid hash 1' do
+        expect{ make_the_call(:run, nil) }.to \
+          raise_error Compel::TypeError, 'must be an Hash'
+      end
+
+      it 'should not compel'  do
+        hash = {
+          user: {
+            first_name: 'Joaquim'
           }
-        })
+        }
+
+        expect(make_the_call(:run, hash)).to eq \
+          Hashie::Mash.new({
+            user:{
+              first_name: 'Joaquim',
+            },
+            errors: {
+              user: {
+                last_name: ['is required']
+              }
+            }
+          })
+      end
+
     end
 
-    context 'nested Hash' do
+    context 'Address validation example' do
 
       def make_the_call(method, hash)
         schema = Compel.hash.keys({
@@ -279,6 +283,177 @@ describe Compel do
 
     end
 
+    context 'Boolean' do
+
+      context 'required option' do
+
+        it 'should compel' do
+          schema = Compel.hash.keys({
+            admin: Compel.boolean.required
+          })
+
+          expect(Compel.run?({ admin: 1 }, schema)).to be true
+        end
+
+        it 'should not compel' do
+          schema = Compel.hash.keys({
+            admin: Compel.boolean.required
+          })
+
+          expect(Compel.run({ admin: nil }, schema).errors[:admin]).to \
+            include('is required')
+        end
+
+      end
+
+      context 'default option' do
+
+        it 'should compel' do
+          schema = Compel.hash.keys({
+            admin: Compel.boolean.default(false)
+          })
+
+          expect(Compel.run({ admin: nil }, schema).admin).to be false
+        end
+
+      end
+
+      context 'is option' do
+
+        it 'should compel' do
+          schema = Compel.hash.keys({
+            admin: Compel.boolean.is(1)
+          })
+
+          expect(Compel.run?({ admin: 1 }, schema)).to be true
+        end
+
+        it 'should not compel' do
+          schema = Compel.hash.keys({
+            admin: Compel.boolean.is(1)
+          })
+
+          expect(Compel.run({ admin: 0 }, schema).errors[:admin]).to \
+            include('must be 1')
+        end
+
+      end
+
+    end
+
+    context 'String' do
+
+      context 'format option' do
+
+        it 'should compel' do
+          schema = Compel.hash.keys({
+            post_code: Compel.string.format(/^\d{4}-\d{3}$/)
+          })
+
+          expect(Compel.run?({ post_code: '1100-100' }, schema)).to be true
+        end
+
+        it 'should not compel' do
+          schema = Compel.hash.keys({
+            post_code: Compel.string.format(/^\d{4}-\d{3}$/)
+          })
+
+          expect(Compel.run({ post_code: '110-100' }, schema).errors[:post_code]).to \
+            include('must match format ^\\d{4}-\\d{3}$')
+        end
+
+      end
+
+    end
+
+    context 'Time' do
+
+      context 'format option' do
+
+        it 'should not compel' do
+          schema = Compel.hash.keys({
+            birth_date: Compel.time
+          })
+
+          expect(Compel.run({ birth_date: '1989-08-06' }, schema).errors.birth_date).to \
+            include("'1989-08-06' is not a parsable time with format: %FT%T")
+        end
+
+        it 'should compel with format' do
+          schema = Compel.hash.keys({
+            birth_date: Compel.time.format('%Y-%m-%d')
+          })
+
+          expect(Compel.run({ birth_date: '1989-08-06' }, schema).birth_date).to \
+            eq(Time.new(1989, 8, 6))
+        end
+
+        it 'should compel by default' do
+          schema = Compel.hash.keys({
+            birth_date: Compel.time
+          })
+
+          expect(Compel.run({ birth_date: '1989-08-06T09:00:00' }, schema).birth_date).to \
+            eq(Time.new(1989, 8, 6, 9))
+        end
+
+        it 'should compel with iso8601 format' do
+          schema = Compel.hash.keys({
+            birth_date: Compel.time.iso8601
+          })
+
+          expect(Compel.run({ birth_date: '1989-08-06T09:00:00' }, schema).birth_date).to \
+            eq(Time.new(1989, 8, 6, 9))
+        end
+
+      end
+
+    end
+
+  end
+
+  context 'DateTime' do
+
+    context 'format option' do
+
+      it 'should not compel' do
+        schema = Compel.hash.keys({
+          birth_date: Compel.datetime
+        })
+
+        expect(Compel.run({ birth_date: '1989-08-06' }, schema).errors.birth_date).to \
+          include("'1989-08-06' is not a parsable datetime with format: %FT%T")
+      end
+
+      it 'should compel with format' do
+        schema = Compel.hash.keys({
+          birth_date: Compel.datetime.format('%Y-%m-%d')
+        })
+
+        expect(Compel.run({ birth_date: '1989-08-06' }, schema).birth_date).to \
+          eq(DateTime.new(1989, 8, 6))
+      end
+
+      it 'should compel by default' do
+        schema = Compel.hash.keys({
+          birth_date: Compel.datetime
+        })
+
+        expect(Compel.run({ birth_date: '1989-08-06T09:00:00' }, schema).birth_date).to \
+          eq(DateTime.new(1989, 8, 6, 9))
+      end
+
+      it 'should compel with iso8601 format' do
+        schema = Compel.hash.keys({
+          birth_date: Compel.datetime.iso8601
+        })
+
+        expect(Compel.run({ birth_date: '1989-08-06T09:00:00' }, schema).birth_date).to \
+          eq(DateTime.new(1989, 8, 6, 9))
+      end
+
+    end
+
   end
 
   context 'Compel methods' do
@@ -294,6 +469,22 @@ describe Compel do
     end
 
     context '#run!' do
+
+      it 'should compel' do
+        hash = {
+          first_name: 'Joaquim',
+          last_name: 'Adráz',
+          birth_date: DateTime.new(1988, 12, 24)
+        }
+
+        expect(make_the_call(:run!, hash)).to \
+          eq \
+            Hashie::Mash.new({
+              first_name: 'Joaquim',
+              last_name: 'Adráz',
+              birth_date: DateTime.new(1988, 12, 24)
+            })
+      end
 
       it 'should raise InvalidHashError exception' do
         hash = {

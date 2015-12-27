@@ -8,6 +8,11 @@ module Compel
         self
       end
 
+      def length(value)
+        options[:length] = Coercion.coerce!(value, ::Integer)
+        self
+      end
+
       def range(value)
         options[:range] = value
         self

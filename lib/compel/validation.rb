@@ -2,7 +2,7 @@ module Compel
 
   module Validation
 
-    def validate(value, options)
+    def validate(value, type, options)
       errors = []
 
       options.each do |option, option_value|
@@ -13,8 +13,11 @@ module Compel
         when :required
           errors << 'is required' if option_value && value.nil?
         when :format
-          errors << 'must be a string if using the format validation' unless value.kind_of?(String)
-          errors << "must match format #{option_value}" unless value =~ option_value
+          if type == Coercion::String && !value.nil?
+            errors << "must match format #{option_value.source}" unless value =~ option_value
+          else
+            errors << 'must be a string if using the format validation'
+          end
         when :is
           errors << "must be #{option_value}" unless value === option_value
         when :in, :within, :range
