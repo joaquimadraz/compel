@@ -1,25 +1,27 @@
 describe Compel do
 
   def make_the_call(method, params)
-    Compel.send(method, params) do
-      param :first_name, String, required: true
-      param :last_name, String, required: true
-      param :birth_date, DateTime
-    end
+    schema = Compel.hash.keys({
+      first_name: Compel.string.required,
+      last_name: Compel.string.required,
+      birth_date: Compel.datetime
+    })
+
+    Compel.send(method, params, schema)
   end
 
   context '#run!' do
 
-    it 'should raise InvalidParamsError exception' do
+    it 'should raise InvalidHashError exception' do
       params = {
         first_name: 'Joaquim'
       }
 
       expect{ make_the_call(:run!, params) }.to \
-        raise_error Compel::InvalidParamsError, 'params are invalid'
+        raise_error Compel::InvalidHashError, 'params are invalid'
     end
 
-    it 'should raise InvalidParamsError exception with errors' do
+    it 'should raise InvalidHashError exception with errors' do
       params = {
         first_name: 'Joaquim'
       }
@@ -60,18 +62,20 @@ describe Compel do
   context '#run' do
 
     def make_the_call(method, params)
-      Compel.send(method, params) do
-        param :user, Hash, required: true do
-          param :first_name, String, required: true
-          param :last_name, String, required: true
-          param :birth_date, DateTime
-          param :age, Integer
-          param :admin, Compel::Boolean
-          param :blog_role, Hash do
-            param :admin, Compel::Boolean, required: true
-          end
-        end
-      end
+      schema = Compel.hash.keys({
+        user: Compel.hash.keys({
+          first_name: Compel.string.required,
+          last_name: Compel.string.required,
+          birth_date: Compel.datetime,
+          age: Compel.integer,
+          admin: Compel.boolean,
+          blog_role: Compel.hash.keys({
+            admin: Compel.boolean.required
+          })
+        }).required
+      })
+
+      Compel.send(method, params, schema)
     end
 
     it 'should compel returning coerced values' do
@@ -127,12 +131,12 @@ describe Compel do
 
     it 'should not compel for invalid params' do
       expect{ make_the_call(:run, 1) }.to \
-        raise_error Compel::ParamTypeError, 'params must be an Hash'
+        raise_error Compel::ParamTypeError, 'must be an Hash'
     end
 
     it 'should not compel for invalid params 1' do
       expect{ make_the_call(:run, nil) }.to \
-        raise_error Compel::ParamTypeError, 'params must be an Hash'
+        raise_error Compel::ParamTypeError, 'must be an Hash'
     end
 
     it 'should not compel'  do
@@ -158,20 +162,22 @@ describe Compel do
     context 'nested Hash' do
 
       def make_the_call(method, params)
-        Compel.send(method, params) do
-          param :address, Hash, required: true do
-            param :line_one, String, required: true
-            param :line_two, String
-            param :post_code, Hash, required: true do
-              param :prefix, Integer, length: 4, required: true
-              param :suffix, Integer, length: 3
-              param :county, Hash do
-                param :code, String, length: 2, required: true
-                param :name, String
-              end
-            end
-          end
-        end
+        schema = Compel.hash.keys({
+          address: Compel.hash.keys({
+            line_one: Compel.string.required,
+            line_two: Compel.string,
+            post_code: Compel.hash.keys({
+              prefix: Compel.integer.length(4).required,
+              suffix: Compel.integer.length(3),
+              county: Compel.hash.keys({
+                code: Compel.string.length(2).required,
+                name: Compel.string
+              })
+            }).required
+          }).required
+        })
+
+        Compel.send(method, params, schema)
       end
 
       it 'should run?' do
@@ -314,6 +320,7 @@ describe Compel do
 
         expect(make_the_call(:run, params)).to eq \
           Hashie::Mash.new({
+            address: nil,
             errors: {
               address: ['is required']
             }

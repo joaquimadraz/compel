@@ -17,7 +17,11 @@ require 'compel/invalid_params_error'
 require 'compel/param_validation_error'
 require 'compel/param_type_error'
 
-require 'compel/param'
+require 'compel/validators/base'
+require 'compel/validators/type_validator'
+require 'compel/validators/hash_validator'
+
+require 'compel/builder/methods'
 require 'compel/contract'
 require 'compel/coercion'
 require 'compel/validation'
@@ -25,18 +29,18 @@ require 'compel/errors'
 
 module Compel
 
-  Boolean = Coercion::Boolean
+  extend Builder::Methods
 
-  def self.run!(params, &block)
-    Contract.new(params, &block).validate.raise?
+  def self.run!(params, schema)
+    Contract.new(params, schema).validate.raise?
   end
 
-  def self.run?(params, &block)
-    Contract.new(params, &block).validate.valid?
+  def self.run?(params, schema)
+    Contract.new(params, schema).validate.valid?
   end
 
-  def self.run(params, &block)
-    Contract.new(params, &block).validate.serialize
+  def self.run(params, schema)
+    Contract.new(params, schema).validate.serialize
   end
 
 end

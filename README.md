@@ -1,4 +1,4 @@
-Compel 
+Compel
 ==========================
 ![](https://travis-ci.org/joaquimadraz/compel.svg)
 [![Code Climate](https://codeclimate.com/github/joaquimadraz/compel/badges/gpa.svg)](https://codeclimate.com/github/joaquimadraz/compel)
@@ -43,7 +43,7 @@ Will return an [Hashie::Mash](https://github.com/intridea/hashie) object:
 {
   "first_name" => "Joaquim",
   "address" => {
-    "line_one" => "Lisboa", 
+    "line_one" => "Lisboa",
     "line_two" => "-", # default value
     "post_code_pfx" => 1100, # Already an Integer
     "country_code"=> "PT"
@@ -63,7 +63,7 @@ There are 3 ways to run validations:
 Method  | Behaviour
 ------------- | -------------
 `#run`  | Validates and returns an Hash with coerced params plus a `:errors` key with a _Rails like_ Hash of errors if any.
-`#run!` | Validates and raises `Compel::InvalidParamsError` exception with the coerced params and errors.
+`#run!` | Validates and raises `Compel::InvalidHashError` exception with the coerced params and errors.
 `#run?` | Validates and returns true or false.
 
 ### Types
@@ -78,7 +78,7 @@ Method  | Behaviour
 - `Date`
 - `Time`
 - `DateTime`
-- `Compel::Boolean`, 
+- `Compel::Boolean`,
   - ex: `1`/`0`, `true`/`false`, `t`/`f`, `yes`/`no`, `y`/`n`
 
 ### Sinatra Integration
@@ -87,35 +87,35 @@ If you want to use with `Sinatra`, just add the following code to your Sinatra a
 
 ```ruby
 class App < Sinatra::Base
-  
+
   ...
-  
+
   def compel(&block)
     params.merge! Compel::run!(params, &block)
   end
 
-  error Compel::InvalidParamsError do |exception|
+  error Compel::InvalidHashError do |exception|
     status 400
     json errors: exception.errors
   end
-  
+
   configure :development do
     set :show_exceptions, false
     set :raise_errors, true
   end
-  
+
   ...
-  
+
   post '/api/posts' do
     compel do
       param :post, Hash, required: true do
         param :title, String, required: true
       end
     end
-  
-    puts params[:post]      
+
+    puts params[:post]
   end
-  
+
   ...
 
 end
@@ -129,7 +129,7 @@ Add this line to your application's Gemfile:
 And then execute:
 
     $ bundle
-    
+
 ### TODO
 
 - Write more Documentation (check specs for now ;)

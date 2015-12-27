@@ -1,6 +1,6 @@
 module Compel
 
-  class InvalidParamsError < StandardError
+  class InvalidHashError < StandardError
 
     attr_accessor :params, :errors
 
