@@ -39,6 +39,15 @@ describe Compel::Builder do
       expect(keys_schemas.h.type).to be Compel::Coercion::Integer
     end
 
+    it 'should validate hash object from schema' do
+      schema = Compel.hash.keys({
+        a: Compel.float.required
+      })
+
+      expect(schema.validate({ a: nil }).errors.a).to \
+        include('is required')
+    end
+
     context 'Builder::CommonValue' do
 
       context '#in, #range, #min, #max' do
