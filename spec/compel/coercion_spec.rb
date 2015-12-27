@@ -218,16 +218,33 @@ describe Compel::Coercion do
 
     context 'Boolean' do
 
-      it 'should coerce' do
+      it 'should coerce false' do
         value = Compel::Coercion.coerce!('f', Compel::Coercion::Boolean)
 
         expect(value).to eq(false)
       end
 
-      it 'should coerce' do
+      it 'should coerce false 1' do
         value = Compel::Coercion.coerce!('0', Compel::Coercion::Boolean)
 
         expect(value).to eq(false)
+      end
+
+      it 'should coerce true' do
+        value = Compel::Coercion.coerce!('t', Compel::Coercion::Boolean)
+
+        expect(value).to eq(true)
+      end
+
+      it 'should coerce true 1' do
+        value = Compel::Coercion.coerce!('true', Compel::Coercion::Boolean)
+
+        expect(value).to eq(true)
+      end
+
+      it 'should not coerce' do
+        expect{ Compel::Coercion.coerce!('trye', Compel::Coercion::Boolean) }.to \
+         raise_error Compel::TypeError, "'trye' is not a valid Boolean"
       end
 
     end

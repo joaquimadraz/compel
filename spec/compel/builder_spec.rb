@@ -110,6 +110,12 @@ describe Compel::Builder do
           expect(builder.options[:format]).to eq('%d-%m-%Y')
         end
 
+        it 'should have value' do
+          builder.iso8601
+
+          expect(builder.options[:format]).to eq('%Y-%m-%d')
+        end
+
       end
 
     end
@@ -127,6 +133,36 @@ describe Compel::Builder do
           builder.format(/1/)
 
           expect(builder.options[:format]).to eq(/1/)
+        end
+
+      end
+
+      context '#min_length' do
+
+        it 'should raise exception for invalid type' do
+          expect { builder.min_length('a') }.to \
+            raise_error Compel::TypeError, "'a' is not a valid Integer"
+        end
+
+        it 'should have value' do
+          builder.min_length(4)
+
+          expect(builder.options[:min_length]).to eq(4)
+        end
+
+      end
+
+      context '#max_length' do
+
+        it 'should raise exception for invalid type' do
+          expect { builder.max_length('a') }.to \
+            raise_error Compel::TypeError, "'a' is not a valid Integer"
+        end
+
+        it 'should have value' do
+          builder.max_length(10)
+
+          expect(builder.options[:max_length]).to eq(10)
         end
 
       end

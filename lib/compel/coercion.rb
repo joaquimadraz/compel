@@ -14,7 +14,9 @@ module Compel
       rescue Compel::TypeError => exception
         raise exception
       rescue
-        raise Compel::TypeError, "'#{value}' is not a valid #{type}"
+        type_split = "#{type}".split('::')
+
+        raise Compel::TypeError, "'#{value}' is not a valid #{type_split[-1]}"
       end
     end
 
