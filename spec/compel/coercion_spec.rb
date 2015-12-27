@@ -23,7 +23,7 @@ describe Compel::Coercion do
         expect(Compel::Coercion.valid?('123abc', Integer)).to eq(false)
 
         expect { Compel::Coercion.coerce!('123abc', Integer) }.to \
-          raise_error Compel::ParamTypeError, "'123abc' is not a valid Integer"
+          raise_error Compel::TypeError, "'123abc' is not a valid Integer"
       end
 
     end
@@ -40,7 +40,7 @@ describe Compel::Coercion do
         expect(Compel::Coercion.valid?('1.a233', Float)).to eq(false)
 
         expect { Compel::Coercion.coerce!('1.a233', Float) }.to \
-          raise_error Compel::ParamTypeError, "'1.a233' is not a valid Float"
+          raise_error Compel::TypeError, "'1.a233' is not a valid Float"
       end
 
     end
@@ -59,7 +59,7 @@ describe Compel::Coercion do
         expect(Compel::Coercion.valid?(value, String)).to eq(false)
 
         expect { Compel::Coercion.coerce!(value, String) }.to \
-          raise_error Compel::ParamTypeError, "'#{value}' is not a valid String"
+          raise_error Compel::TypeError, "'#{value}' is not a valid String"
       end
 
     end
@@ -78,7 +78,7 @@ describe Compel::Coercion do
         expect(Compel::Coercion.valid?(value, Date)).to eq(false)
 
         expect { Compel::Coercion.coerce!(value, Date) }.to \
-          raise_error Compel::ParamTypeError, "'#{value}' is not a valid Date"
+          raise_error Compel::TypeError, "'#{value}' is not a valid Date"
       end
 
     end
@@ -136,17 +136,17 @@ describe Compel::Coercion do
 
       it 'should not coerce' do
         expect { Compel::Coercion.coerce!(123, Hash) }.to \
-          raise_error Compel::ParamTypeError, "'123' is not a valid Hash"
+          raise_error Compel::TypeError, "'123' is not a valid Hash"
       end
 
       it 'should not coerce 1' do
         expect { Compel::Coercion.coerce!('hash', Hash) }.to \
-          raise_error Compel::ParamTypeError, "'hash' is not a valid Hash"
+          raise_error Compel::TypeError, "'hash' is not a valid Hash"
       end
 
       it 'should not coerce 2' do
         expect { Compel::Coercion.coerce!(['hash'], Hash) }.to \
-          raise_error Compel::ParamTypeError, "'[\"hash\"]' is not a valid Hash"
+          raise_error Compel::TypeError, "'[\"hash\"]' is not a valid Hash"
       end
 
     end

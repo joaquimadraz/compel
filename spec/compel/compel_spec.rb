@@ -131,12 +131,12 @@ describe Compel do
 
     it 'should not compel for invalid params' do
       expect{ make_the_call(:run, 1) }.to \
-        raise_error Compel::ParamTypeError, 'must be an Hash'
+        raise_error Compel::TypeError, 'must be an Hash'
     end
 
     it 'should not compel for invalid params 1' do
       expect{ make_the_call(:run, nil) }.to \
-        raise_error Compel::ParamTypeError, 'must be an Hash'
+        raise_error Compel::TypeError, 'must be an Hash'
     end
 
     it 'should not compel'  do

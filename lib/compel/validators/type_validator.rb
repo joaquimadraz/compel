@@ -15,7 +15,7 @@ module Compel
         begin
           @output = Coercion.coerce!(input, schema.type, schema.options)
           @errors = Validation.validate(input, schema.options)
-        rescue Compel::ParamTypeError => exception
+        rescue Compel::TypeError => exception
           @errors = [exception.message]
         end
 

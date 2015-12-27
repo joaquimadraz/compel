@@ -13,9 +13,9 @@ require 'compel/coercion/hash'
 require 'compel/coercion/json'
 require 'compel/coercion/boolean'
 
-require 'compel/invalid_params_error'
-require 'compel/param_validation_error'
-require 'compel/param_type_error'
+require 'compel/exceptions/invalid_hash_error'
+require 'compel/exceptions/validation_error'
+require 'compel/exceptions/type_error'
 
 require 'compel/validators/base'
 require 'compel/validators/type_validator'

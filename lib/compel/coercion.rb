@@ -12,7 +12,7 @@ module Compel
       begin
         coercion_klass(type).new(value, options).coerce!
       rescue
-        raise ParamTypeError, "'#{value}' is not a valid #{type}"
+        raise TypeError, "'#{value}' is not a valid #{type}"
       end
     end
 
