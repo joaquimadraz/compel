@@ -48,10 +48,10 @@ module Compel
     def raise?
       if !valid?
         exception = InvalidHashError.new
-        exception.params = coerced_hash
+        exception.object = coerced_hash
         exception.errors = serialized_errors
 
-        raise exception, 'params are invalid'
+        raise exception, 'hash has errors'
       end
 
       coerced_hash
