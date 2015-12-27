@@ -46,7 +46,7 @@ describe Compel::Validation do
 
       it 'should validate with errors' do
         expect_be_in_within_range(['PT', 'UK'], 'US') do |errors|
-          expect(errors).to eq(['must be within ["PT", "UK"]'])
+          expect(errors).to include('must be within ["PT", "UK"]')
         end
       end
 
@@ -61,9 +61,123 @@ describe Compel::Validation do
         it 'should validate with errors' do
           errors = Compel::Validation.validate(4, range: (1..3))
 
-          expect(errors).to eq(['must be within 1..3'])
+          expect(errors).to include('must be within 1..3')
         end
 
+      end
+
+    end
+
+    context 'format' do
+
+      it 'should validate with errors' do
+        format = /abcd/
+        errors = Compel::Validation.validate('acb', format: format)
+
+        expect(errors).to include("must match format #{format}")
+      end
+
+      it 'should validate with errors 1' do
+        format = /abcd/
+        errors = Compel::Validation.validate(123, format: format)
+
+        expect(errors).to include('must be a string if using the format validation')
+      end
+
+      it 'should validate with errors 2' do
+        format = /abcd/
+        errors = Compel::Validation.validate(nil, format: format)
+
+        expect(errors).to include('must be a string if using the format validation')
+      end
+
+      it 'should validate without errors' do
+        format = /abcd/
+        errors = Compel::Validation.validate('abcd', format: format)
+        expect(errors.empty?).to eq(true)
+      end
+
+    end
+
+    context 'is' do
+
+      it 'should validate with errors' do
+        errors = Compel::Validation.validate('abcd', is: 123)
+        expect(errors).to include('must be 123')
+      end
+
+      it 'should validate with errors 1' do
+        errors = Compel::Validation.validate(nil, is: 123)
+        expect(errors).to include('must be 123')
+      end
+
+      it 'should validate without errors' do
+        errors = Compel::Validation.validate(123, is: 123)
+        expect(errors.empty?).to eq(true)
+      end
+
+    end
+
+    context 'min' do
+
+      it 'should validate with errors' do
+        errors = Compel::Validation.validate(1, min: 3)
+
+        expect(errors).to include('cannot be less than 3')
+      end
+
+    end
+
+    context 'max' do
+
+      it 'should validate with errors' do
+        errors = Compel::Validation.validate(3, max: 2)
+
+        expect(errors).to include('cannot be greater than 2')
+      end
+
+    end
+
+    context 'min_length' do
+
+      it 'should validate with errors' do
+        errors = Compel::Validation.validate(3, min_length: 2)
+
+        expect(errors).to include('must be a string if using the min_length validation')
+      end
+
+      it 'should validate with errors 1' do
+        errors = Compel::Validation.validate('a', min_length: 2)
+
+        expect(errors).to include('cannot have length less than 2')
+      end
+
+      it 'should validate without errors' do
+        errors = Compel::Validation.validate('ab', min_length: 2)
+
+        expect(errors.empty?).to eq(true)
+      end
+
+    end
+
+    context 'max_length' do
+
+      it 'should validate with errors' do
+        errors = Compel::Validation.validate(1, max_length: 2)
+
+        expect(errors).to include('must be a string if using the max_length validation')
+      end
+
+      it 'should validate with errors 1' do
+        errors = Compel::Validation.validate('abcdef', max_length: 5)
+
+        expect(errors).to include('cannot have length greater than 5')
+      end
+
+      it 'should validate without errors' do
+        errors = Compel::Validation.validate('abcde', max_length: 5)
+
+        expect(errors.empty?).to eq(true)
       end
 
     end

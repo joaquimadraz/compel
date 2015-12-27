@@ -14,6 +14,16 @@ module Compel
         self
       end
 
+      def min_length(value)
+        options[:min_length] = Coercion.coerce!(value, ::Integer)
+        self
+      end
+
+      def max_length(value)
+        options[:max_length] = Coercion.coerce!(value, ::Integer)
+        self
+      end
+
     end
 
   end

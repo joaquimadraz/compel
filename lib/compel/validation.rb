@@ -2,18 +2,6 @@ module Compel
 
   module Validation
 
-    def valid?(value, options)
-      validate(value, options).length == 0
-    end
-
-    def validate!(value, options)
-      errors = validate(value, options)
-
-      if errors.length > 0
-        raise ValidatorError, errors[0]
-      end
-    end
-
     def validate(value, options)
       errors = []
 
@@ -43,9 +31,17 @@ module Compel
         when :length
           errors << "cannot have length different than #{option_value}" unless value.nil? || option_value == "#{value}".length
         when :min_length
-          errors << "cannot have length less than #{option_value}" unless value.nil? || option_value <= value.length
+          unless value.kind_of?(String)
+            errors << 'must be a string if using the min_length validation'
+          else
+            errors << "cannot have length less than #{option_value}" unless value.nil? || option_value <= value.length
+          end
         when :max_length
-          errors << "cannot have length greater than #{option_value}" unless value.nil? || option_value >= value.length
+          unless value.kind_of?(String)
+            errors << 'must be a string if using the max_length validation'
+          else
+            errors << "cannot have length greater than #{option_value}" unless value.nil? || option_value >= value.length
+          end
         end
       end
 
