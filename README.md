@@ -69,7 +69,7 @@ Method  | Behaviour
 `#run`  | Validates and returns an Hash with coerced params plus a `:errors` key with a _Rails like_ Hash of errors if any.
 `#run!` | Validates and raises `Compel::InvalidObjectError` exception with the coerced params and errors.
 `#run?` | Validates and returns true or false.
-`schema#validate` | Chech bellow
+`schema#validate` | Chech below
 
 ### Schema#validate
 
