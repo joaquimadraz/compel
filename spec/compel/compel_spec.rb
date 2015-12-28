@@ -509,6 +509,11 @@ describe Compel do
         end
       end
 
+      it 'should raise InvalidHashError exception for missing hash' do
+        expect{ make_the_call(:run!, {}) }.to \
+          raise_error Compel::InvalidHashError, 'hash has errors'
+      end
+
     end
 
     context '#run?' do

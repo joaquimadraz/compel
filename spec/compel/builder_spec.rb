@@ -1,5 +1,3 @@
-require 'pry'
-
 describe Compel::Builder do
 
   context 'Schema' do
