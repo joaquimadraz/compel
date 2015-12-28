@@ -10,6 +10,7 @@ require 'compel/builder/datetime'
 require 'compel/builder/time'
 require 'compel/builder/date'
 require 'compel/builder/boolean'
+require 'compel/builder/array'
 
 module Compel
   module Builder
@@ -50,6 +51,10 @@ module Compel
 
       def boolean
         Builder::Boolean.new
+      end
+
+      def array
+        Builder::Array.new
       end
 
       extend self

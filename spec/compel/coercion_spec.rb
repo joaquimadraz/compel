@@ -248,6 +248,21 @@ describe Compel::Coercion do
 
     end
 
+    context 'Array' do
+
+      it 'should not coerce' do
+        expect { Compel::Coercion.coerce!(123, Compel::Coercion::Array) }.to \
+          raise_error Compel::TypeError, "'123' is not a valid Array"
+      end
+
+      it 'should coerce' do
+        value = Compel::Coercion.coerce!([1, 2], Compel::Coercion::Array)
+
+        expect(value).to eq([1, 2])
+      end
+
+    end
+
   end
 
 end

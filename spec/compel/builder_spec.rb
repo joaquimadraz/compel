@@ -228,6 +228,123 @@ describe Compel::Builder do
 
     end
 
+    context 'Array' do
+
+      subject(:builder) { Compel::Builder::Array.new }
+
+      context '#items' do
+
+        it 'should raise exception for invalid type' do
+          expect { builder.items('a') }.to \
+            raise_error Compel::TypeError, "#items must be a valid Schema"
+        end
+
+        it 'should have value' do
+          builder.items(Compel.integer)
+
+          expect(builder.options[:items].class).to be(Compel::Builder::Integer)
+        end
+
+        it 'should validate all items' do
+          builder.items(Compel.integer)
+
+          result = builder.validate([1, '2', nil])
+
+          expect(result.valid?).to be true
+          expect(result.value).to eq([1, 2])
+        end
+
+        it 'should validate all items with errors' do
+          builder.items(Compel.float.required)
+
+          result = builder.validate([1, 'a', nil])
+
+          expect(result.valid?).to be false
+          expect(result.errors['1']).to include("'a' is not a valid Float")
+          expect(result.errors['2']).to include('is required')
+        end
+
+        it 'should coerce all hash items' do
+          builder.items(Compel.hash.keys({
+            a: Compel.string.required,
+            b: Compel.integer
+          }))
+
+          result = builder.validate([
+            { a: 'A', b: '1' },
+            { a: 'B' },
+            { a: 'C', b: 3 },
+          ])
+
+          expect(result.valid?).to be true
+          expect(result.value).to eq \
+            [
+              Hashie::Mash.new({ a: 'A', b: 1 }),
+              Hashie::Mash.new({ a: 'B' }),
+              Hashie::Mash.new({ a: 'C', b: 3 })
+            ]
+        end
+
+        it 'should coerce all hash items with errors' do
+          builder.items(Compel.hash.keys({
+            a: Compel.string.required,
+            b: Compel.string.format(/^abc$/).required
+          }))
+
+          result = builder.validate([
+            { a: 'A', b: 'abc' },
+            { a: 'B' },
+            { a: 'C', b: 'abcd' },
+          ])
+
+          expect(result.valid?).to be false
+          expect(result.errors['1'][:b]).to include('is required')
+          expect(result.errors['2'][:b]).to include('must match format ^abc$')
+
+          expect(result.value[0][:a]).to eq('A')
+          expect(result.value[0][:b]).to eq('abc')
+
+          expect(result.value[1][:a]).to eq('B')
+          expect(result.value[1][:b]).to be_nil
+          expect(result.value[1][:errors][:b]).to include('is required')
+
+          expect(result.value[2][:a]).to eq('C')
+          expect(result.value[2][:b]).to eq('abcd')
+          expect(result.value[2][:errors][:b]).to \
+            include('must match format ^abc$')
+        end
+
+        it 'should coerce array with hash items and nested array keys with errors' do
+          builder.items(Compel.hash.keys({
+            a: Compel.string,
+            b: Compel.array.items(Compel.integer.required).required
+          }))
+
+          result = builder.validate([
+            { a: 'C' },
+            { b: [1, 2, 3] },
+            { b: ['1', nil, 'a'] }
+          ])
+
+          expect(result.valid?).to be false
+
+          expect(result.value[0][:a]).to eq('C')
+          expect(result.value[0][:b]).to be_nil
+          expect(result.value[1][:a]).to be_nil
+          expect(result.value[1][:b]).to eq([1, 2, 3])
+          expect(result.value[2][:a]).to be_nil
+          expect(result.value[2][:b]).to eq([1, nil, 'a'])
+
+          expect(result.errors['0'][:b]).to include('is required')
+          expect(result.errors['2'][:b]['1']).to include('is required')
+          expect(result.errors['2'][:b]['2']).to \
+            include("'a' is not a valid Integer")
+        end
+
+      end
+
+    end
+
   end
 
 end
