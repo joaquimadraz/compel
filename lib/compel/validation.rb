@@ -3,6 +3,12 @@ module Compel
   module Validation
 
     def validate(value, type, options)
+      # if a value is required and not given,
+      # don't do any other validation
+      if !!options[:required] && value.nil?
+        return ['is required']
+      end
+
       errors = []
 
       options.each do |option, option_value|
@@ -10,8 +16,6 @@ module Compel
         # https://github.com/mattt/sinatra-param
         # by Mattt Thompson (@mattt)
         case option.to_sym
-        when :required
-          errors << 'is required' if option_value && value.nil?
         when :format
           if type == Coercion::String && !value.nil?
             errors << "must match format #{option_value.source}" unless value =~ option_value
