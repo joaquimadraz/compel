@@ -14,27 +14,29 @@ Based on the same principle from [Grape](https://github.com/ruby-grape/grape) fr
 ### Example
 
 ```ruby
-params= {
+object = {
   first_name: 'Joaquim',
   birth_date: '1989-0',
   address: {
     line_one: 'Lisboa',
     post_code: '1100',
-    country: 'PT'
+    country_code: 'PT'
   }
 }
 
-Compel.run(params) do
-  param :first_name, String, required: true
-  param :last_name, String, required: true
-  param :birth_date, DateTime
-  param :address, Hash do
-    param :line_one, String, required: true
-    param :line_two, String, default: '-'
-    param :post_code, String, required: true, format: /^\d{4}-\d{3}$/
-    param :country_code, String, in: ['PT', 'GB'], default: 'PT'
-  end
-end
+schema = Compel.hash.keys({
+  first_name: Compel.string.required,
+  last_name: Compel.string.required,
+  birth_date: Compel.datetime,
+  address: Compel.hash.keys({
+    line_one: Compel.string.required,
+    line_two: Compel.string.default('-'),
+    post_code: Compel.string.format(/^\d{4}-\d{3}$/).required,
+    country_code: Compel.string.in(['PT', 'GB']).default('PT')
+  })
+})
+
+Compel.run(object, schema)
 ```
 
 Will return an [Hashie::Mash](https://github.com/intridea/hashie) object:
@@ -42,17 +44,18 @@ Will return an [Hashie::Mash](https://github.com/intridea/hashie) object:
 ```ruby
 {
   "first_name" => "Joaquim",
+  "birth_date" => "1989-0",
   "address" => {
     "line_one" => "Lisboa",
-    "line_two" => "-", # default value
-    "post_code_pfx" => 1100, # Already an Integer
-    "country_code"=> "PT"
+    "line_two" => "-",
+    "post_code" => "1100",
+    "country_code" => "PT"
   },
   "errors" => {
     "last_name" => ["is required"],
-    "birth_date" => ["'1989-0' is not a valid DateTime"],
+    "birth_date" => ["'1989-0' is not a parsable date with format: %Y-%m-%d"],
     "address" => {
-      "post_code_sfx" => ["is required"]
+      "post_code" => ["must match format ^\d{4}-\d{3}$"]
     }
   }
 }
@@ -68,17 +71,17 @@ Method  | Behaviour
 
 ### Types
 
-- `Integer`
-- `Float`
-- `String`
-- `JSON`
+- `#integer`
+- `#float`
+- `#string`
+- `#json`
   - ex: `"{\"a\":1,\"b\":2,\"c\":3}"`
-- `Hash`
+- `#hash`
   - ex: `{ a: 1,  b: 2, c: 3 }`
-- `Date`
-- `Time`
-- `DateTime`
-- `Compel::Boolean`,
+- `#date`
+- `#time`
+- `#datetime`
+- `#boolean`,
   - ex: `1`/`0`, `true`/`false`, `t`/`f`, `yes`/`no`, `y`/`n`
 
 ### Sinatra Integration

@@ -6,6 +6,51 @@ describe Compel::Builder do
 
     subject(:builder) { Compel::Builder::String.new }
 
+    it 'shoudl' do
+      object = {
+        first_name: 'Joaquim',
+        birth_date: '1989-0',
+        address: {
+          line_one: 'Lisboa',
+          post_code: '1100',
+          country_code: 'PT'
+        }
+      }
+
+      schema = Compel.hash.keys({
+        first_name: Compel.string.required,
+        last_name: Compel.string.required,
+        birth_date: Compel.date.iso8601,
+        address: Compel.hash.keys({
+          line_one: Compel.string.required,
+          line_two: Compel.string.default('-'),
+          post_code: Compel.string.format(/^\d{4}-\d{3}$/).required,
+          country_code: Compel.string.in(['PT', 'GB']).default('PT')
+        })
+      })
+
+      result = Compel.run(object, schema)
+
+      expect(result).to \
+        eq({
+          "first_name" => "Joaquim",
+          "birth_date" => "1989-0",
+          "address" => {
+            "line_one" => "Lisboa",
+            "post_code" => "1100",
+            "country_code" => "PT",
+            "line_two" => "-"
+          },
+          "errors" => {
+            "last_name" => ["is required"],
+            "birth_date" => ["'1989-0' is not a parsable date with format: %Y-%m-%d"],
+            "address" => {
+              "post_code" => ["must match format ^\\d{4}-\\d{3}$"]
+            }
+          }
+        })
+    end
+
     it 'should build new Schema for givin type' do
       expect(builder.type).to be(Compel::Coercion::String)
       expect(builder.options.keys).to eq([])
