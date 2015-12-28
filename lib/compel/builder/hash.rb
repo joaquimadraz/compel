@@ -13,7 +13,7 @@ module Compel
       end
 
       def validate(object)
-        Contract.new(object, self).validate.serialize
+        Contract.new(object, self).validate
       end
 
     end

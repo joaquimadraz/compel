@@ -2,7 +2,7 @@ module Compel
 
   class InvalidHashError < StandardError
 
-    attr_accessor :object, :errors
+    attr_accessor :object
 
   end
 

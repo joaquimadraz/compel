@@ -4,7 +4,7 @@ describe Compel::Builder do
 
     subject(:builder) { Compel::Builder::String.new }
 
-    it 'shoudl' do
+    it 'should validate Hash schema' do
       object = {
         first_name: 'Joaquim',
         birth_date: '1989-0',
@@ -27,9 +27,9 @@ describe Compel::Builder do
         })
       })
 
-      result = Compel.run(object, schema)
+      result = schema.validate(object)
 
-      expect(result).to \
+      expect(result.value).to \
         eq({
           "first_name" => "Joaquim",
           "birth_date" => "1989-0",
@@ -47,6 +47,13 @@ describe Compel::Builder do
             }
           }
         })
+    end
+
+    it 'should validate Type schema' do
+      schema = Compel.string.format(/^\d{4}-\d{3}$/).required
+      response = schema.validate('1234')
+
+      expect(response.errors).to include("must match format ^\\d{4}-\\d{3}$")
     end
 
     it 'should build new Schema for givin type' do

@@ -21,6 +21,10 @@ module Compel
         options[:default]
       end
 
+      def validate(object)
+        Contract.new(object, self).validate
+      end
+
     end
 
   end

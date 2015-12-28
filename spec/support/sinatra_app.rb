@@ -20,7 +20,7 @@ class SinatraApp < Sinatra::Base
 
   error Compel::InvalidHashError do |exception|
     status 400
-    { errors: exception.errors }.to_json
+    { errors: exception.object[:errors] }.to_json
   end
 
   configure :development do

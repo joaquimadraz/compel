@@ -283,16 +283,17 @@ describe Compel do
 
     end
 
+    it 'it should raise Compel::TypeError exception for invalid schema' do
+      expect { Compel.run(nil, Compel.boolean.required) }.to \
+        raise_error Compel::TypeError
+    end
+
     context 'Boolean' do
 
       context 'required option' do
 
         it 'should compel' do
-          schema = Compel.hash.keys({
-            admin: Compel.boolean.required
-          })
-
-          expect(Compel.run?({ admin: 1 }, schema)).to be true
+          expect(Compel.run?(1, Compel.boolean.required)).to be true
         end
 
         it 'should not compel' do
@@ -502,10 +503,7 @@ describe Compel do
 
         expect{ make_the_call(:run!, hash) }.to raise_error do |exception|
           expect(exception.object).to eq \
-            Hashie::Mash.new(first_name: 'Joaquim')
-
-          expect(exception.errors).to eq \
-            Hashie::Mash.new(last_name: ['is required'])
+            Hashie::Mash.new(first_name: 'Joaquim', errors: { last_name: ['is required'] })
         end
       end
 
