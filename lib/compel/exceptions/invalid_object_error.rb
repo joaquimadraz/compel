@@ -1,6 +1,6 @@
 module Compel
 
-  class InvalidHashError < StandardError
+  class InvalidObjectError < StandardError
 
     attr_accessor :object
 

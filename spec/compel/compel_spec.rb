@@ -487,16 +487,16 @@ describe Compel do
             })
       end
 
-      it 'should raise InvalidHashError exception' do
+      it 'should raise InvalidObjectError exception' do
         hash = {
           first_name: 'Joaquim'
         }
 
         expect{ make_the_call(:run!, hash) }.to \
-          raise_error Compel::InvalidHashError, 'hash has errors'
+          raise_error Compel::InvalidObjectError, 'hash has errors'
       end
 
-      it 'should raise InvalidHashError exception with errors' do
+      it 'should raise InvalidObjectError exception with errors' do
         hash = {
           first_name: 'Joaquim'
         }
@@ -507,9 +507,9 @@ describe Compel do
         end
       end
 
-      it 'should raise InvalidHashError exception for missing hash' do
+      it 'should raise InvalidObjectError exception for missing hash' do
         expect{ make_the_call(:run!, {}) }.to \
-          raise_error Compel::InvalidHashError, 'hash has errors'
+          raise_error Compel::InvalidObjectError, 'hash has errors'
       end
 
     end

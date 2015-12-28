@@ -14,7 +14,7 @@ require 'compel/coercion/json'
 require 'compel/coercion/boolean'
 require 'compel/coercion/regexp'
 
-require 'compel/exceptions/invalid_hash_error'
+require 'compel/exceptions/invalid_object_error'
 require 'compel/exceptions/validation_error'
 require 'compel/exceptions/type_error'
 

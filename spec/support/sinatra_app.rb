@@ -18,7 +18,7 @@ class SinatraApp < Sinatra::Base
 
   end
 
-  error Compel::InvalidHashError do |exception|
+  error Compel::InvalidObjectError do |exception|
     status 400
     { errors: exception.object[:errors] }.to_json
   end

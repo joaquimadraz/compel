@@ -67,7 +67,7 @@ There are 3 ways to run validations:
 Method  | Behaviour
 ------------- | -------------
 `#run`  | Validates and returns an Hash with coerced params plus a `:errors` key with a _Rails like_ Hash of errors if any.
-`#run!` | Validates and raises `Compel::InvalidHashError` exception with the coerced params and errors.
+`#run!` | Validates and raises `Compel::InvalidObjectError` exception with the coerced params and errors.
 `#run?` | Validates and returns true or false.
 
 ### Schema#validate
@@ -90,7 +90,7 @@ Method  | Behaviour
 `#value`  | the coerced value or the input value is invalid
 `#errors` | array of errors is any.
 `#valid?` | `true` or `false`
-`#raise?` | raises a `Compel::InvalidHashError` if invalid, otherwise returns `#value`
+`#raise?` | raises a `Compel::InvalidObjectError` if invalid, otherwise returns `#value`
 
 ### Types
 
@@ -129,7 +129,7 @@ class App < Sinatra::Base
 
   end
 
-  error Compel::InvalidHashError do |exception|
+  error Compel::InvalidObjectError do |exception|
     status 400
     { errors: exception.object[:errors] }.to_json
   end

@@ -16,7 +16,7 @@ module Compel
 
     def raise?
       if !valid?
-        exception = InvalidHashError.new
+        exception = InvalidObjectError.new
         exception.object = value
 
         raise exception, 'hash has errors'
