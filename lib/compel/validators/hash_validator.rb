@@ -38,7 +38,7 @@ module Compel
             @output[param_name] = type_validator.output
           end
 
-          if type_validator.errors
+          if !type_validator.valid?
             @errors.add(param_name, type_validator.errors)
           end
         end
