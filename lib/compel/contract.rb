@@ -14,7 +14,7 @@ module Compel
       validator = validator_klass.new(object, schema)
       validator.validate
 
-      Response.new(validator)
+      Result.new(validator)
     end
 
     def validator_klass

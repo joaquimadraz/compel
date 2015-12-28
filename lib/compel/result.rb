@@ -1,6 +1,6 @@
 module Compel
 
-  class Response
+  class Result
 
     attr_reader :value, :errors
 

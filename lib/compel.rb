@@ -18,7 +18,7 @@ require 'compel/exceptions/invalid_hash_error'
 require 'compel/exceptions/validation_error'
 require 'compel/exceptions/type_error'
 
-require 'compel/response'
+require 'compel/result'
 
 require 'compel/validators/base'
 require 'compel/validators/type_validator'
