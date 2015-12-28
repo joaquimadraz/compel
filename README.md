@@ -67,8 +67,31 @@ There are 3 ways to run validations:
 Method  | Behaviour
 ------------- | -------------
 `#run`  | Validates and returns an Hash with coerced params plus a `:errors` key with a _Rails like_ Hash of errors if any.
-`#run!` | Validates and raises `Compel::InvalidHashError` exception with the coerced params and errors.
+`#run!` | Validates and raises `Compel::InvalidObjectError` exception with the coerced params and errors.
 `#run?` | Validates and returns true or false.
+`schema#validate` | Chech below
+
+### Schema#validate
+
+For straight forward validations, you can call `#validate` on schema and it will return a `Compel::Result` object.
+
+```ruby
+result = Compel.string.format(/^\d{4}-\d{3}$/).required.validate('1234')
+
+puts result.errors
+# => ["must match format ^\\d{4}-\\d{3}$"]
+```
+
+### Compel::Result
+
+Simple object that encapsulates a validation result.
+
+Method  | Behaviour
+------------- | -------------
+`#value`  | the coerced value or the input value is invalid
+`#errors` | array of errors is any.
+`#valid?` | `true` or `false`
+`#raise?` | raises a `Compel::InvalidObjectError` if invalid, otherwise returns `#value`
 
 ### Types
 
@@ -107,9 +130,9 @@ class App < Sinatra::Base
 
   end
 
-  error Compel::InvalidHashError do |exception|
+  error Compel::InvalidObjectError do |exception|
     status 400
-    { errors: exception.errors }.to_json
+    { errors: exception.object[:errors] }.to_json
   end
 
   configure :development do

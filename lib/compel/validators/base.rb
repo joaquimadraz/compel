@@ -13,6 +13,10 @@ module Compel
         @schema = schema
       end
 
+      def valid?
+        @errors.empty?
+      end
+
     end
 
   end

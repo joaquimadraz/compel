@@ -11,6 +11,7 @@ module Compel
 
       def initialize(input, schema)
         super
+        @input = Hashie::Mash.new(input)
         @output = Hashie::Mash.new
         @errors = Errors.new
 
@@ -43,6 +44,20 @@ module Compel
         end
 
         self
+      end
+
+      def serialize
+        coerced = @input.merge(@output)
+
+        coerced.tap do |hash|
+          if !@errors.empty?
+            hash[:errors] = serialize_errors
+          end
+        end
+      end
+
+      def serialize_errors
+        @errors.to_hash
       end
 
     end

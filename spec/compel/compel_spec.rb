@@ -283,16 +283,17 @@ describe Compel do
 
     end
 
+    it 'it should raise Compel::TypeError exception for invalid schema' do
+      expect { Compel.run(nil, Compel.boolean.required) }.to \
+        raise_error Compel::TypeError
+    end
+
     context 'Boolean' do
 
       context 'required option' do
 
         it 'should compel' do
-          schema = Compel.hash.keys({
-            admin: Compel.boolean.required
-          })
-
-          expect(Compel.run?({ admin: 1 }, schema)).to be true
+          expect(Compel.run?(1, Compel.boolean.required)).to be true
         end
 
         it 'should not compel' do
@@ -486,32 +487,29 @@ describe Compel do
             })
       end
 
-      it 'should raise InvalidHashError exception' do
+      it 'should raise InvalidObjectError exception' do
         hash = {
           first_name: 'Joaquim'
         }
 
         expect{ make_the_call(:run!, hash) }.to \
-          raise_error Compel::InvalidHashError, 'hash has errors'
+          raise_error Compel::InvalidObjectError, 'hash has errors'
       end
 
-      it 'should raise InvalidHashError exception with errors' do
+      it 'should raise InvalidObjectError exception with errors' do
         hash = {
           first_name: 'Joaquim'
         }
 
         expect{ make_the_call(:run!, hash) }.to raise_error do |exception|
           expect(exception.object).to eq \
-            Hashie::Mash.new(first_name: 'Joaquim')
-
-          expect(exception.errors).to eq \
-            Hashie::Mash.new(last_name: ['is required'])
+            Hashie::Mash.new(first_name: 'Joaquim', errors: { last_name: ['is required'] })
         end
       end
 
-      it 'should raise InvalidHashError exception for missing hash' do
+      it 'should raise InvalidObjectError exception for missing hash' do
         expect{ make_the_call(:run!, {}) }.to \
-          raise_error Compel::InvalidHashError, 'hash has errors'
+          raise_error Compel::InvalidObjectError, 'hash has errors'
       end
 
     end

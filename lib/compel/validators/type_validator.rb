@@ -24,6 +24,14 @@ module Compel
         self
       end
 
+      def serialize
+        @output
+      end
+
+      def serialize_errors
+        @errors
+      end
+
     end
 
   end

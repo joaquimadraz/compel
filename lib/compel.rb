@@ -14,9 +14,11 @@ require 'compel/coercion/json'
 require 'compel/coercion/boolean'
 require 'compel/coercion/regexp'
 
-require 'compel/exceptions/invalid_hash_error'
+require 'compel/exceptions/invalid_object_error'
 require 'compel/exceptions/validation_error'
 require 'compel/exceptions/type_error'
+
+require 'compel/result'
 
 require 'compel/validators/base'
 require 'compel/validators/type_validator'
@@ -41,7 +43,14 @@ module Compel
   end
 
   def self.run(params, schema)
-    Contract.new(params, schema).validate.serialize
+    if schema.type != Coercion::Hash
+      raise Compel::TypeError, \
+        "Compel#run just validates Hash Schemas, " \
+        "use Schema#validate for other types:\n\n" \
+        "\texample: Compel.boolean.validate('true')"
+    end
+
+    Contract.new(params, schema).validate.value
   end
 
 end
