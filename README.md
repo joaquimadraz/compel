@@ -71,6 +71,10 @@ Method  | Behaviour
 `#run?` | Validates and returns true or false.
 `schema#validate` | Chech below
 
+### Schema Builder API
+
+On It..
+
 ### Schema#validate
 
 For straight forward validations, you can call `#validate` on schema and it will return a `Compel::Result` object.
@@ -82,7 +86,7 @@ puts result.errors
 # => ["must match format ^\\d{4}-\\d{3}$"]
 ```
 
-### Compel::Result
+#### Compel::Result
 
 Simple object that encapsulates a validation result.
 
@@ -107,6 +111,8 @@ Method  | Behaviour
 - `#datetime`
 - `#boolean`,
   - ex: `1`/`0`, `true`/`false`, `t`/`f`, `yes`/`no`, `y`/`n`
+- `#array`
+  - ex: `[1, 2, 3]`, `[{ a: 1, b: 2}, { a: 3, b: 4 }]`
 
 ### Sinatra Integration
 
