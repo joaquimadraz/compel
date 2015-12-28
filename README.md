@@ -9,7 +9,7 @@ This is a straight forward way to validate a Ruby Hash: just give an object and 
 
 The motivation was to create an integration for [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) and have validations before any business logic execution.
 
-Based on the same principle from [Grape](https://github.com/ruby-grape/grape) framework and [sinatra-param](https://github.com/mattt/sinatra-param) gem to validate request params.
+Based on the same principle from [Grape](https://github.com/ruby-grape/grape) framework and [sinatra-param](https://github.com/mattt/sinatra-param) gem to validate request params. The schema builder is based on [Joi](https://github.com/hapijs/joi).
 
 ### Example
 
@@ -86,20 +86,29 @@ Method  | Behaviour
 
 ### Sinatra Integration
 
-If you want to use with `Sinatra`, just add the following code to your Sinatra app:
+If you want to use with `Sinatra`, here's an example:
 
 ```ruby
 class App < Sinatra::Base
 
-  ...
+  set :show_exceptions, false
+  set :raise_errors, true
 
-  def compel(&block)
-    params.merge! Compel::run!(params, &block)
+  before do
+    content_type :json
+  end
+
+  helpers do
+
+    def compel(schema)
+      params.merge! Compel.run!(params, Compel.hash.keys(schema))
+    end
+
   end
 
   error Compel::InvalidHashError do |exception|
     status 400
-    json errors: exception.errors
+    { errors: exception.errors }.to_json
   end
 
   configure :development do
@@ -107,19 +116,17 @@ class App < Sinatra::Base
     set :raise_errors, true
   end
 
-  ...
-
   post '/api/posts' do
-    compel do
-      param :post, Hash, required: true do
-        param :title, String, required: true
-      end
-    end
+    compel({
+      post: Compel.hash.keys({
+        title: Compel.string.required,
+        body: Compel.string,
+        published: Compel.boolean.default(false)
+      }).required
+    })
 
-    puts params[:post]
+    params.to_json
   end
-
-  ...
 
 end
 ```
@@ -127,7 +134,7 @@ end
 
 Add this line to your application's Gemfile:
 
-    gem 'compel'
+    gem 'compel', '~> 0.2.0'
 
 And then execute:
 
