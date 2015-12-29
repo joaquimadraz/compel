@@ -75,6 +75,7 @@ Method  | Behaviour
 
 ### Schema Builder API
 - `Compel#array` *
+  - `is(``array``)`
   - `#items(``schema``)`
   ```ruby
   * ex: [1, 2, 3], [{ a: 1, b: 2}, { a: 3, b: 4 }]
@@ -114,11 +115,11 @@ Method  | Behaviour
 - `Compel#float` **
 
 (\*) **Common methods**
-  - `is(``value``)`
   - `required`
   - `default(``value``)`
 
 (\*\*) **Common value methods**
+  - `is(``value``)`
   - `in(``array``)`
   - `length(``integer``)`
   - `min(``value``)`
