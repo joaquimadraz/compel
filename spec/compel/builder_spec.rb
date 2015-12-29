@@ -278,6 +278,7 @@ describe Compel::Builder do
             result = builder.validate([1, 2, 3])
 
             expect(result.valid?).to be true
+            expect(result.value).to eq([1, 2, 3])
           end
 
           it 'should raise exception for invalid type' do

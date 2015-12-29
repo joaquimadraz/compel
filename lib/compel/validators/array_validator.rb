@@ -18,6 +18,11 @@ module Compel
           return self
         end
 
+        if items_schema.nil?
+          @output = input
+          return self
+        end
+
         items_validator = \
           ArrayItemsValidator.validate(input, items_schema)
 
@@ -54,10 +59,6 @@ module Compel
 
         unless array_errors.empty?
           errors.add(:base, array_errors)
-          return false
-        end
-
-        if items_schema.nil?
           return false
         end
 
