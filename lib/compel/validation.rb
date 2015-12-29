@@ -19,8 +19,6 @@ module Compel
         when :format
           if type == Coercion::String && !value.nil?
             errors << "must match format #{option_value.source}" unless value =~ option_value
-          else
-            errors << 'must be a string if using the format validation'
           end
         when :is
           errors << "must be #{option_value}" unless value === option_value

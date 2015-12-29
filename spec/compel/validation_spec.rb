@@ -75,20 +75,6 @@ describe Compel::Validation do
       expect(errors).to include("must match format ^abcd")
     end
 
-    it 'should validate with errors 1' do
-      format = /^abcd/
-      errors = Compel::Validation.validate(123, Compel::Coercion::Integer, format: format)
-
-      expect(errors).to include('must be a string if using the format validation')
-    end
-
-    it 'should validate with errors 2' do
-      format = /^abcd/
-      errors = Compel::Validation.validate(nil, Compel::Coercion::String, format: format)
-
-      expect(errors).to include('must be a string if using the format validation')
-    end
-
     it 'should validate without errors' do
       format = /abcd/
       errors = Compel::Validation.validate('abcd', Compel::Coercion::String, format: format)
