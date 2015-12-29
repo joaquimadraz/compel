@@ -3,8 +3,8 @@ module Compel
 
     module Common
 
-      def is(value)
-        options[:is] = value
+      def length(value)
+        options[:length] = Coercion.coerce!(value, ::Integer)
         self
       end
 

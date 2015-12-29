@@ -16,6 +16,11 @@ module Compel
         self
       end
 
+      def is(value)
+        options[:is] = Coercion.coerce!(value, ::Array)
+        self
+      end
+
       def validate(object)
         Contract.new(object, self).validate
       end

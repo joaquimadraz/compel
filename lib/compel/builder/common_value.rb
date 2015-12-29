@@ -3,13 +3,13 @@ module Compel
 
     module CommonValue
 
-      def in(value)
-        options[:in] = value
+      def is(value)
+        options[:is] = value
         self
       end
 
-      def length(value)
-        options[:length] = Coercion.coerce!(value, ::Integer)
+      def in(value)
+        options[:in] = value
         self
       end
 
