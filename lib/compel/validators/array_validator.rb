@@ -7,9 +7,6 @@ module Compel
 
       def initialize(input, schema)
         super
-
-        @input = input.nil? ? schema.default_value : input
-        @output = nil
         @errors = Errors.new
         @items_schema = schema.options[:items]
       end

@@ -6,12 +6,6 @@ module Compel
 
     class TypeValidator < Base
 
-      def initialize(input, schema)
-        super
-        @input = input.nil? ? schema.default_value : input
-        @output = nil
-      end
-
       def validate
 
         begin

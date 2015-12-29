@@ -9,8 +9,9 @@ module Compel
                   :schema
 
       def initialize(input, schema)
-        @input = input
+        @input = input.nil? ? schema.default_value : input
         @schema = schema
+        @output = nil
       end
 
       def valid?
