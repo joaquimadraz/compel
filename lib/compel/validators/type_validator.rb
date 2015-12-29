@@ -8,21 +8,21 @@ module Compel
 
       def initialize(input, schema)
         super
+        @input = input.nil? ? schema.default_value : input
         @output = nil
       end
 
       def validate
-        value = input.nil? ? schema.default_value : input
 
         begin
-          @output = Coercion.coerce!(value, schema.type, schema.options)
-          @errors = Validation.validate(value, schema.type, schema.options)
+          @output = Coercion.coerce!(input, schema.type, schema.options)
+          @errors = Validation.validate(input, schema.type, schema.options)
 
           # if it is an array, we still need the above validations to check if
           # our array is valid before validate each value.
           # 'two bunnies with only one cajadada'
           if schema.type == Coercion::Array && errors.empty?
-            validate_array_values(value)
+            validate_array_values(input)
           end
         rescue Compel::TypeError => exception
           @errors = [exception.message]
