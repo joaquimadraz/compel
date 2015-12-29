@@ -7,6 +7,10 @@ module Compel
     class TypeValidator < Base
 
       def validate
+        if !schema.required? && input.nil?
+          return self
+        end
+
         options = input, schema.type, schema.options
 
         # coerce
@@ -32,7 +36,7 @@ module Compel
 
       def validate_array_values(values)
         result = Result.new \
-          ArrayValidator.new(values, schema).validate
+          ArrayValidator.validate(values, schema)
 
         @output = result.value
 

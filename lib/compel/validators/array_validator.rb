@@ -29,8 +29,6 @@ module Compel
           end
 
           each_array_value do |item, index, items_validator|
-            items_validator.validate
-
             output << items_validator.serialize
 
             if !items_validator.valid?
@@ -51,9 +49,9 @@ module Compel
             # we can talk about arrays of arrays later
             item_validator = \
               if items_schema.type == Coercion::Hash
-                HashValidator.new(item, items_schema)
+                HashValidator.validate(item, items_schema)
               else
-                TypeValidator.new(item, items_schema)
+                TypeValidator.validate(item, items_schema)
               end
 
             # why am I doing this?

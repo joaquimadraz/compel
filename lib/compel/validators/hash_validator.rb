@@ -1,9 +1,6 @@
 # Validates values of an hash recursively
 # output is an hash with coerced values
 # errors is a Compel::Errors
-
-# This is not beauty,
-# but it's tested and working.
 module Compel
   module Validators
 
@@ -13,55 +10,29 @@ module Compel
 
       def initialize(input, schema)
         super
-        @errors = Errors.new
 
+        @errors = Errors.new
         @keys_schemas = schema.options[:keys]
       end
 
       def validate
-        if schema.required? || !input.nil?
-          hash_type_validator = TypeValidator.new(input, schema).validate
-
-          # validate hash before validate its keys
-          if !hash_type_validator.valid?
-            @output = input
-            errors.add(:base, hash_type_validator.errors)
-            return self
-          end
-
-          @input = Hashie::Mash.new(input)
-          @output = Hashie::Mash.new
-
-          keys_schemas.keys.each do |param_name|
-
-            if (input[param_name].is_a?(Hash))
-              hash_validator = \
-                HashValidator.new(input[param_name], keys_schemas[param_name])
-                  .validate
-
-              errors.add(param_name, hash_validator.errors)
-              output[param_name] = hash_validator.output
-            end
-
-            type_validator = \
-              TypeValidator.new(output[param_name].nil? ? input[param_name] : output[param_name], keys_schemas[param_name])
-                .validate
-
-            if !type_validator.output.nil?
-              output[param_name] = type_validator.output
-            end
-
-            if !type_validator.valid?
-              errors.add(param_name, type_validator.errors)
-            end
-          end
+        unless root_hash_valid?
+          return self
         end
+
+        @input = Hashie::Mash.new(input)
+
+        keys_validator = \
+          HashKeysValidator.validate(input, keys_schemas)
+
+        @errors = keys_validator.errors
+        @output = keys_validator.output
 
         self
       end
 
       def serialize
-        coerced = input.is_a?(Hash) ?  input.merge(output) : Hashie::Mash.new
+        coerced = output.is_a?(Hash) ? input.merge(output) : Hashie::Mash.new
 
         coerced.tap do |hash|
           if !errors.empty?
@@ -72,6 +43,64 @@ module Compel
 
       def serialize_errors
         errors.to_hash
+      end
+
+      private
+
+      def root_hash_valid?
+        if !schema.required? && input.nil?
+          return false
+        end
+
+        root_hash = TypeValidator.validate(input, schema)
+
+        unless root_hash.valid?
+          errors.add(:base, root_hash.errors)
+          return false
+        end
+
+        true
+      end
+
+    end
+
+    class HashKeysValidator < Base
+
+      attr_reader :schemas
+
+      def initialize(input, schemas)
+        super
+
+        @output = {}
+        @errors = Errors.new
+        @schemas = schemas
+      end
+
+      def validate
+        schemas.keys.each do |key|
+          value = output[key].nil? ? input[key] : output[key]
+
+          validator = TypeValidator.validate(value, schemas[key])
+
+          unless validator.output.nil?
+            output[key] = validator.output
+          end
+
+          unless validator.valid?
+            errors.add(key, validator.errors)
+            next
+          end
+
+          if input[key].is_a?(Hash)
+            hash_validator = HashValidator.validate(input[key], schemas[key])
+
+            errors.add(key, hash_validator.errors)
+            output[key] = hash_validator.output
+          end
+
+        end
+
+        self
       end
 
     end
