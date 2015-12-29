@@ -12,7 +12,7 @@ The motivation was to create an integration for [RestMyCase](https://github.com/
 
 Based on the same principle from [Grape](https://github.com/ruby-grape/grape) framework and [sinatra-param](https://github.com/mattt/sinatra-param) gem to validate request params. The schema builder is based on [Joi](https://github.com/hapijs/joi).
 
-### Example
+### Usage
 
 ```ruby
 object = {
@@ -71,22 +71,75 @@ Method  | Behaviour
 `#run?` | Validates and returns true or false.
 `schema#validate` | Chech below
 
+==========================
+
 ### Schema Builder API
+- `Compel#array` *
+  - `#items(``schema``)`
+  ```ruby
+  * ex: [1, 2, 3], [{ a: 1, b: 2}, { a: 3, b: 4 }]
+  ```
 
-On It..
+- `Compel#hash` *
+  - `#keys(``schema_hash``)`
+  ```ruby
+  * ex: { a: 1,  b: 2, c: 3 }
+  ```
 
-### Schema#validate
+- `Compel.date` *
+  - `#format(``ruby_date_format``)`
+  - `iso8601`, set format to: `%Y-%m-%d`
+
+- `Compel.datetime & Compel.time` *
+  - `#format(``ruby_date_format``)`
+  - `#iso8601`, set format to: `%FT%T`
+
+- `Compel#string` **
+  - `#format(``regexp``)` 
+  - `#min_length(``integer``)`
+  - `#max_length(``integer``)`
+
+- `Compel#json` *
+  ```ruby
+  * ex: "{\"a\":1,\"b\":2,\"c\":3}"
+  ```
+
+- `Compel#boolean` *
+  ```ruby
+  * ex: 1/0, true/false, 't'/'f', 'yes'/'no', 'y'/'n'
+  ```
+  
+- `Compel#integer` **
+
+- `Compel#float` **
+
+(\*) **Common methods**
+  - `is(``value``)`
+  - `required`
+  - `default(``value``)`
+
+(\*\*) **Common value methods**
+  - `in(``array``)`
+  - `length(``integer``)`
+  - `min(``value``)`
+  - `max(``value``)`
+
+
+### Schema Validate
 
 For straight forward validations, you can call `#validate` on schema and it will return a `Compel::Result` object.
 
 ```ruby
-result = Compel.string.format(/^\d{4}-\d{3}$/).required.validate('1234')
+result = Compel.string
+               .format(/^\d{4}-\d{3}$/)
+               .required
+               .validate('1234')
 
 puts result.errors
 # => ["must match format ^\\d{4}-\\d{3}$"]
 ```
 
-#### Compel::Result
+#### Compel Result
 
 Simple object that encapsulates a validation result.
 
@@ -97,22 +150,7 @@ Method  | Behaviour
 `#valid?` | `true` or `false`
 `#raise?` | raises a `Compel::InvalidObjectError` if invalid, otherwise returns `#value`
 
-### Types
-
-- `#integer`
-- `#float`
-- `#string`
-- `#json`
-  - ex: `"{\"a\":1,\"b\":2,\"c\":3}"`
-- `#hash`
-  - ex: `{ a: 1,  b: 2, c: 3 }`
-- `#date`
-- `#time`
-- `#datetime`
-- `#boolean`,
-  - ex: `1`/`0`, `true`/`false`, `t`/`f`, `yes`/`no`, `y`/`n`
-- `#array`
-  - ex: `[1, 2, 3]`, `[{ a: 1, b: 2}, { a: 3, b: 4 }]`
+==========================
 
 ### Sinatra Integration
 
@@ -172,7 +210,7 @@ And then execute:
 
 ### TODO
 
-- Write more Documentation (check specs for now ;)
+- Write Advanced Documentation (check specs for now ;)
 - Rails integration
 - [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) integration
 
