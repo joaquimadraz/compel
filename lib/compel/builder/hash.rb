@@ -5,6 +5,8 @@ module Compel
 
       def initialize
         super(Coercion::Hash)
+
+        options[:keys] = {}
       end
 
       def keys(hash)
