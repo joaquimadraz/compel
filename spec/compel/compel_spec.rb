@@ -16,7 +16,7 @@ describe Compel do
               admin: Compel.boolean.required
             })
           }).required
-        })
+        }).required
 
         Compel.send(method, hash, schema)
       end
@@ -73,13 +73,18 @@ describe Compel do
       end
 
       it 'should not compel for invalid hash' do
-        expect{ make_the_call(:run, 1) }.to \
-          raise_error Compel::TypeError, 'object to validate must be an Hash'
+        expect(make_the_call(:run, 1).errors[:base]).to \
+          include("'1' is not a valid Hash")
       end
 
-      it 'should not compel for invalid hash 1' do
-        expect{ make_the_call(:run, nil) }.to \
-          raise_error Compel::TypeError, 'object to validate must be an Hash'
+      it 'should not compel for missing hash' do
+        expect(make_the_call(:run, nil).errors[:base]).to \
+          include('is required')
+      end
+
+      it 'should not compel for missing hash' do
+        expect(make_the_call(:run, {}).errors[:user]).to \
+          include('is required')
       end
 
       it 'should not compel'  do
@@ -283,12 +288,13 @@ describe Compel do
 
     end
 
-    it 'it should raise Compel::TypeError exception for invalid schema' do
-      expect { Compel.run(nil, Compel.boolean.required) }.to \
-        raise_error Compel::TypeError
-    end
 
     context 'Boolean' do
+
+      it 'it should raise Compel::TypeError exception for invalid schema' do
+        expect { Compel.run(nil, Compel.boolean.required) }.to \
+          raise_error Compel::TypeError
+      end
 
       context 'required option' do
 

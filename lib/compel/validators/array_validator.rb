@@ -8,21 +8,38 @@ module Compel
       def initialize(input, schema)
         super
 
-        @output = []
-        @errors = {}
-
+        @input = input.nil? ? schema.default_value : input
+        @output = nil
+        @errors = Errors.new
         @items_schema = schema.options[:items]
       end
 
       def validate
-        each_array_value do |item, index, items_validator|
-          items_validator.validate
+        if schema.required? || !input.nil?
+          @output = []
 
-          @output << items_validator.serialize
+          value_errors = []
 
-          if !items_validator.valid?
-            # added errors for the index of that invalid array value
-            @errors["#{index}"] = items_validator.serialize_errors
+          if !input.is_a?(Array)
+            value_errors << "'#{input}' is not a valid Array"
+          end
+
+          value_errors += Validation.validate(input, schema.type, schema.options)
+
+          if !value_errors.empty?
+            errors.add(:base, value_errors)
+            return self
+          end
+
+          each_array_value do |item, index, items_validator|
+            items_validator.validate
+
+            output << items_validator.serialize
+
+            if !items_validator.valid?
+              # added errors for the index of that invalid array value
+              errors.add("#{index}", items_validator.serialize_errors)
+            end
           end
         end
 
@@ -30,12 +47,10 @@ module Compel
       end
 
       def each_array_value
-        value = input.nil? ? schema.default_value : input
-
-        value.each_with_index do |item, index|
+        input.each_with_index do |item, index|
           # ignore items that are nil unless they are required,
           # actually..this comment does not help
-          if items_schema.required? || !item.nil?
+          if !items_schema.nil? && (items_schema.required? || !item.nil?)
             # we can talk about arrays of arrays later
             item_validator = \
               if items_schema.type == Coercion::Hash
@@ -50,8 +65,11 @@ module Compel
         end
       end
 
+      def serialize_errors
+        @errors.to_hash
+      end
+
       alias_method :serialize, :output
-      alias_method :serialize_errors, :errors
 
     end
 

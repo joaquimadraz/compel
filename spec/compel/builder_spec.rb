@@ -232,7 +232,36 @@ describe Compel::Builder do
 
       subject(:builder) { Compel::Builder::Array.new }
 
+      it 'should validate nil without errors' do
+        result = builder.validate(nil)
+
+        expect(result.valid?).to be true
+      end
+
+      it 'should validate nil with errors' do
+        result = builder.required.validate(nil)
+
+        expect(result.errors[:base]).to include('is required')
+      end
+
+      it 'should validate with errors for invalid array' do
+        result = builder.required.validate(1)
+
+        expect(result.errors[:base]).to include("'1' is not a valid Array")
+      end
+
       context '#items' do
+
+        it 'should validate without items' do
+          result = builder.validate([1, 2, 3])
+
+          expect(result.valid?).to be true
+        end
+
+        it 'should raise exception for invalid type' do
+          expect { builder.items('a') }.to \
+            raise_error Compel::TypeError, "#items must be a valid Schema"
+        end
 
         it 'should raise exception for invalid type' do
           expect { builder.items('a') }.to \
@@ -341,6 +370,38 @@ describe Compel::Builder do
             include("'a' is not a valid Integer")
         end
 
+      end
+
+    end
+
+    context 'Hash' do
+
+      subject(:builder) { Compel::Builder::Hash.new }
+
+      it 'should validate empty keys option' do
+        schema = builder.required
+
+        expect(schema.validate({ a: 1 }).valid?).to be true
+      end
+
+      it 'should validate nil' do
+        schema = builder.required
+
+        result = schema.validate(nil)
+
+        expect(result.valid?).to be false
+        expect(result.errors[:base]).to \
+          include('is required')
+      end
+
+      it 'should validate empty keys with errors' do
+        schema = builder.required.length(2)
+
+        result = schema.validate({ a: 1 })
+
+        expect(result.valid?).to be false
+        expect(result.errors[:base]).to \
+          include('cannot have length different than 2')
       end
 
     end
