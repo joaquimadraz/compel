@@ -7,57 +7,27 @@ module Compel
 
       def initialize(input, schema)
         super
+
         @errors = Errors.new
+        @output = []
         @items_schema = schema.options[:items]
       end
 
       def validate
-        if schema.required? || !input.nil?
-          @output = []
+        unless array_valid?
+          return self
+        end
 
-          value_errors = []
+        items_validator = \
+          ArrayItemsValidator.validate(input, items_schema)
 
-          if !input.is_a?(Array)
-            value_errors << "'#{input}' is not a valid Array"
-          end
+        @output = items_validator.output
 
-          value_errors += Validation.validate(input, schema.type, schema.options)
-
-          if !value_errors.empty?
-            errors.add(:base, value_errors)
-            return self
-          end
-
-          each_array_value do |item, index, items_validator|
-            output << items_validator.serialize
-
-            if !items_validator.valid?
-              # added errors for the index of that invalid array value
-              errors.add("#{index}", items_validator.serialize_errors)
-            end
-          end
+        unless items_validator.valid?
+          @errors = items_validator.errors
         end
 
         self
-      end
-
-      def each_array_value
-        input.each_with_index do |item, index|
-          # ignore items that are nil unless they are required,
-          # actually..this comment does not help
-          if !items_schema.nil? && (items_schema.required? || !item.nil?)
-            # we can talk about arrays of arrays later
-            item_validator = \
-              if items_schema.type == Coercion::Hash
-                HashValidator.validate(item, items_schema)
-              else
-                TypeValidator.validate(item, items_schema)
-              end
-
-            # why am I doing this?
-            yield(item, index, item_validator)
-          end
-        end
       end
 
       def serialize_errors
@@ -65,6 +35,70 @@ module Compel
       end
 
       alias_method :serialize, :output
+
+      private
+
+      def array_valid?
+        if !schema.required? && input.nil?
+          return false
+        end
+
+        array_errors = []
+
+        unless input.is_a?(Array)
+          array_errors << "'#{input}' is not a valid Array"
+        end
+
+        array_errors += \
+          Validation.validate(input, schema.type, schema.options)
+
+        unless array_errors.empty?
+          errors.add(:base, array_errors)
+          return false
+        end
+
+        if items_schema.nil?
+          return false
+        end
+
+        true
+      end
+
+    end
+
+    class ArrayItemsValidator < Base
+
+      def initialize(input, schema)
+        super
+
+        @output = []
+        @errors = Errors.new
+      end
+
+      def validate
+        input.each_with_index do |item, index|
+
+          if !schema.required? && item.nil?
+            next
+          end
+
+          item_validator = \
+            if schema.type == Coercion::Hash
+              HashValidator.validate(item, schema)
+            else
+              TypeValidator.validate(item, schema)
+            end
+
+          output << item_validator.serialize
+
+          if !item_validator.valid?
+            # added errors for the index of that invalid array value
+            errors.add("#{index}", item_validator.serialize_errors)
+          end
+        end
+
+        self
+      end
 
     end
 
