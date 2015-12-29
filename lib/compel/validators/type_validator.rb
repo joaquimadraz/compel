@@ -7,19 +7,24 @@ module Compel
     class TypeValidator < Base
 
       def validate
+        options = input, schema.type, schema.options
 
-        begin
-          @output = Coercion.coerce!(input, schema.type, schema.options)
-          @errors = Validation.validate(input, schema.type, schema.options)
+        # coerce
+        coercion_result = Coercion.coerce(*options)
 
-          # if it is an array, we still need the above validations to check if
-          # our array is valid before validate each value.
-          # 'two bunnies with only one cajadada'
-          if schema.type == Coercion::Array && errors.empty?
-            validate_array_values(input)
-          end
-        rescue Compel::TypeError => exception
-          @errors = [exception.message]
+        unless coercion_result.valid?
+          @errors = [coercion_result.error]
+          return self
+        end
+
+        @output = coercion_result.coerced
+
+        # validate
+        @errors = Validation.validate(*options)
+
+        # validate array values
+        if schema.type == Coercion::Array && errors.empty?
+          validate_array_values(input)
         end
 
         self
