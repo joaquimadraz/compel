@@ -19,7 +19,7 @@ module Compel
         exception = InvalidObjectError.new
         exception.object = value
 
-        raise exception, 'hash has errors'
+        raise exception, 'object has errors'
       end
 
       value
