@@ -45,14 +45,7 @@ module Compel
   end
 
   def self.run(params, schema)
-    if schema.type != Coercion::Hash
-      raise Compel::TypeError, \
-        "Compel#run just validates Hash Schemas, " \
-        "use Schema#validate for other types:\n\n" \
-        "\texample: Compel.boolean.validate('true')"
-    end
-
-    Contract.new(params, schema).validate.value
+    Contract.new(params, schema).validate
   end
 
 end

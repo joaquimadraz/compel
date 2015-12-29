@@ -4,8 +4,8 @@ describe Compel do
 
     context 'User validation example' do
 
-      def make_the_call(method, hash)
-        schema = Compel.hash.keys({
+      def user_schema
+        Compel.hash.keys({
           user: Compel.hash.keys({
             first_name: Compel.string.required,
             last_name: Compel.string.required,
@@ -17,102 +17,123 @@ describe Compel do
             })
           }).required
         }).required
-
-        Compel.send(method, hash, schema)
       end
 
-      it 'should compel returning coerced values' do
-        hash = {
-          user: {
-            first_name: 'Joaquim',
-            last_name: 'Adráz',
-            birth_date: '1989-08-06T09:00:00',
-            age: '26',
-            admin: 'f',
-            blog_role: {
-              admin: '0'
-            }
-          }
-        }
+      context 'valid' do
 
-        expect(make_the_call(:run, hash)).to eq \
-          Hashie::Mash.new({
+        it 'return coerced values' do
+          object = {
             user: {
               first_name: 'Joaquim',
               last_name: 'Adráz',
-              birth_date: DateTime.parse('1989-08-06T09:00:00'),
-              age: 26,
-              admin: false,
+              birth_date: '1989-08-06T09:00:00',
+              age: '26',
+              admin: 'f',
               blog_role: {
-                admin: false
+                admin: '0'
               }
             }
-          })
+          }
+
+          result = Compel.run(object, user_schema)
+
+          expect(result.valid?).to be true
+          expect(result.value).to eq \
+            Hashie::Mash.new({
+              user: {
+                first_name: 'Joaquim',
+                last_name: 'Adráz',
+                birth_date: DateTime.parse('1989-08-06T09:00:00'),
+                age: 26,
+                admin: false,
+                blog_role: {
+                  admin: false
+                }
+              }
+            })
+        end
+
       end
 
-      it 'should not compel and leave other hash untouched' do
-        hash = {
-          other_param: 1,
-          user: {
-            first_name: 'Joaquim'
-          }
-        }
+      context 'invalid' do
 
-        expect(make_the_call(:run, hash)).to eq \
-          Hashie::Mash.new({
+        it 'should not compel and leave other keys untouched' do
+          object = {
             other_param: 1,
             user: {
-              first_name: 'Joaquim',
-            },
-            errors: {
-              user: {
-                last_name: ['is required']
-              }
+              first_name: 'Joaquim'
             }
-          })
-      end
-
-      it 'should not compel for invalid hash' do
-        expect(make_the_call(:run, 1).errors[:base]).to \
-          include("'1' is not a valid Hash")
-      end
-
-      it 'should not compel for missing hash' do
-        expect(make_the_call(:run, nil).errors[:base]).to \
-          include('is required')
-      end
-
-      it 'should not compel for missing hash' do
-        expect(make_the_call(:run, {}).errors[:user]).to \
-          include('is required')
-      end
-
-      it 'should not compel'  do
-        hash = {
-          user: {
-            first_name: 'Joaquim'
           }
-        }
 
-        expect(make_the_call(:run, hash)).to eq \
-          Hashie::Mash.new({
-            user:{
-              first_name: 'Joaquim',
-            },
-            errors: {
+          result = Compel.run(object, user_schema)
+
+          expect(result.valid?).to be false
+          expect(result.value).to eq \
+            Hashie::Mash.new({
+              other_param: 1,
               user: {
-                last_name: ['is required']
+                first_name: 'Joaquim',
+              },
+              errors: {
+                user: {
+                  last_name: ['is required']
+                }
               }
+            })
+        end
+
+        it 'should not compel for invalid hash' do
+          result = Compel.run(1, user_schema)
+
+          expect(result.valid?).to be false
+          expect(result.errors[:base]).to include("'1' is not a valid Hash")
+        end
+
+        it 'should not compel for missing hash' do
+          result = Compel.run(nil, user_schema)
+
+          expect(result.valid?).to be false
+          expect(result.errors[:base]).to include('is required')
+        end
+
+        it 'should not compel for empty hash' do
+          result = Compel.run({}, user_schema)
+
+          expect(result.valid?).to be false
+          expect(result.errors[:user]).to include('is required')
+        end
+
+        it 'should not compel for missing required key'  do
+          object = {
+            user: {
+              first_name: 'Joaquim'
             }
-          })
+          }
+
+          result = Compel.run(object, user_schema)
+
+          expect(result.valid?).to be false
+          expect(result.value).to eq \
+            Hashie::Mash.new({
+              user:{
+                first_name: 'Joaquim',
+              },
+              errors: {
+                user: {
+                  last_name: ['is required']
+                }
+              }
+            })
+        end
+
       end
 
     end
 
     context 'Address validation example' do
 
-      def make_the_call(method, hash)
-        schema = Compel.hash.keys({
+      def address_schema
+        Compel.hash.keys({
           address: Compel.hash.keys({
             line_one: Compel.string.required,
             line_two: Compel.string,
@@ -126,201 +147,196 @@ describe Compel do
             }).required
           }).required
         })
-
-        Compel.send(method, hash, schema)
       end
 
-      it 'should run?' do
-        hash = {
-          address: {
-            line_one: 'Lisbon',
-            line_two: 'Portugal',
-            post_code: {
-              prefix: 1100,
-              suffix: 100
+      context 'valid' do
+
+        it 'should compel with #run?' do
+          object = {
+            address: {
+              line_one: 'Lisbon',
+              line_two: 'Portugal',
+              post_code: {
+                prefix: 1100,
+                suffix: 100
+              }
             }
           }
-        }
 
-        expect(make_the_call(:run?, hash)).to eq(true)
+          expect(Compel.run?(object, address_schema)).to eq(true)
+        end
+
       end
 
-      it 'should not compel' do
-        hash = {
-          address: {
-            line_two: 'Portugal'
-          }
-        }
+      context 'invalid' do
 
-        expect(make_the_call(:run, hash)).to eq \
-          Hashie::Mash.new({
+        it 'should not compel for missing required keys' do
+          object = {
             address: {
               line_two: 'Portugal'
-            },
-            errors: {
-              address: {
-                line_one: ['is required'],
-                post_code: ['is required']
-              }
-            }
-          })
-      end
-
-      it 'should not compel 1' do
-        hash = {
-          address: {
-            line_two: 'Portugal',
-            post_code: {
-              prefix: '1',
-              county: {
-                code: 'LX'
-              }
             }
           }
-        }
 
-        expect(make_the_call(:run, hash)).to eq \
-          Hashie::Mash.new({
+          result = Compel.run(object, address_schema)
+
+          expect(result.valid?).to be false
+          expect(result.value).to eq \
+            Hashie::Mash.new({
+              address: {
+                line_two: 'Portugal'
+              },
+              errors: {
+                address: {
+                  line_one: ['is required'],
+                  post_code: ['is required']
+                }
+              }
+            })
+        end
+
+        it 'should not compel missing key and length invalid' do
+          object = {
             address: {
               line_two: 'Portugal',
               post_code: {
-                prefix: 1,
+                prefix: '1',
                 county: {
                   code: 'LX'
                 }
               }
-            },
-            errors: {
-              address: {
-                line_one: ['is required'],
-                post_code: {
-                  prefix: ['cannot have length different than 4']
-                }
-              }
-            }
-          })
-      end
-
-      it 'should not compel 2' do
-        hash = {
-          address: {
-            post_code: {
-              suffix: '1234'
             }
           }
-        }
 
-        expect(make_the_call(:run, hash)).to eq \
-          Hashie::Mash.new({
-            address: {
-              post_code: {
-                suffix: 1234
-              }
-            },
-            errors: {
+          result = Compel.run(object, address_schema)
+
+          expect(result.valid?).to be false
+          expect(result.value).to eq \
+            Hashie::Mash.new({
               address: {
-                line_one: ['is required'],
+                line_two: 'Portugal',
                 post_code: {
-                  prefix: ['is required'],
-                  suffix: ['cannot have length different than 3']
-                }
-              }
-            }
-          })
-      end
-
-      it 'should not compel 3' do
-        hash = {
-          address: {
-            post_code: {
-              prefix: '1100',
-              suffix: '100',
-              county: {}
-            },
-          }
-        }
-
-        expect(make_the_call(:run, hash)).to eq \
-          Hashie::Mash.new({
-            address: {
-              post_code: {
-                prefix: 1100,
-                suffix: 100,
-                county: {}
-              }
-            },
-            errors: {
-              address: {
-                line_one: ['is required'],
-                post_code: {
+                  prefix: 1,
                   county: {
-                    code: ['is required']
+                    code: 'LX'
+                  }
+                }
+              },
+              errors: {
+                address: {
+                  line_one: ['is required'],
+                  post_code: {
+                    prefix: ['cannot have length different than 4']
                   }
                 }
               }
+            })
+        end
+
+        it 'should not compel for givin invalid optional value' do
+          object = {
+            address: {
+              line_one: 'Line',
+              post_code: {
+                prefix: '1100',
+                suffix: '100',
+                county: {}
+              },
             }
-          })
+          }
 
-      end
+          result = Compel.run(object, address_schema)
 
-      it 'should not compel 4' do
-        hash = {
-          address: nil
-        }
+          expect(result.valid?).to be false
+          expect(result.value).to eq \
+            Hashie::Mash.new({
+              address: {
+                line_one: 'Line',
+                post_code: {
+                  prefix: 1100,
+                  suffix: 100,
+                  county: {}
+                }
+              },
+              errors: {
+                address: {
+                  post_code: {
+                    county: {
+                      code: ['is required']
+                    }
+                  }
+                }
+              }
+            })
 
-        expect(make_the_call(:run, hash)).to eq \
-          Hashie::Mash.new({
-            address: nil,
-            errors: {
-              address: ['is required']
-            }
-          })
-      end
+        end
 
-      it 'should not compel 5' do
-        expect(make_the_call(:run, {})).to eq \
-          Hashie::Mash.new({
-            errors: {
-              address: ['is required']
-            }
-          })
+        it 'should not compel for missing required root key' do
+          object = {
+            address: nil
+          }
+
+          result = Compel.run(object, address_schema)
+
+          expect(result.valid?).to be false
+          expect(result.value).to eq \
+            Hashie::Mash.new({
+              address: nil,
+              errors: {
+                address: ['is required']
+              }
+            })
+        end
+
+        it 'should not compel for empty object' do
+          result = Compel.run({}, address_schema)
+
+          expect(result.valid?).to be false
+          expect(result.value).to eq \
+            Hashie::Mash.new({
+              errors: {
+                address: ['is required']
+              }
+            })
+        end
+
       end
 
     end
 
-
     context 'Boolean' do
 
-      it 'it should raise Compel::TypeError exception for invalid schema' do
-        expect { Compel.run(nil, Compel.boolean.required) }.to \
-          raise_error Compel::TypeError
+      it 'it not compel for invalid boolean' do
+        result = Compel.run(nil, Compel.boolean.required)
+
+        expect(result.valid?).to be false
+        expect(result.errors).to include('is required')
       end
 
       context 'required option' do
 
-        it 'should compel' do
+        it 'should compel with valid option' do
           expect(Compel.run?(1, Compel.boolean.required)).to be true
         end
 
-        it 'should not compel' do
+        it 'should not compel for missing required boolean' do
           schema = Compel.hash.keys({
             admin: Compel.boolean.required
           })
 
-          expect(Compel.run({ admin: nil }, schema).errors[:admin]).to \
-            include('is required')
+          result = Compel.run({ admin: nil }, schema)
+
+          expect(result.valid?).to be false
+          expect(result.errors[:admin]).to include('is required')
         end
 
       end
 
       context 'default option' do
 
-        it 'should compel' do
-          schema = Compel.hash.keys({
-            admin: Compel.boolean.default(false)
-          })
+        it 'should compel with default option set' do
+          result = Compel.run(nil, Compel.boolean.default(false))
 
-          expect(Compel.run({ admin: nil }, schema).admin).to be false
+          expect(result.value).to be false
         end
 
       end
@@ -328,20 +344,14 @@ describe Compel do
       context 'is option' do
 
         it 'should compel' do
-          schema = Compel.hash.keys({
-            admin: Compel.boolean.is(1)
-          })
-
-          expect(Compel.run?({ admin: 1 }, schema)).to be true
+          expect(Compel.run?(1, Compel.boolean.is(1))).to be true
         end
 
         it 'should not compel' do
-          schema = Compel.hash.keys({
-            admin: Compel.boolean.is(1)
-          })
+          result = Compel.run(0, Compel.boolean.is(1))
 
-          expect(Compel.run({ admin: 0 }, schema).errors[:admin]).to \
-            include('must be 1')
+          expect(result.valid?).to be false
+          expect(result.errors).to include('must be 1')
         end
 
       end
@@ -353,20 +363,17 @@ describe Compel do
       context 'format option' do
 
         it 'should compel' do
-          schema = Compel.hash.keys({
-            post_code: Compel.string.format(/^\d{4}-\d{3}$/)
-          })
+          schema = Compel.string.format(/^\d{4}-\d{3}$/)
 
-          expect(Compel.run?({ post_code: '1100-100' }, schema)).to be true
+          expect(Compel.run?('1100-100', schema)).to be true
         end
 
         it 'should not compel' do
-          schema = Compel.hash.keys({
-            post_code: Compel.string.format(/^\d{4}-\d{3}$/)
-          })
+          schema = Compel.string.format(/^\d{4}-\d{3}$/)
 
-          expect(Compel.run({ post_code: '110-100' }, schema).errors[:post_code]).to \
-            include('must match format ^\\d{4}-\\d{3}$')
+          result = Compel.run('110-100', schema)
+
+          expect(result.errors).to include('must match format ^\\d{4}-\\d{3}$')
         end
 
       end
@@ -378,39 +385,36 @@ describe Compel do
       context 'format option' do
 
         it 'should not compel' do
-          schema = Compel.hash.keys({
-            birth_date: Compel.time
-          })
+          schema = Compel.time
+          result = Compel.run('1989-08-06', schema)
 
-          expect(Compel.run({ birth_date: '1989-08-06' }, schema).errors.birth_date).to \
+          expect(result.valid?).to be false
+          expect(result.errors).to \
             include("'1989-08-06' is not a parsable time with format: %FT%T")
         end
 
         it 'should compel with format' do
-          schema = Compel.hash.keys({
-            birth_date: Compel.time.format('%Y-%m-%d')
-          })
+          schema = Compel.time.format('%Y-%m-%d')
+          result = Compel.run('1989-08-06', schema)
 
-          expect(Compel.run({ birth_date: '1989-08-06' }, schema).birth_date).to \
-            eq(Time.new(1989, 8, 6))
+          expect(result.valid?).to be true
+          expect(result.value).to eq(Time.new(1989, 8, 6))
         end
 
         it 'should compel by default' do
-          schema = Compel.hash.keys({
-            birth_date: Compel.time
-          })
+          schema = Compel.time
+          result = Compel.run('1989-08-06T09:00:00', schema)
 
-          expect(Compel.run({ birth_date: '1989-08-06T09:00:00' }, schema).birth_date).to \
-            eq(Time.new(1989, 8, 6, 9))
+          expect(result.valid?).to be true
+          expect(result.value).to eq(Time.new(1989, 8, 6, 9))
         end
 
         it 'should compel with iso8601 format' do
-          schema = Compel.hash.keys({
-            birth_date: Compel.time.iso8601
-          })
+          schema = Compel.time.iso8601
+          result = Compel.run('1989-08-06T09:00:00', schema)
 
-          expect(Compel.run({ birth_date: '1989-08-06T09:00:00' }, schema).birth_date).to \
-            eq(Time.new(1989, 8, 6, 9))
+          expect(result.valid?).to be true
+          expect(result.value).to eq(Time.new(1989, 8, 6, 9))
         end
 
       end
@@ -428,7 +432,10 @@ describe Compel do
           birth_date: Compel.datetime
         })
 
-        expect(Compel.run({ birth_date: '1989-08-06' }, schema).errors.birth_date).to \
+        result = Compel.run({ birth_date: '1989-08-06' }, schema)
+
+        expect(result.valid?).to be false
+        expect(result.errors[:birth_date]).to \
           include("'1989-08-06' is not a parsable datetime with format: %FT%T")
       end
 
@@ -437,8 +444,10 @@ describe Compel do
           birth_date: Compel.datetime.format('%Y-%m-%d')
         })
 
-        expect(Compel.run({ birth_date: '1989-08-06' }, schema).birth_date).to \
-          eq(DateTime.new(1989, 8, 6))
+        result = Compel.run({ birth_date: '1989-08-06' }, schema)
+
+        expect(result.valid?).to be true
+        expect(result.value[:birth_date]).to eq(DateTime.new(1989, 8, 6))
       end
 
       it 'should compel by default' do
@@ -446,8 +455,10 @@ describe Compel do
           birth_date: Compel.datetime
         })
 
-        expect(Compel.run({ birth_date: '1989-08-06T09:00:00' }, schema).birth_date).to \
-          eq(DateTime.new(1989, 8, 6, 9))
+        result = Compel.run({ birth_date: '1989-08-06T09:00:00' }, schema)
+
+        expect(result.valid?).to be true
+        expect(result.value[:birth_date]).to eq(DateTime.new(1989, 8, 6, 9))
       end
 
       it 'should compel with iso8601 format' do
@@ -455,8 +466,10 @@ describe Compel do
           birth_date: Compel.datetime.iso8601
         })
 
-        expect(Compel.run({ birth_date: '1989-08-06T09:00:00' }, schema).birth_date).to \
-          eq(DateTime.new(1989, 8, 6, 9))
+        result = Compel.run({ birth_date: '1989-08-06T09:00:00' }, schema)
+
+        expect(result.valid?).to be true
+        expect(result.value[:birth_date]).to eq(DateTime.new(1989, 8, 6, 9))
       end
 
     end
@@ -465,84 +478,80 @@ describe Compel do
 
   context 'Compel methods' do
 
-    def make_the_call(method, hash)
-      schema = Compel.hash.keys({
-        first_name: Compel.string.required,
-        last_name: Compel.string.required,
-        birth_date: Compel.datetime
-      })
-
-      Compel.send(method, hash, schema)
-    end
-
     context '#run!' do
 
-      it 'should compel' do
-        hash = {
-          first_name: 'Joaquim',
-          last_name: 'Adráz',
-          birth_date: DateTime.new(1988, 12, 24)
-        }
+      context 'Other Values' do
 
-        expect(make_the_call(:run!, hash)).to \
-          eq \
-            Hashie::Mash.new({
-              first_name: 'Joaquim',
-              last_name: 'Adráz',
-              birth_date: DateTime.new(1988, 12, 24)
-            })
-      end
+        it 'should compel valid integer' do
+          result = Compel.run!(1, Compel.integer.required)
 
-      it 'should raise InvalidObjectError exception' do
-        hash = {
-          first_name: 'Joaquim'
-        }
-
-        expect{ make_the_call(:run!, hash) }.to \
-          raise_error Compel::InvalidObjectError, 'object has errors'
-      end
-
-      it 'should raise InvalidObjectError exception with errors' do
-        hash = {
-          first_name: 'Joaquim'
-        }
-
-        expect{ make_the_call(:run!, hash) }.to raise_error do |exception|
-          expect(exception.object).to eq \
-            Hashie::Mash.new(first_name: 'Joaquim', errors: { last_name: ['is required'] })
+          expect(result).to eq(1)
         end
+
+        it 'should not compel for invalid integer' do
+          expect{ Compel.run!('abc', Compel.integer.required) }.to \
+            raise_error Compel::InvalidObjectError, 'object has errors'
+        end
+
       end
 
-      it 'should raise InvalidObjectError exception for missing hash' do
-        expect{ make_the_call(:run!, {}) }.to \
-          raise_error Compel::InvalidObjectError, 'object has errors'
-      end
+      context 'User validation example' do
 
-    end
+        def make_the_call(method, hash)
+          schema = Compel.hash.keys({
+            first_name: Compel.string.required,
+            last_name: Compel.string.required,
+            birth_date: Compel.datetime
+          })
 
-    context '#run?' do
+          Compel.send(method, hash, schema)
+        end
 
-      it 'should return true' do
-        hash = {
-          first_name: 'Joaquim',
-          last_name: 'Adráz',
-          birth_date: '1989-08-06T09:00:00'
-        }
+        it 'should compel' do
+          hash = {
+            first_name: 'Joaquim',
+            last_name: 'Adráz',
+            birth_date: DateTime.new(1988, 12, 24)
+          }
 
-        expect(make_the_call(:run?, hash)).to eq(true)
-      end
+          expect(make_the_call(:run!, hash)).to \
+            eq \
+              Hashie::Mash.new({
+                first_name: 'Joaquim',
+                last_name: 'Adráz',
+                birth_date: DateTime.new(1988, 12, 24)
+              })
+        end
 
-      it 'should return false' do
-        hash = {
-          first_name: 'Joaquim'
-        }
+        it 'should raise InvalidObjectError exception for missing required key' do
+          hash = {
+            first_name: 'Joaquim'
+          }
 
-        expect(make_the_call(:run?, hash)).to eq(false)
+          expect{ make_the_call(:run!, hash) }.to \
+            raise_error Compel::InvalidObjectError, 'object has errors'
+        end
+
+        it 'should raise InvalidObjectError exception with errors' do
+          hash = {
+            first_name: 'Joaquim'
+          }
+
+          expect{ make_the_call(:run!, hash) }.to raise_error do |exception|
+            expect(exception.object).to eq \
+              Hashie::Mash.new(first_name: 'Joaquim', errors: { last_name: ['is required'] })
+          end
+        end
+
+        it 'should raise InvalidObjectError exception for missing hash' do
+          expect{ make_the_call(:run!, {}) }.to \
+            raise_error Compel::InvalidObjectError, 'object has errors'
+        end
+
       end
 
     end
 
   end
-
 
 end
