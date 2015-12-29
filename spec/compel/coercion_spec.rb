@@ -73,7 +73,7 @@ describe Compel::Coercion do
       end
 
       it 'should coerce with format' do
-        value = Compel::Coercion.coerce!('22-12-2015', Date, { format: '%d-%m-%Y'})
+        value = Compel::Coercion.coerce!('22-12-2015', Date, { format: '%d-%m-%Y' })
 
         expect(value).to eq(Date.strptime('22-12-2015', '%d-%m-%Y'))
       end

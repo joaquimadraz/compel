@@ -3,12 +3,10 @@ module Compel
 
     class Array < Type
 
-      def coerce!
-        if !value.is_a?(::Array)
-          fail
+      def coerce_value
+        if value.is_a?(::Array)
+          value
         end
-
-        value
       end
 
     end

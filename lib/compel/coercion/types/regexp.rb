@@ -3,12 +3,10 @@ module Compel
 
     class Regexp < Type
 
-      def coerce!
+      def coerce_value
         if value.is_a?(::Regexp)
-          return value
+          value
         end
-
-        fail
       end
 
     end

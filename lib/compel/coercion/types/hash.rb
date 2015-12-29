@@ -3,8 +3,8 @@ module Compel
 
     class Hash < Type
 
-      def coerce!
-        Hashie::Mash.new(value).to_hash
+      def coerce_value
+        Hashie::Mash.new(value).to_hash rescue nil
       end
 
     end
