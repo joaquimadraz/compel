@@ -203,7 +203,7 @@ end
 
 Add this line to your application's Gemfile:
 
-    gem 'compel', '~> 0.2.0'
+    gem 'compel', '~> 0.3.1'
 
 And then execute:
 
