@@ -43,9 +43,16 @@ module Compel
         if !result.valid?
           # TODO: ArrayValidator should do this for me:
           # remove invalid coerced index,
-          # and set the original value
+          # and set the original value.
+          # If it's an Hash, keep errors key
           result.errors.keys.each do |index|
-            @output[index.to_i] = values[index.to_i]
+            if @output[index.to_i].is_a?(Hash)
+              # Keep errors key on hash if exists
+              @output[index.to_i].merge!(values[index.to_i])
+            else
+              # Array, Integer, String, Float, Dates.. etc
+              @output[index.to_i] = values[index.to_i]
+            end
           end
 
           @errors = result.errors

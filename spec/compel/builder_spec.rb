@@ -393,6 +393,31 @@ describe Compel::Builder do
               include("'a' is not a valid Integer")
           end
 
+          it 'should coerce hash with array of hashes with errors' do
+            schema = Compel.hash.keys(
+              actions: Compel.array.items(
+                Compel.hash.keys(
+                  a: Compel.string.required,
+                  b: Compel.string.format(/^abc$/)
+                )
+              )
+            )
+
+            object = {
+              other_key: 1,
+              actions: [
+                { a: 'A', b: 'abc' },
+                { a: 'B' },
+                { a: 'C', b: 'abcd' }
+              ]
+            }
+
+            result = schema.validate(object)
+
+            expect(result.value[:actions][2][:errors][:b]).to \
+              include('must match format ^abc$')
+          end
+
         end
 
       end
