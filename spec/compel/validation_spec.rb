@@ -104,6 +104,12 @@ describe Compel::Validation do
 
   context 'min' do
 
+    it 'should validate without errors' do
+      errors = Compel::Validation.validate(2, Compel::Coercion::Integer, min: 1)
+
+      expect(errors.empty?).to be true
+    end
+
     it 'should validate with errors' do
       errors = Compel::Validation.validate(1, Compel::Coercion::Integer, min: 3)
 
@@ -113,6 +119,12 @@ describe Compel::Validation do
   end
 
   context 'max' do
+
+    it 'should validate without errors' do
+      errors = Compel::Validation.validate(5, Compel::Coercion::Integer, min: 5)
+
+      expect(errors.empty?).to be true
+    end
 
     it 'should validate with errors' do
       errors = Compel::Validation.validate(3, Compel::Coercion::Integer, max: 2)

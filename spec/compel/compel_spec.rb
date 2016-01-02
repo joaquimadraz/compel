@@ -344,14 +344,14 @@ describe Compel do
       context 'is option' do
 
         it 'should compel' do
-          expect(Compel.run?(1, Compel.boolean.is(1))).to be true
+          expect(Compel.run?(1, Compel.boolean.is(true))).to be true
         end
 
         it 'should not compel' do
-          result = Compel.run(0, Compel.boolean.is(1))
+          result = Compel.run(0, Compel.boolean.is(true))
 
           expect(result.valid?).to be false
-          expect(result.errors).to include('must be 1')
+          expect(result.errors).to include('must be true')
         end
 
       end

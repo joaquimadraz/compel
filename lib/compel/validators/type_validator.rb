@@ -11,10 +11,8 @@ module Compel
           return self
         end
 
-        options = input, schema.type, schema.options
-
         # coerce
-        coercion_result = Coercion.coerce(*options)
+        coercion_result = Coercion.coerce(input, schema.type, schema.options)
 
         unless coercion_result.valid?
           @errors = [coercion_result.error]
@@ -24,7 +22,7 @@ module Compel
         @output = coercion_result.coerced
 
         # validate
-        @errors = Validation.validate(*options)
+        @errors = Validation.validate(@output, schema.type, schema.options)
 
         # validate array values
         if schema.type == Coercion::Array && errors.empty?
