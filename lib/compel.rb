@@ -16,7 +16,7 @@ require 'compel/validators/array_validator'
 require 'compel/builder/methods'
 require 'compel/coercion/coercion'
 require 'compel/contract'
-require 'compel/validation'
+require 'compel/validation/validation'
 require 'compel/errors'
 
 module Compel
