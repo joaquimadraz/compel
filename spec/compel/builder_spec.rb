@@ -180,6 +180,32 @@ describe Compel::Builder do
 
     context 'Validate' do
 
+      context 'Any' do
+
+        it 'should validate with errors and any type' do
+          schema = Compel.hash.keys({
+            a: Compel.any.required
+          })
+
+          expect(schema.validate({ a: nil }).errors.a).to \
+            include('is required')
+        end
+
+        context '#is' do
+
+          it 'should validate without errors and any type' do
+            schema = Compel.hash.keys({
+              a: Compel.any.is(123)
+            })
+
+            expect(schema.validate({ a: 122 }).errors.a).to \
+              include('must be 123')
+          end
+
+        end
+
+      end
+
       context 'Hash' do
 
         it 'should validate Hash schema' do
@@ -242,9 +268,9 @@ describe Compel::Builder do
 
         it 'should validate Type schema' do
           schema = Compel.string.format(/^\d{4}-\d{3}$/).required
-          response = schema.validate('1234')
+          result = schema.validate('1234')
 
-          expect(response.errors).to \
+          expect(result.errors).to \
             include("must match format ^\\d{4}-\\d{3}$")
         end
 

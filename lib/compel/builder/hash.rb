@@ -14,10 +14,6 @@ module Compel
         self
       end
 
-      def validate(object)
-        Contract.new(object, self).validate
-      end
-
     end
 
   end

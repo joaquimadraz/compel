@@ -10,6 +10,7 @@ require 'compel/coercion/types/json'
 require 'compel/coercion/types/boolean'
 require 'compel/coercion/types/regexp'
 require 'compel/coercion/types/array'
+require 'compel/coercion/types/any'
 
 require 'compel/coercion/result'
 require 'compel/coercion/nil_result'
