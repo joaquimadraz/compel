@@ -104,8 +104,14 @@ describe Compel::Validation do
 
   context 'min' do
 
-    it 'should validate without errors' do
+    it 'should validate without errors for Integer' do
       errors = Compel::Validation.validate(2, Compel::Coercion::Integer, min: 1)
+
+      expect(errors.empty?).to be true
+    end
+
+    it 'should validate without errors for String' do
+      errors = Compel::Validation.validate('b', Compel::Coercion::String, min: 'a')
 
       expect(errors.empty?).to be true
     end
@@ -114,6 +120,18 @@ describe Compel::Validation do
       errors = Compel::Validation.validate(1, Compel::Coercion::Integer, min: 3)
 
       expect(errors).to include('cannot be less than 3')
+    end
+
+    it 'should validate with errors for String' do
+      errors = Compel::Validation.validate('a', Compel::Coercion::String, min: 'b')
+
+      expect(errors).to include('cannot be less than b')
+    end
+
+    it 'should validate with errors for Float' do
+      errors = Compel::Validation.validate(1.54, Compel::Coercion::Float, min: 1.55)
+
+      expect(errors).to include('cannot be less than 1.55')
     end
 
   end
@@ -130,6 +148,30 @@ describe Compel::Validation do
       errors = Compel::Validation.validate(3, Compel::Coercion::Integer, max: 2)
 
       expect(errors).to include('cannot be greater than 2')
+    end
+
+    it 'should validate without errors for Integer' do
+      errors = Compel::Validation.validate(2, Compel::Coercion::Integer, max: 3)
+
+      expect(errors.empty?).to be true
+    end
+
+    it 'should validate without errors for String' do
+      errors = Compel::Validation.validate('b', Compel::Coercion::String, max: 'd')
+
+      expect(errors.empty?).to be true
+    end
+
+    it 'should validate with errors for String' do
+      errors = Compel::Validation.validate('c', Compel::Coercion::String, max: 'b')
+
+      expect(errors).to include('cannot be greater than b')
+    end
+
+    it 'should validate with errors for Float' do
+      errors = Compel::Validation.validate(1.56, Compel::Coercion::Float, max: 1.55)
+
+      expect(errors).to include('cannot be greater than 1.55')
     end
 
   end
