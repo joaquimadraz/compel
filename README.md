@@ -4,11 +4,11 @@ Compel
 [![Code Climate](https://codeclimate.com/github/joaquimadraz/compel/badges/gpa.svg)](https://codeclimate.com/github/joaquimadraz/compel)
 [![Test Coverage](https://codeclimate.com/github/joaquimadraz/compel/badges/coverage.svg)](https://codeclimate.com/github/joaquimadraz/compel/coverage)
 
-Ruby Hash Coercion and Validation
+Ruby Object Coercion and Validation
 
-This is a straight forward way to validate a Ruby Hash: just give an object and the schema.
+This is a straight forward way to validate any Ruby object: just give an object and the schema.
 
-The motivation were to create an integration for [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) to have validations before any business logic execution and build a easy way coerce and validate params on [Sinatra](https://github.com/sinatra/sinatra).
+The motivation was to create an integration for [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) to have validations before any business logic execution and to build a easy way coerce and validate params on [Sinatra](https://github.com/sinatra/sinatra).
 
 The schema builder is based on [Joi](https://github.com/hapijs/joi).
 
@@ -66,7 +66,7 @@ There are 4 ways to run validations:
 
 Method  | Behaviour
 ------------- | -------------
-`#run`  | Validates and returns an Hash with coerced params plus a `:errors` key with a _Rails like_ Hash of errors if any.
+`#run`  | Validates and returns a `Compel::Result` (see below)
 `#run!` | Validates and raises `Compel::InvalidObjectError` exception with the coerced params and errors.
 `#run?` | Validates and returns true or false.
 `schema#validate` | Check below
