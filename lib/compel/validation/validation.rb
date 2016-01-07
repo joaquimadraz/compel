@@ -1,5 +1,7 @@
 require 'compel/validation/conditions/condition'
 require 'compel/validation/conditions/is'
+require 'compel/validation/conditions/in'
+require 'compel/validation/conditions/format'
 
 module Compel
 
@@ -16,7 +18,7 @@ module Compel
 
       options.each do |option, option_value|
 
-        validation_klass = Compel::Validation.const_get("#{option.split('_').collect(&:capitalize).join}") rescue nil
+        validation_klass = Compel::Validation.const_get("#{option.to_s.split('_').collect(&:capitalize).join}") rescue nil
 
         if validation_klass
           message = validation_klass.new(value, option_value, type: type).validate
@@ -26,17 +28,6 @@ module Compel
           # https://github.com/mattt/sinatra-param
           # by Mattt Thompson (@mattt)
           case option.to_sym
-          when :format
-            if type == Coercion::String && !value.nil?
-              errors << "must match format #{option_value.source}" unless value =~ option_value
-            end
-          when :in, :within, :range
-            errors << "must be within #{option_value}" unless value.nil? || case option_value
-            when Range
-              option_value.include?(value)
-            else
-              Array(option_value).include?(value)
-            end
           when :min
             errors << "cannot be less than #{option_value}" unless value.nil? || option_value <= value
           when :max
