@@ -4,13 +4,13 @@ Compel
 [![Code Climate](https://codeclimate.com/github/joaquimadraz/compel/badges/gpa.svg)](https://codeclimate.com/github/joaquimadraz/compel)
 [![Test Coverage](https://codeclimate.com/github/joaquimadraz/compel/badges/coverage.svg)](https://codeclimate.com/github/joaquimadraz/compel/coverage)
 
-Ruby Hash Coercion and Validation
+Ruby Object Coercion and Validation
 
-This is a straight forward way to validate a Ruby Hash: just give an object and the schema.
+This is a straight forward way to validate any Ruby object: just give an object and the schema.
 
-The motivation was to create an integration for [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) and have validations before any business logic execution.
+The motivation was to create an integration for [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) to have validations before any business logic execution and to build a easy way coerce and validate params on [Sinatra](https://github.com/sinatra/sinatra).
 
-Based on the same principle from [Grape](https://github.com/ruby-grape/grape) framework and [sinatra-param](https://github.com/mattt/sinatra-param) gem to validate request params. The schema builder is based on [Joi](https://github.com/hapijs/joi).
+The schema builder is based on [Joi](https://github.com/hapijs/joi).
 
 ### Usage
 
@@ -66,7 +66,7 @@ There are 4 ways to run validations:
 
 Method  | Behaviour
 ------------- | -------------
-`#run`  | Validates and returns an Hash with coerced params plus a `:errors` key with a _Rails like_ Hash of errors if any.
+`#run`  | Validates and returns a `Compel::Result` (see below)
 `#run!` | Validates and raises `Compel::InvalidObjectError` exception with the coerced params and errors.
 `#run?` | Validates and returns true or false.
 `schema#validate` | Check below
@@ -74,57 +74,111 @@ Method  | Behaviour
 ==========================
 
 ### Schema Builder API
-- `Compel#array` *
-  - `is(``array``)`
-  - `#items(``schema``)`
-  ```ruby
-  * ex: [1, 2, 3], [{ a: 1, b: 2}, { a: 3, b: 4 }]
-  ```
 
-- `Compel#hash` *
-  - `#keys(``schema_hash``)`
-  ```ruby
-  * ex: { a: 1,  b: 2, c: 3 }
-  ```
+#### Compel#any
+`Any` referes to any type that is available to coerce with Compel.
 
-- `Compel.date` *
-  - `#format(``ruby_date_format``)`
-  - `iso8601`, set format to: `%Y-%m-%d`
+**Methods**:
+- `is(``value``)`
+- `required`
+- `default(``value``)`
+- `length(``integer``)`
+- `min_length(``integer``)`
+- `max_length(``integer``)`
 
-- `Compel.datetime & Compel.time` *
-  - `#format(``ruby_date_format``)`
-  - `#iso8601`, set format to: `%FT%T`
+==========================
 
-- `Compel#string` **
-  - `#format(``regexp``)` 
-  - `#min_length(``integer``)`
-  - `#max_length(``integer``)`
+#### Compel#array
 
-- `Compel#json` *
-  ```ruby
-  * ex: "{\"a\":1,\"b\":2,\"c\":3}"
-  ```
+**Methods**:
+- `#items(``schema``)`
 
-- `Compel#boolean` *
-  ```ruby
-  * ex: 1/0, true/false, 't'/'f', 'yes'/'no', 'y'/'n'
-  ```
-  
-- `Compel#integer` **
+**Examples**:
+```ruby
+. [1, 2, 3]
+. [{ a: 1, b: 2}
+. { a: 3, b: 4 }]
+```
 
-- `Compel#float` **
+==========================
 
-(\*) **Common methods**
-  - `required`
-  - `default(``value``)`
+#### Compel#hash
 
-(\*\*) **Common value methods**
-  - `is(``value``)`
-  - `in(``array``)`
-  - `length(``integer``)`
-  - `min(``value``)`
-  - `max(``value``)`
+**Methods**:
+- `keys(``schema_hash``)`
 
+**Examples**:
+```ruby
+. { a: 1,  b: 2, c: 3 }
+```
+
+==========================
+
+#### Compel#date
+
+**Methods**:
+- `format(``ruby_date_format``)`
+- `iso8601`, set format to: `%Y-%m-%d`
+
+==========================
+
+#### Compel#datetime & Compel#time
+
+**Methods**:
+- `format(``ruby_date_format``)`
+- `iso8601`, set format to: `%FT%T`
+
+==========================
+
+#### Compel#json
+
+**Examples**:
+```ruby
+. "{\"a\":1,\"b\":2,\"c\":3}"
+```
+
+==========================
+
+#### Compel#boolean
+
+**Examples**:
+```ruby
+. 1/0
+. true/false
+. 't'/'f'
+. 'yes'/'no'
+. 'y'/'n'
+```
+
+==========================
+
+#### Compel#string
+
+**Methods**:
+- `in(``array``)`
+- `min(``value``)`
+- `max(``value``)`
+- `format(``regexp``)`
+
+==========================
+
+#### Compel#integer
+
+**Methods**:
+- `in(``array``)`
+- `min(``value``)`
+- `max(``value``)`
+
+==========================
+
+#### Compel#float
+
+**Methods**:
+- `in(``array``)`
+- `min(``value``)`
+- `max(``value``)`
+
+==========================
 
 ### Schema Validate
 
@@ -199,23 +253,18 @@ class App < Sinatra::Base
 
 end
 ```
+
 ###Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'compel', '~> 0.3.1'
+    gem 'compel', '~> 0.3.4'
 
 And then execute:
 
     $ bundle
 
-### TODO
-
-- Write Advanced Documentation (check specs for now ;)
-- Rails integration
-- [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) integration
-
-
 ### Get in touch
+
 If you have any questions, write an issue or get in touch [@joaquimadraz](https://twitter.com/joaquimadraz)
 

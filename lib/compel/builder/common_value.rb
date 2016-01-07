@@ -3,11 +3,6 @@ module Compel
 
     module CommonValue
 
-      def is(value)
-        options[:is] = value
-        self
-      end
-
       def in(value)
         options[:in] = value
         self

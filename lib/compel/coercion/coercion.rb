@@ -10,6 +10,7 @@ require 'compel/coercion/types/json'
 require 'compel/coercion/types/boolean'
 require 'compel/coercion/types/regexp'
 require 'compel/coercion/types/array'
+require 'compel/coercion/types/any'
 
 require 'compel/coercion/result'
 require 'compel/coercion/nil_result'
@@ -17,10 +18,6 @@ require 'compel/coercion/nil_result'
 module Compel
 
   module Coercion
-
-    def valid?(value, type, options = {})
-      coerce(value, type, options).valid?
-    end
 
     def coerce!(value, type, options = {})
       result = coerce(value, type, options)
@@ -33,11 +30,9 @@ module Compel
     end
 
     def coerce(value, type, options = {})
-      return NilResult.new if value.nil?
+      return Coercion::NilResult.new if value.nil?
 
-      coercion_klass = Compel::Coercion.const_get("#{type}")
-
-      coercion_klass.new(value, options).coerce
+      type.coerce(value, options)
     end
 
     extend self

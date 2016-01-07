@@ -7,7 +7,7 @@ module Compel
     end
 
     def add(key, error)
-      if error.empty?
+      if error.nil? || error.empty?
         return
       end
 

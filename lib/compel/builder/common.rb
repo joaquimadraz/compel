@@ -3,8 +3,8 @@ module Compel
 
     module Common
 
-      def length(value)
-        options[:length] = Coercion.coerce!(value, ::Integer)
+      def is(value)
+        options[:is] = value
         self
       end
 
@@ -15,6 +15,21 @@ module Compel
 
       def default(value)
         options[:default] = value
+        self
+      end
+
+      def length(value)
+        options[:length] = Coercion.coerce!(value, Coercion::Integer)
+        self
+      end
+
+      def min_length(value)
+        options[:min_length] = Coercion.coerce!(value, Coercion::Integer)
+        self
+      end
+
+      def max_length(value)
+        options[:max_length] = Coercion.coerce!(value, Coercion::Integer)
         self
       end
 

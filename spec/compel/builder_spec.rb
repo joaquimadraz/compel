@@ -180,6 +180,32 @@ describe Compel::Builder do
 
     context 'Validate' do
 
+      context 'Any' do
+
+        it 'should validate with errors and any type' do
+          schema = Compel.hash.keys({
+            a: Compel.any.required
+          })
+
+          expect(schema.validate({ a: nil }).errors.a).to \
+            include('is required')
+        end
+
+        context '#is' do
+
+          it 'should validate without errors and any type' do
+            schema = Compel.hash.keys({
+              a: Compel.any.is(123)
+            })
+
+            expect(schema.validate({ a: 122 }).errors.a).to \
+              include('must be 123')
+          end
+
+        end
+
+      end
+
       context 'Hash' do
 
         it 'should validate Hash schema' do
@@ -236,15 +262,39 @@ describe Compel::Builder do
             include('is required')
         end
 
+        context '#is' do
+
+          it 'should validate with errors' do
+            value = { a: 1, b: 2, c: { d: 3, e: 4 }}
+            schema = Compel.hash.is(value)
+
+            result = schema.validate({ a: 1, b: 2, c: 3 })
+
+            expect(result.errors[:base]).to \
+              include("must be {\"a\"=>1, \"b\"=>2, \"c\"=>{\"d\"=>3, \"e\"=>4}}")
+          end
+
+          it 'should validate without errors' do
+            schema = Compel.hash.is({ a: 1, b: 2, c: 3 })
+
+            result = schema.validate({ 'a' => 1, 'b' => 2, 'c' => 3 })
+            expect(result.valid?).to be true
+
+            result = schema.validate({ :a => 1, :b => 2, :c => 3 })
+            expect(result.valid?).to be true
+          end
+
+        end
+
       end
 
       context 'String' do
 
         it 'should validate Type schema' do
           schema = Compel.string.format(/^\d{4}-\d{3}$/).required
-          response = schema.validate('1234')
+          result = schema.validate('1234')
 
-          expect(response.errors).to \
+          expect(result.errors).to \
             include("must match format ^\\d{4}-\\d{3}$")
         end
 
@@ -416,6 +466,26 @@ describe Compel::Builder do
 
             expect(result.value[:actions][2][:errors][:b]).to \
               include('must match format ^abc$')
+          end
+
+        end
+
+        context '#is' do
+
+          it 'should validate with errors' do
+            value = [1, 2, 3]
+            schema = builder.is(value)
+            result = schema.validate([1, 2])
+
+            expect(result.valid?).to be false
+            expect(result.errors[:base]).to include("must be #{value}")
+          end
+
+          it 'should validate without errors' do
+            schema = builder.is(['a', 'b', 'c'])
+            result = schema.validate(['a', 'b', 'c'])
+
+            expect(result.valid?).to be true
           end
 
         end

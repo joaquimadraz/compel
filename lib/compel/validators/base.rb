@@ -27,3 +27,7 @@ module Compel
 
   end
 end
+
+require 'compel/validators/type_validator'
+require 'compel/validators/hash_validator'
+require 'compel/validators/array_validator'

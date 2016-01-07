@@ -1,12 +1,10 @@
-require 'json'
-
 module Compel
   module Coercion
 
-    class JSON < Type
+    class Any < Type
 
       def coerce_value
-        ::JSON.parse(value) rescue nil
+        value
       end
 
     end

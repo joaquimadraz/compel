@@ -11,6 +11,7 @@ require 'compel/builder/time'
 require 'compel/builder/date'
 require 'compel/builder/boolean'
 require 'compel/builder/array'
+require 'compel/builder/any'
 
 module Compel
   module Builder
@@ -55,6 +56,10 @@ module Compel
 
       def array
         Builder::Array.new
+      end
+
+      def any
+        Builder::Any.new
       end
 
       extend self
