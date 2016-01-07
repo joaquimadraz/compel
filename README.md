@@ -8,9 +8,9 @@ Ruby Hash Coercion and Validation
 
 This is a straight forward way to validate a Ruby Hash: just give an object and the schema.
 
-The motivation was to create an integration for [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) and have validations before any business logic execution.
+The motivation were to create an integration for [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) to have validations before any business logic execution and build a easy way coerce and validate params on [Sinatra](https://github.com/sinatra/sinatra).
 
-Based on the same principle from [Grape](https://github.com/ruby-grape/grape) framework and [sinatra-param](https://github.com/mattt/sinatra-param) gem to validate request params. The schema builder is based on [Joi](https://github.com/hapijs/joi).
+The schema builder is based on [Joi](https://github.com/hapijs/joi).
 
 ### Usage
 
