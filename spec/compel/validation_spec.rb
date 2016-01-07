@@ -178,12 +178,6 @@ describe Compel::Validation do
 
   context 'min_length' do
 
-    it 'should validate with errors' do
-      errors = Compel::Validation.validate(3, Compel::Coercion::Integer, min_length: 2)
-
-      expect(errors).to include('must be a string if using the min_length validation')
-    end
-
     it 'should validate with errors 1' do
       errors = Compel::Validation.validate('a', Compel::Coercion::String, min_length: 2)
 
@@ -196,15 +190,15 @@ describe Compel::Validation do
       expect(errors.empty?).to eq(true)
     end
 
+    it 'should validate without errors 1' do
+      errors = Compel::Validation.validate(3, Compel::Coercion::Integer, min_length: 2)
+
+      expect(errors).to include('cannot have length less than 2')
+    end
+
   end
 
   context 'max_length' do
-
-    it 'should validate with errors' do
-      errors = Compel::Validation.validate(1, Compel::Coercion::Integer, max_length: 2)
-
-      expect(errors).to include('must be a string if using the max_length validation')
-    end
 
     it 'should validate with errors 1' do
       errors = Compel::Validation.validate('abcdef', Compel::Coercion::String, max_length: 5)
@@ -214,6 +208,12 @@ describe Compel::Validation do
 
     it 'should validate without errors' do
       errors = Compel::Validation.validate('abcde', Compel::Coercion::String, max_length: 5)
+
+      expect(errors.empty?).to eq(true)
+    end
+
+    it 'should validate without errors 1' do
+      errors = Compel::Validation.validate(1, Compel::Coercion::Integer, max_length: 2)
 
       expect(errors.empty?).to eq(true)
     end
