@@ -3,13 +3,11 @@ module Compel
 
     class Format < Condition
 
-      def validate
+      def validate_value
         if value_type == Coercion::String && !valid?
           "must match format #{option_value.source}"
         end
       end
-
-      private
 
       def valid?
         !value.nil? && value =~ option_value

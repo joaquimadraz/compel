@@ -3,7 +3,7 @@ module Compel
 
     class Max < Condition
 
-      def validate
+      def validate_value
         unless valid?
           "cannot be greater than #{option_value}"
         end

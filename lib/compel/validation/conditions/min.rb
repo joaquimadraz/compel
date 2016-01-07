@@ -3,7 +3,7 @@ module Compel
 
     class Min < Condition
 
-      def validate
+      def validate_value
         unless valid?
           "cannot be less than #{option_value}"
         end

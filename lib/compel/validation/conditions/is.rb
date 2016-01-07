@@ -11,7 +11,7 @@ module Compel
         @option_value
       end
 
-      def validate
+      def validate_value
         unless valid?
           "must be #{option_value}"
         end

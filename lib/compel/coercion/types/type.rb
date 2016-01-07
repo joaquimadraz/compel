@@ -24,7 +24,7 @@ module Compel
           return result
         end
 
-        Result.new(result, value, self.class)
+        Coercion::Result.new(result, value, self.class)
       end
 
     end

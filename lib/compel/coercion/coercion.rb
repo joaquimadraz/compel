@@ -30,7 +30,7 @@ module Compel
     end
 
     def coerce(value, type, options = {})
-      return NilResult.new if value.nil?
+      return Coercion::NilResult.new if value.nil?
 
       type.coerce(value, options)
     end

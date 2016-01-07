@@ -18,6 +18,13 @@ module Compel
         @option_value = option_value
       end
 
+      def validate
+        # result is an error message
+        result = validate_value
+
+        Validation::Result.new(value, value_type, result)
+      end
+
     end
 
   end

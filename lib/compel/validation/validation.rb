@@ -8,6 +8,8 @@ require 'compel/validation/conditions/length'
 require 'compel/validation/conditions/min_length'
 require 'compel/validation/conditions/max_length'
 
+require 'compel/validation/result'
+
 module Compel
 
   module Validation
@@ -35,8 +37,11 @@ module Compel
       options.each do |option, option_value|
         next unless condition_exists?(option)
 
-        errors.add \
-          :base, condition_klass(option).validate(value, option_value, type: type)
+        result = condition_klass(option).validate(value, option_value, type: type)
+
+        unless result.valid?
+          errors.add :base, result.error_message
+        end
       end
 
       errors.to_hash[:base] || []

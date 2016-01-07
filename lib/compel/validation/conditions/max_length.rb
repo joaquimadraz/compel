@@ -3,7 +3,7 @@ module Compel
 
     class MaxLength < Condition
 
-      def validate
+      def validate_value
         unless valid?
           "cannot have length greater than #{option_value}"
         end

@@ -3,7 +3,7 @@ module Compel
 
     class In < Condition
 
-      def validate
+      def validate_value
         unless valid?
           "must be within #{option_value}"
         end

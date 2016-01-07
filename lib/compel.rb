@@ -2,22 +2,18 @@ require 'json'
 require 'hashie'
 require 'hashie/extensions/symbolize_keys'
 
-require 'compel/exceptions/invalid_object_error'
-require 'compel/exceptions/validation_error'
 require 'compel/exceptions/type_error'
-
-require 'compel/result'
+require 'compel/exceptions/validation_error'
+require 'compel/exceptions/invalid_object_error'
 
 require 'compel/validators/base'
-require 'compel/validators/type_validator'
-require 'compel/validators/hash_validator'
-require 'compel/validators/array_validator'
-
 require 'compel/builder/methods'
 require 'compel/coercion/coercion'
-require 'compel/contract'
 require 'compel/validation/validation'
+
+require 'compel/result'
 require 'compel/errors'
+require 'compel/contract'
 
 module Compel
 
