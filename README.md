@@ -253,6 +253,7 @@ class App < Sinatra::Base
 
 end
 ```
+
 ###Installation
 
 Add this line to your application's Gemfile:
@@ -264,5 +265,6 @@ And then execute:
     $ bundle
 
 ### Get in touch
+
 If you have any questions, write an issue or get in touch [@joaquimadraz](https://twitter.com/joaquimadraz)
 
