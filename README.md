@@ -74,57 +74,91 @@ Method  | Behaviour
 ==========================
 
 ### Schema Builder API
-- `Compel#array` *
-  - `is(``array``)`
-  - `#items(``schema``)`
-  ```ruby
-  * ex: [1, 2, 3], [{ a: 1, b: 2}, { a: 3, b: 4 }]
-  ```
 
-- `Compel#hash` *
-  - `#keys(``schema_hash``)`
-  ```ruby
-  * ex: { a: 1,  b: 2, c: 3 }
-  ```
+#### Compel#any
+`Any` referes to any type that is available to coerce with Compel.
 
-- `Compel.date` *
-  - `#format(``ruby_date_format``)`
-  - `iso8601`, set format to: `%Y-%m-%d`
+**Methods**:
+- `is(``value``)`
+- `required`
+- `default(``value``)`
+- `length(``integer``)`
+- `min_length(``integer``)`
+- `max_length(``integer``)`
 
-- `Compel.datetime & Compel.time` *
-  - `#format(``ruby_date_format``)`
-  - `#iso8601`, set format to: `%FT%T`
+#### Compel#array
 
-- `Compel#string` **
-  - `#format(``regexp``)` 
-  - `#min_length(``integer``)`
-  - `#max_length(``integer``)`
+**Methods**:
+- `#items(``schema``)`
 
-- `Compel#json` *
-  ```ruby
-  * ex: "{\"a\":1,\"b\":2,\"c\":3}"
-  ```
+**Examples**:
+```ruby
+. [1, 2, 3]
+. [{ a: 1, b: 2}
+. { a: 3, b: 4 }]
+```
 
-- `Compel#boolean` *
-  ```ruby
-  * ex: 1/0, true/false, 't'/'f', 'yes'/'no', 'y'/'n'
-  ```
+#### Compel#hash
+
+**Methods**:
+- `#keys(``schema_hash``)`
   
-- `Compel#integer` **
+**Examples**:
+```ruby
+. { a: 1,  b: 2, c: 3 }
+```
 
-- `Compel#float` **
+#### Compel#date
 
-(\*) **Common methods**
-  - `required`
-  - `default(``value``)`
+**Methods**:
+- `#format(``ruby_date_format``)`
+- `iso8601`, set format to: `%Y-%m-%d`
 
-(\*\*) **Common value methods**
-  - `is(``value``)`
-  - `in(``array``)`
-  - `length(``integer``)`
-  - `min(``value``)`
-  - `max(``value``)`
+#### Compel#datetime & Compel#time
 
+**Methods**:
+- `#format(``ruby_date_format``)`
+- `#iso8601`, set format to: `%FT%T`
+
+#### Compel#json
+
+**Examples**:
+```ruby
+. "{\"a\":1,\"b\":2,\"c\":3}"
+```
+
+#### Compel#boolean
+
+**Examples**:
+```ruby
+. 1/0
+. true/false
+. 't'/'f'
+. 'yes'/'no'
+. 'y'/'n'
+```
+  
+#### Compel#string
+
+**Methods**:
+- `in(``array``)`
+- `min(``value``)`
+- `max(``value``)`
+- `format(``regexp``)` 
+  
+#### Compel#integer
+
+**Methods**:
+- `in(``array``)`
+- `min(``value``)`
+- `max(``value``)`
+
+#### Compel#float
+
+**Methods**:
+- `in(``array``)`
+- `min(``value``)`
+- `max(``value``)`
 
 ### Schema Validate
 
