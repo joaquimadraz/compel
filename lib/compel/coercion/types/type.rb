@@ -6,6 +6,10 @@ module Compel
       attr_accessor :value,
                     :options
 
+      def self.coerce(value, options)
+        new(value, options).coerce
+      end
+
       def initialize(value, options = {})
         @value = value
         @options = options

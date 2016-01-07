@@ -12,7 +12,7 @@ module Compel
 
   module Validation
 
-    KLASS_MAPPING = {
+    CONDITIONS = {
       is: Validation::Is,
       in: Validation::In,
       min: Validation::Min,
@@ -30,16 +30,24 @@ module Compel
         return ['is required']
       end
 
-      errors = []
+      errors = Errors.new
 
       options.each do |option, option_value|
-        if KLASS_MAPPING.keys.include?(option.to_sym)
-          message = KLASS_MAPPING[option.to_sym].new(value, option_value, type: type).validate
-          errors << message if message
-        end
+        next unless condition_exists?(option)
+
+        errors.add \
+          :base, condition_klass(option).validate(value, option_value, type: type)
       end
 
-      errors
+      errors.to_hash[:base] || []
+    end
+
+    def condition_exists?(option)
+      CONDITIONS.keys.include?(option.to_sym)
+    end
+
+    def condition_klass(option)
+      CONDITIONS[option.to_sym]
     end
 
     extend self

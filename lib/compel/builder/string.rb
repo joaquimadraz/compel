@@ -10,17 +10,17 @@ module Compel
       end
 
       def format(regex)
-        options[:format] = Coercion.coerce!(regex, ::Regexp)
+        options[:format] = Coercion.coerce!(regex, Coercion::Regexp)
         self
       end
 
       def min_length(value)
-        options[:min_length] = Coercion.coerce!(value, ::Integer)
+        options[:min_length] = Coercion.coerce!(value, Coercion::Integer)
         self
       end
 
       def max_length(value)
-        options[:max_length] = Coercion.coerce!(value, ::Integer)
+        options[:max_length] = Coercion.coerce!(value, Coercion::Integer)
         self
       end
 

@@ -5,24 +5,22 @@ describe Compel::Coercion do
     context 'Integer' do
 
       it 'should coerce' do
-        value = Compel::Coercion.coerce!(123, Integer)
+        value = Compel::Coercion.coerce!(123, Compel::Coercion::Integer)
         expect(value).to eq(123)
       end
 
       it 'should coerce 1' do
-        value = Compel::Coercion.coerce!('123', Integer)
+        value = Compel::Coercion.coerce!('123', Compel::Coercion::Integer)
         expect(value).to eq(123)
       end
 
       it 'should coerce 2' do
-        value = Compel::Coercion.coerce!(123.3, Integer)
+        value = Compel::Coercion.coerce!(123.3, Compel::Coercion::Integer)
         expect(value).to eq(123)
       end
 
       it 'should not coerce' do
-        expect(Compel::Coercion.valid?('123abc', Integer)).to eq(false)
-
-        expect { Compel::Coercion.coerce!('123abc', Integer) }.to \
+        expect { Compel::Coercion.coerce!('123abc', Compel::Coercion::Integer) }.to \
           raise_error Compel::TypeError, "'123abc' is not a valid Integer"
       end
 
@@ -31,15 +29,13 @@ describe Compel::Coercion do
     context 'Float' do
 
       it 'should coerce' do
-        value = Compel::Coercion.coerce!('1.2', Float)
+        value = Compel::Coercion.coerce!('1.2', Compel::Coercion::Float)
 
         expect(value).to eq(1.2)
       end
 
       it 'should not coerce' do
-        expect(Compel::Coercion.valid?('1.a233', Float)).to eq(false)
-
-        expect { Compel::Coercion.coerce!('1.a233', Float) }.to \
+        expect { Compel::Coercion.coerce!('1.a233', Compel::Coercion::Float) }.to \
           raise_error Compel::TypeError, "'1.a233' is not a valid Float"
       end
 
@@ -48,7 +44,7 @@ describe Compel::Coercion do
     context 'String' do
 
       it 'should coerce' do
-        value = Compel::Coercion.coerce!('abc', String)
+        value = Compel::Coercion.coerce!('abc', Compel::Coercion::String)
 
         expect(value).to eq('abc')
       end
@@ -56,9 +52,7 @@ describe Compel::Coercion do
       it 'should not coerce' do
         value = 1.2
 
-        expect(Compel::Coercion.valid?(value, String)).to eq(false)
-
-        expect { Compel::Coercion.coerce!(value, String) }.to \
+        expect { Compel::Coercion.coerce!(value, Compel::Coercion::String) }.to \
           raise_error Compel::TypeError, "'#{value}' is not a valid String"
       end
 
@@ -67,13 +61,13 @@ describe Compel::Coercion do
     context 'Date' do
 
       it 'should coerce with default format' do
-        value = Compel::Coercion.coerce!('2015-12-22', Date)
+        value = Compel::Coercion.coerce!('2015-12-22', Compel::Coercion::Date)
 
         expect(value).to eq(Date.parse('2015-12-22'))
       end
 
       it 'should coerce with format' do
-        value = Compel::Coercion.coerce!('22-12-2015', Date, { format: '%d-%m-%Y' })
+        value = Compel::Coercion.coerce!('22-12-2015', Compel::Coercion::Date, { format: '%d-%m-%Y' })
 
         expect(value).to eq(Date.strptime('22-12-2015', '%d-%m-%Y'))
       end
@@ -81,9 +75,7 @@ describe Compel::Coercion do
       it 'should not coerce' do
         value = '2015-0'
 
-        expect(Compel::Coercion.valid?(value, Date)).to eq(false)
-
-        expect { Compel::Coercion.coerce!(value, Date) }.to \
+        expect { Compel::Coercion.coerce!(value, Compel::Coercion::Date) }.to \
           raise_error \
             Compel::TypeError,
             "'#{value}' is not a parsable date with format: %Y-%m-%d"
@@ -93,7 +85,7 @@ describe Compel::Coercion do
         default_format = '%Y-%m-%d'
         value = '22-12-2015'
 
-        expect { Compel::Coercion.coerce!(value, Date) }.to \
+        expect { Compel::Coercion.coerce!(value, Compel::Coercion::Date) }.to \
           raise_error \
             Compel::TypeError,
             "'#{value}' is not a parsable date with format: #{default_format}"
@@ -105,7 +97,8 @@ describe Compel::Coercion do
 
       it 'should coerce' do
         [DateTime, Time].each do |time_klass|
-          value = Compel::Coercion.coerce!('2015-12-22', time_klass, format: '%Y-%m-%d')
+          value = Compel::Coercion.coerce! \
+            '2015-12-22', Compel::Coercion.const_get("#{time_klass}"), format: '%Y-%m-%d'
 
           expect(value).to be_a time_klass
           expect(value.year).to eq(2015)
@@ -117,7 +110,8 @@ describe Compel::Coercion do
 
       it 'should coerce iso8601 format' do
         [DateTime, Time].each do |time_klass|
-          value = Compel::Coercion.coerce!('2015-12-22T09:30:10', time_klass)
+          value = Compel::Coercion.coerce! \
+            '2015-12-22T09:30:10', Compel::Coercion.const_get("#{time_klass}")
 
           expect(value).to be_a time_klass
           expect(value.year).to eq(2015)
@@ -136,7 +130,7 @@ describe Compel::Coercion do
         [DateTime, Time].each do |time_klass|
           type_down_cased = "#{time_klass}".downcase
 
-          expect { Compel::Coercion.coerce!('22-12-2015', time_klass) }.to \
+          expect { Compel::Coercion.coerce!('22-12-2015', Compel::Coercion.const_get("#{time_klass}")) }.to \
             raise_error \
               Compel::TypeError,
               "'#{value}' is not a parsable #{type_down_cased} with format: #{default_format}"
@@ -152,7 +146,7 @@ describe Compel::Coercion do
         value = Compel::Coercion.coerce!({
           first_name: 'Joaquim',
           last_name: 'Adráz'
-        }, Hash)
+        }, Compel::Coercion::Hash)
 
         expect(value).to eq({
           'first_name' => 'Joaquim',
@@ -164,7 +158,7 @@ describe Compel::Coercion do
         value = Compel::Coercion.coerce!({
           'first_name' => 'Joaquim',
           'last_name' => 'Adráz'
-        }, Hash)
+        }, Compel::Coercion::Hash)
 
         expect(value).to eq({
           'first_name' => 'Joaquim',
@@ -176,7 +170,7 @@ describe Compel::Coercion do
         value = Compel::Coercion.coerce!(Hashie::Mash.new({
           first_name: 'Joaquim',
           last_name: 'Adráz'
-        }), Hash)
+        }), Compel::Coercion::Hash)
 
         expect(value).to eq({
           'first_name' => 'Joaquim',
@@ -185,17 +179,17 @@ describe Compel::Coercion do
       end
 
       it 'should not coerce' do
-        expect { Compel::Coercion.coerce!(123, Hash) }.to \
+        expect { Compel::Coercion.coerce!(123, Compel::Coercion::Hash) }.to \
           raise_error Compel::TypeError, "'123' is not a valid Hash"
       end
 
       it 'should not coerce 1' do
-        expect { Compel::Coercion.coerce!('hash', Hash) }.to \
+        expect { Compel::Coercion.coerce!('hash', Compel::Coercion::Hash) }.to \
           raise_error Compel::TypeError, "'hash' is not a valid Hash"
       end
 
       it 'should not coerce 2' do
-        expect { Compel::Coercion.coerce!(['hash'], Hash) }.to \
+        expect { Compel::Coercion.coerce!(['hash'], Compel::Coercion::Hash) }.to \
           raise_error Compel::TypeError, "'[\"hash\"]' is not a valid Hash"
       end
 
@@ -205,7 +199,8 @@ describe Compel::Coercion do
 
       it 'should coerce' do
         value = Compel::Coercion.coerce! \
-          "{\"first_name\":\"Joaquim\",\"last_name\":\"Adráz\"}", JSON
+          "{\"first_name\":\"Joaquim\",\"last_name\":\"Adráz\"}",
+          Compel::Coercion::JSON
 
         expect(value).to eq({
           'first_name' => 'Joaquim',

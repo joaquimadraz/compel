@@ -9,7 +9,7 @@ module Compel
       end
 
       def length(value)
-        options[:length] = Coercion.coerce!(value, ::Integer)
+        options[:length] = Coercion.coerce!(value, Coercion::Integer)
         self
       end
 

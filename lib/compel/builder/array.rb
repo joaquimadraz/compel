@@ -17,7 +17,7 @@ module Compel
       end
 
       def is(value)
-        options[:is] = Coercion.coerce!(value, ::Array)
+        options[:is] = Coercion.coerce!(value, Coercion::Array)
         self
       end
 

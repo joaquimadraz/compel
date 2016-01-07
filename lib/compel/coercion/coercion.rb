@@ -19,10 +19,6 @@ module Compel
 
   module Coercion
 
-    def valid?(value, type, options = {})
-      coerce(value, type, options).valid?
-    end
-
     def coerce!(value, type, options = {})
       result = coerce(value, type, options)
 
@@ -36,9 +32,7 @@ module Compel
     def coerce(value, type, options = {})
       return NilResult.new if value.nil?
 
-      coercion_klass = Compel::Coercion.const_get("#{type}")
-
-      coercion_klass.new(value, options).coerce
+      type.coerce(value, options)
     end
 
     extend self

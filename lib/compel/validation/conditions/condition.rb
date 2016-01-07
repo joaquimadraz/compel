@@ -8,6 +8,10 @@ module Compel
                   :value_type,
                   :option_value
 
+      def self.validate(value, option_value, options = {})
+        new(value, option_value, options).validate
+      end
+
       def initialize(value, option_value, options = {})
         @value = value
         @value_type = options.delete(:type) || Coercion::Types::Any
