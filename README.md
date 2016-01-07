@@ -101,8 +101,8 @@ Method  | Behaviour
 #### Compel#hash
 
 **Methods**:
-- `#keys(``schema_hash``)`
-  
+- `keys(``schema_hash``)`
+
 **Examples**:
 ```ruby
 . { a: 1,  b: 2, c: 3 }
@@ -111,14 +111,14 @@ Method  | Behaviour
 #### Compel#date
 
 **Methods**:
-- `#format(``ruby_date_format``)`
+- `format(``ruby_date_format``)`
 - `iso8601`, set format to: `%Y-%m-%d`
 
 #### Compel#datetime & Compel#time
 
 **Methods**:
-- `#format(``ruby_date_format``)`
-- `#iso8601`, set format to: `%FT%T`
+- `format(``ruby_date_format``)`
+- `iso8601`, set format to: `%FT%T`
 
 #### Compel#json
 
@@ -137,15 +137,15 @@ Method  | Behaviour
 . 'yes'/'no'
 . 'y'/'n'
 ```
-  
+
 #### Compel#string
 
 **Methods**:
 - `in(``array``)`
 - `min(``value``)`
 - `max(``value``)`
-- `format(``regexp``)` 
-  
+- `format(``regexp``)`
+
 #### Compel#integer
 
 **Methods**:
