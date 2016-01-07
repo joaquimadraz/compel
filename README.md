@@ -263,13 +263,6 @@ And then execute:
 
     $ bundle
 
-### TODO
-
-- Write Advanced Documentation (check specs for now ;)
-- Rails integration
-- [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) integration
-
-
 ### Get in touch
 If you have any questions, write an issue or get in touch [@joaquimadraz](https://twitter.com/joaquimadraz)
 
