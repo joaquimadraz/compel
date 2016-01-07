@@ -86,6 +86,8 @@ Method  | Behaviour
 - `min_length(``integer``)`
 - `max_length(``integer``)`
 
+==========================
+
 #### Compel#array
 
 **Methods**:
@@ -98,6 +100,8 @@ Method  | Behaviour
 . { a: 3, b: 4 }]
 ```
 
+==========================
+
 #### Compel#hash
 
 **Methods**:
@@ -108,11 +112,15 @@ Method  | Behaviour
 . { a: 1,  b: 2, c: 3 }
 ```
 
+==========================
+
 #### Compel#date
 
 **Methods**:
 - `format(``ruby_date_format``)`
 - `iso8601`, set format to: `%Y-%m-%d`
+
+==========================
 
 #### Compel#datetime & Compel#time
 
@@ -120,12 +128,16 @@ Method  | Behaviour
 - `format(``ruby_date_format``)`
 - `iso8601`, set format to: `%FT%T`
 
+==========================
+
 #### Compel#json
 
 **Examples**:
 ```ruby
 . "{\"a\":1,\"b\":2,\"c\":3}"
 ```
+
+==========================
 
 #### Compel#boolean
 
@@ -138,6 +150,8 @@ Method  | Behaviour
 . 'y'/'n'
 ```
 
+==========================
+
 #### Compel#string
 
 **Methods**:
@@ -146,6 +160,8 @@ Method  | Behaviour
 - `max(``value``)`
 - `format(``regexp``)`
 
+==========================
+
 #### Compel#integer
 
 **Methods**:
@@ -153,12 +169,16 @@ Method  | Behaviour
 - `min(``value``)`
 - `max(``value``)`
 
+==========================
+
 #### Compel#float
 
 **Methods**:
 - `in(``array``)`
 - `min(``value``)`
 - `max(``value``)`
+
+==========================
 
 ### Schema Validate
 
