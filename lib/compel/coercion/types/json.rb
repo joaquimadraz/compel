@@ -1,3 +1,5 @@
+require 'json'
+
 module Compel
   module Coercion
 

@@ -1,6 +1,4 @@
-require 'json'
 require 'hashie'
-require 'hashie/extensions/symbolize_keys'
 
 require 'compel/exceptions/type_error'
 require 'compel/exceptions/invalid_object_error'
