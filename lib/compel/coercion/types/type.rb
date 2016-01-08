@@ -6,7 +6,7 @@ module Compel
       attr_accessor :value,
                     :options
 
-      def self.coerce(value, options)
+      def self.coerce(value, options = {})
         new(value, options).coerce
       end
 

@@ -13,32 +13,6 @@ describe Compel::Builder do
         expect(builder.default_value).to be nil
       end
 
-      it 'should build Schema' do
-        schema = Compel.hash.keys({
-          a: Compel.float,
-          b: Compel.string,
-          c: Compel.hash.keys({
-            cc: Compel.integer.length(1)
-          }),
-          d: Compel.json,
-          e: Compel.time,
-          f: Compel.datetime,
-          g: Compel.date,
-          h: Compel.integer
-        })
-
-        keys_schemas = schema.options[:keys]
-
-        expect(keys_schemas.a.type).to be Compel::Coercion::Float
-        expect(keys_schemas.b.type).to be Compel::Coercion::String
-        expect(keys_schemas.c.type).to be Compel::Coercion::Hash
-        expect(keys_schemas.d.type).to be Compel::Coercion::JSON
-        expect(keys_schemas.e.type).to be Compel::Coercion::Time
-        expect(keys_schemas.f.type).to be Compel::Coercion::DateTime
-        expect(keys_schemas.g.type).to be Compel::Coercion::Date
-        expect(keys_schemas.h.type).to be Compel::Coercion::Integer
-      end
-
       context 'Builder::CommonValue' do
 
         context '#in, #range, #min, #max' do
@@ -172,6 +146,51 @@ describe Compel::Builder do
             expect(builder.options[:max_length]).to eq(10)
           end
 
+        end
+
+      end
+
+      context 'Hash' do
+
+        it 'should build Schema' do
+          schema = Compel.hash.keys({
+            a: Compel.float,
+            b: Compel.string,
+            c: Compel.hash.keys({
+              cc: Compel.integer.length(1)
+            }),
+            d: Compel.json,
+            e: Compel.time,
+            f: Compel.datetime,
+            g: Compel.date,
+            h: Compel.integer
+          })
+
+          keys_schemas = schema.options[:keys]
+
+          expect(keys_schemas.a.type).to be Compel::Coercion::Float
+          expect(keys_schemas.b.type).to be Compel::Coercion::String
+          expect(keys_schemas.c.type).to be Compel::Coercion::Hash
+          expect(keys_schemas.d.type).to be Compel::Coercion::JSON
+          expect(keys_schemas.e.type).to be Compel::Coercion::Time
+          expect(keys_schemas.f.type).to be Compel::Coercion::DateTime
+          expect(keys_schemas.g.type).to be Compel::Coercion::Date
+          expect(keys_schemas.h.type).to be Compel::Coercion::Integer
+        end
+
+        it 'should raise error for invalid #keys' do
+          expect{ Compel.hash.keys(nil) }.to \
+            raise_error(Compel::TypeError, 'Builder::Hash keys must be an Hash')
+        end
+
+        it 'should raise error for invalid #keys 1' do
+          expect{ Compel.hash.keys(1) }.to \
+            raise_error(Compel::TypeError, 'Builder::Hash keys must be an Hash')
+        end
+
+        it 'should raise error for invalid #keys Schema' do
+          expect{ Compel.hash.keys({ a: 1 }) }.to \
+            raise_error(Compel::TypeError, 'All Builder::Hash keys must be a valid Schema')
         end
 
       end

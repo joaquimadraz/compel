@@ -9,9 +9,27 @@ module Compel
         options[:keys] = {}
       end
 
-      def keys(hash)
-        options[:keys] = hash
+      def keys(object)
+        options[:keys] = coerce_keys_schemas(object)
         self
+      end
+
+      private
+
+      def coerce_keys_schemas(object)
+        begin
+          fail if object.nil?
+
+          Coercion.coerce!(object, Coercion::Hash)
+        rescue
+          raise TypeError, 'Builder::Hash keys must be an Hash'
+        end
+
+        unless object.values.all?{|value| value.is_a?(Builder::Schema) }
+          raise TypeError, 'All Builder::Hash keys must be a valid Schema'
+        end
+
+        object
       end
 
     end
