@@ -91,7 +91,10 @@ module Compel
             next
           end
 
-          if input[key].is_a?(Hash)
+          if schemas[key].type == Coercion::Hash &&
+              (schemas[key].required? ||
+                !input[key].nil?)
+
             hash_validator = HashValidator.validate(input[key], schemas[key])
 
             errors.add(key, hash_validator.errors)
