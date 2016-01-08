@@ -77,6 +77,7 @@ Method  | Behaviour
 
 #### Compel#any
 `Any` referes to any type that is available to coerce with Compel.
+Methods `length`, `min_length` and `max_length` turn the object to validate into a `string` to compare the length.
 
 **Methods**:
 - `is(``value``)`

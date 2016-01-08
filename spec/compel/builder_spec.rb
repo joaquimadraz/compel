@@ -182,24 +182,157 @@ describe Compel::Builder do
 
       context 'Any' do
 
-        it 'should validate with errors and any type' do
-          schema = Compel.hash.keys({
-            a: Compel.any.required
-          })
+        context '#required' do
 
-          expect(schema.validate({ a: nil }).errors.a).to \
-            include('is required')
+          context 'invalid' do
+
+            it 'should validate a nil object' do
+              schema = Compel.any.required
+
+              expect(schema.validate(nil).errors).to \
+                include('is required')
+            end
+
+          end
+
+          context 'valid' do
+
+            it 'should validate nested hash object' do
+              schema = Compel.hash.keys({
+                a: Compel.any.required
+              });
+
+              result = schema.validate(a: { b: 1 })
+
+              expect(result.valid?).to be true
+            end
+
+            it 'should validate nested hash object 1' do
+              schema = Compel.hash.keys({
+                a: Compel.any.required
+              });
+
+              result = schema.validate(a: [])
+
+              expect(result.valid?).to be true
+            end
+
+            it 'should validate nested hash object 2' do
+              schema = Compel.hash.keys({
+                a: Compel.any.required
+              });
+
+              result = schema.validate(a: 1)
+
+              expect(result.valid?).to be true
+            end
+
+            it 'should validate an array object' do
+              schema = Compel.any.required
+
+              result = schema.validate([1, 2])
+
+              expect(result.valid?).to be true
+            end
+
+            it 'should validate an array object 1' do
+              schema = Compel.any.required
+
+              result = schema.validate([])
+
+              expect(result.valid?).to be true
+            end
+
+            it 'should validate a string object' do
+              schema = Compel.any.required
+
+              result = schema.validate('test')
+
+              expect(result.valid?).to be true
+            end
+
+          end
+
         end
 
         context '#is' do
 
-          it 'should validate without errors and any type' do
-            schema = Compel.hash.keys({
-              a: Compel.any.is(123)
-            })
+          context 'invalid' do
 
-            expect(schema.validate({ a: 122 }).errors.a).to \
-              include('must be 123')
+            it 'should validate an integer' do
+              schema = Compel.any.is(123)
+
+              expect(schema.validate(122).errors).to \
+                include('must be 123')
+
+              expect(schema.validate('onetwothree').errors).to \
+                include('must be 123')
+            end
+
+            it 'should validate an array' do
+              schema = Compel.any.is([1, 2, 3])
+
+              expect(schema.validate([1]).errors).to \
+                include('must be [1, 2, 3]')
+
+              expect(schema.validate([]).errors).to \
+                include('must be [1, 2, 3]')
+            end
+
+          end
+
+          context 'valid' do
+
+            it 'should validate an array' do
+              schema = Compel.any.is([1, 2, 3])
+
+              result = schema.validate([1, 2, 3])
+
+              expect(result.valid?).to be true
+            end
+
+          end
+
+        end
+
+        context '#length' do
+
+          context 'invalid' do
+
+            it 'should not validate an instance object' do
+              schema = Compel.any.length(1)
+
+              expect(schema.validate(OpenStruct).errors).to \
+                include('cannot have length different than 1')
+            end
+
+            it 'should not validate a constant object' do
+              schema = Compel.any.length(1)
+
+              expect(schema.validate(OpenStruct).errors).to \
+                include('cannot have length different than 1')
+            end
+
+          end
+
+          context 'valid' do
+
+            it 'should validate a constant object' do
+              schema = Compel.any.length(10)
+
+              result = schema.validate(OpenStruct)
+
+              expect(result.valid?).to be true
+            end
+
+            it 'should validate a constant object' do
+              schema = Compel.any.length(10)
+
+              result = schema.validate(OpenStruct)
+
+              expect(result.valid?).to be true
+            end
+
           end
 
         end
