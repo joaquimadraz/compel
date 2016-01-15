@@ -872,6 +872,18 @@ describe Compel::Builder do
 
       end
 
+      context 'DateTime' do
+
+        it 'should validate with errors' do
+          result = Compel.datetime.validate('1989-0')
+
+          expect(result.valid?).to be false
+          expect(result.errors).to \
+            include("'1989-0' is not a parsable datetime with format: %FT%T")
+        end
+
+      end
+
     end
 
   end

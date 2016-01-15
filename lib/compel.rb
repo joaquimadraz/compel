@@ -1,3 +1,4 @@
+require 'time'
 require 'hashie'
 
 require 'compel/exceptions/type_error'
