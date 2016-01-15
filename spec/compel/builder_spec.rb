@@ -195,6 +195,26 @@ describe Compel::Builder do
 
       end
 
+      context 'Array' do
+
+        it 'should raise exception for invalid type' do
+          expect { Compel.array.items('a') }.to \
+            raise_error Compel::TypeError, "#items must be a valid Schema"
+        end
+
+        it 'should raise exception for invalid type' do
+          expect { Compel.array.items('a') }.to \
+            raise_error Compel::TypeError, "#items must be a valid Schema"
+        end
+
+        it 'should have value' do
+          builder = Compel.array.items(Compel.integer)
+
+          expect(builder.options[:items].class).to be(Compel::Builder::Integer)
+        end
+
+      end
+
     end
 
     context 'Validate' do
@@ -414,6 +434,26 @@ describe Compel::Builder do
             include('is required')
         end
 
+        context '#required' do
+
+          it 'should validate empty keys option' do
+            schema = Compel.hash.required
+
+            expect(schema.validate({ a: 1 }).valid?).to be true
+          end
+
+          it 'should validate nil' do
+            schema = Compel.hash.required
+
+            result = schema.validate(nil)
+
+            expect(result.valid?).to be false
+            expect(result.errors[:base]).to \
+              include('is required')
+          end
+
+        end
+
         context '#is' do
 
           it 'should validate with errors' do
@@ -438,6 +478,18 @@ describe Compel::Builder do
 
         end
 
+        context '#length' do
+
+          it 'should validate empty keys with errors' do
+            result = Compel.hash.length(2).validate({ a: 1 })
+
+            expect(result.valid?).to be false
+            expect(result.errors[:base]).to \
+              include('cannot have length different than 2')
+          end
+
+        end
+
       end
 
       context 'String' do
@@ -454,22 +506,20 @@ describe Compel::Builder do
 
       context 'Array' do
 
-        subject(:builder) { Compel.array }
-
         it 'should validate nil without errors' do
-          result = builder.validate(nil)
+          result = Compel.array.validate(nil)
 
           expect(result.valid?).to be true
         end
 
         it 'should validate nil with errors' do
-          result = builder.required.validate(nil)
+          result = Compel.array.required.validate(nil)
 
           expect(result.errors[:base]).to include('is required')
         end
 
         it 'should validate with errors for invalid array' do
-          result = builder.required.validate(1)
+          result = Compel.array.required.validate(1)
 
           expect(result.errors[:base]).to include("'1' is not a valid Array")
         end
@@ -477,41 +527,21 @@ describe Compel::Builder do
         context '#items' do
 
           it 'should validate without items' do
-            result = builder.validate([1, 2, 3])
+            result = Compel.array.validate([1, 2, 3])
 
             expect(result.valid?).to be true
             expect(result.value).to eq([1, 2, 3])
           end
 
-          it 'should raise exception for invalid type' do
-            expect { builder.items('a') }.to \
-              raise_error Compel::TypeError, "#items must be a valid Schema"
-          end
-
-          it 'should raise exception for invalid type' do
-            expect { builder.items('a') }.to \
-              raise_error Compel::TypeError, "#items must be a valid Schema"
-          end
-
-          it 'should have value' do
-            builder.items(Compel.integer)
-
-            expect(builder.options[:items].class).to be(Compel::Builder::Integer)
-          end
-
           it 'should validate all items' do
-            builder.items(Compel.integer)
-
-            result = builder.validate([1, '2', nil])
+            result = Compel.array.items(Compel.integer).validate([1, '2', nil])
 
             expect(result.valid?).to be true
             expect(result.value).to eq([1, 2])
           end
 
           it 'should validate all items with errors' do
-            builder.items(Compel.float.required)
-
-            result = builder.validate([1, 'a', nil])
+            result = Compel.array.items(Compel.float.required).validate([1, 'a', nil])
 
             expect(result.valid?).to be false
             expect(result.errors['1']).to include("'a' is not a valid Float")
@@ -519,7 +549,7 @@ describe Compel::Builder do
           end
 
           it 'should coerce all hash items' do
-            builder.items(Compel.hash.keys({
+            builder = Compel.array.items(Compel.hash.keys({
               a: Compel.string.required,
               b: Compel.integer
             }))
@@ -540,7 +570,7 @@ describe Compel::Builder do
           end
 
           it 'should coerce all hash items with errors' do
-            builder.items(Compel.hash.keys({
+            builder = Compel.array.items(Compel.hash.keys({
               a: Compel.string.required,
               b: Compel.string.format(/^abc$/).required
             }))
@@ -569,7 +599,7 @@ describe Compel::Builder do
           end
 
           it 'should coerce array with hash items and nested array keys with errors' do
-            builder.items(Compel.hash.keys({
+            builder = Compel.array.items(Compel.hash.keys({
               a: Compel.string,
               b: Compel.array.items(Compel.integer.required).required
             }))
@@ -626,52 +656,18 @@ describe Compel::Builder do
 
           it 'should validate with errors' do
             value = [1, 2, 3]
-            schema = builder.is(value)
-            result = schema.validate([1, 2])
+            result = Compel.array.is(value).validate([1, 2])
 
             expect(result.valid?).to be false
             expect(result.errors[:base]).to include("must be #{value}")
           end
 
           it 'should validate without errors' do
-            schema = builder.is(['a', 'b', 'c'])
-            result = schema.validate(['a', 'b', 'c'])
+            result = Compel.array.is(['a', 'b', 'c']).validate(['a', 'b', 'c'])
 
             expect(result.valid?).to be true
           end
 
-        end
-
-      end
-
-      context 'Hash' do
-
-        subject(:builder) { Compel.hash }
-
-        it 'should validate empty keys option' do
-          schema = builder.required
-
-          expect(schema.validate({ a: 1 }).valid?).to be true
-        end
-
-        it 'should validate nil' do
-          schema = builder.required
-
-          result = schema.validate(nil)
-
-          expect(result.valid?).to be false
-          expect(result.errors[:base]).to \
-            include('is required')
-        end
-
-        it 'should validate empty keys with errors' do
-          schema = builder.required.length(2)
-
-          result = schema.validate({ a: 1 })
-
-          expect(result.valid?).to be false
-          expect(result.errors[:base]).to \
-            include('cannot have length different than 2')
         end
 
       end
