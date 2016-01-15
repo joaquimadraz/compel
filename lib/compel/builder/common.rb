@@ -4,7 +4,7 @@ module Compel
     module Common
 
       def is(value)
-        options[:is] = value
+        options[:is] = Coercion.coerce!(value, self.type)
         self
       end
 
@@ -14,7 +14,7 @@ module Compel
       end
 
       def default(value)
-        options[:default] = value
+        options[:default] = Coercion.coerce!(value, self.type)
         self
       end
 
