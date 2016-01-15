@@ -652,6 +652,56 @@ describe Compel::Builder do
             include("must match format ^\\d{4}-\\d{3}$")
         end
 
+        context '#url' do
+
+          it 'should validate' do
+            result = Compel.string.url.validate('http://example.com')
+
+            expect(result.valid?).to be true
+          end
+
+          it 'should validate' do
+            result = Compel.string.url.validate('http://app.com/posts/1/comments')
+
+            expect(result.valid?).to be true
+          end
+
+          it 'should not validate' do
+            result = Compel.string.url.validate('www.example.com')
+
+            expect(result.valid?).to be false
+          end
+
+          it 'should not validate' do
+            result = Compel.string.url.validate('url')
+
+            expect(result.valid?).to be false
+          end
+
+        end
+
+        context '#email' do
+
+          it 'should validate' do
+            result = Compel.string.email.validate('example@gmail.com')
+
+            expect(result.valid?).to be true
+          end
+
+          it 'should not validate' do
+            result = Compel.string.email.validate('example@gmail')
+
+            expect(result.valid?).to be false
+          end
+
+          it 'should not validate' do
+            result = Compel.string.email.validate('email')
+
+            expect(result.valid?).to be false
+          end
+
+        end
+
       end
 
       context 'Array' do
