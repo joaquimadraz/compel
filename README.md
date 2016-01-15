@@ -37,29 +37,38 @@ schema = Compel.hash.keys({
   })
 })
 
-Compel.run(object, schema)
+Compel.run(object, schema) # or schema.validate(object)
 ```
 
-Will return an [Hashie::Mash](https://github.com/intridea/hashie) object:
+Will return a `Compel::Result` object:
 
 ```ruby
-{
-  "first_name" => "Joaquim",
-  "birth_date" => "1989-0",
-  "address" => {
-    "line_one" => "Lisboa",
-    "line_two" => "-",
-    "post_code" => "1100",
-    "country_code" => "PT"
-  },
-  "errors" => {
+=> <Compel::Result
+  @errors={
     "last_name" => ["is required"],
-    "birth_date" => ["'1989-0' is not a parsable date with format: %Y-%m-%d"],
+    "birth_date" => ["'1989-0' is not a parsable datetime with format: %FT%T"],
     "address" => {
-      "post_code" => ["must match format ^\d{4}-\d{3}$"]
+      "post_code" => ["must match format ^\\d{4}-\\d{3}$"]
     }
-  }
-}
+  },
+  @valid=false,
+  @value={
+    "first_name" => "Joaquim",
+    "birth_date" => "1989-0",
+    "address" => {
+      "line_one" => "Lisboa",
+      "post_code" => "1100",
+      "country_code" => "PT",
+      "line_two" => "-"
+    },
+    "errors" => {
+      "last_name" => ["is required"],
+      "birth_date" => ["'1989-0' is not a parsable datetime with format: %FT%T"],
+      "address" => {
+        "post_code" => ["must match format ^\\d{4}-\\d{3}$"]
+      }
+    }
+  }>
 ```
 
 There are 4 ways to run validations:
