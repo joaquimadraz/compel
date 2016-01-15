@@ -10,7 +10,7 @@ module Compel
 
       def initialize(type)
         @type = type
-        @options = Hashie::Mash.new(required: false)
+        @options = default_options
       end
 
       def required?
@@ -31,6 +31,12 @@ module Compel
           "#{self.name.split('::')[1..-1].join('::')}"
         end
 
+      end
+
+      protected
+
+      def default_options
+        Hashie::Mash.new(required: false)
       end
 
     end

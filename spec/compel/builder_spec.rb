@@ -139,7 +139,7 @@ describe Compel::Builder do
             end
           end
 
-          it 'should raise_error for invalid #in values' do
+          it 'should raise exception for invalid #in values' do
             each_date_builder do |builder, klass|
               expect_raise_error_for(builder, [klass.new(2016, 1, 1), 'invalid_date'], klass)
             end
@@ -157,7 +157,7 @@ describe Compel::Builder do
             end
           end
 
-          it 'should raise_error for invalid value' do
+          it 'should raise exception for invalid value' do
             each_date_builder do |builder, klass|
               expect{ builder.max(1) }.to \
                 raise_error \
@@ -178,7 +178,7 @@ describe Compel::Builder do
             end
           end
 
-          it 'should raise_error for invalid value' do
+          it 'should raise exception for invalid value' do
             each_date_builder do |builder, klass|
               expect{ builder.min(1) }.to \
                 raise_error \
@@ -203,7 +203,7 @@ describe Compel::Builder do
             expect(builder.options[:in].length).to eq 2
           end
 
-          it 'should raise_error for invalid item on array' do
+          it 'should raise exception for invalid item on array' do
             expect{ builder.in([1, 'b']) }.to \
               raise_error \
                 Compel::TypeError,
@@ -320,6 +320,26 @@ describe Compel::Builder do
           builder = Compel.array.items(Compel.integer)
 
           expect(builder.options[:items].class).to be(Compel::Builder::Integer)
+        end
+
+      end
+
+      context 'Integer' do
+
+        context 'min' do
+
+          it 'should build schema' do
+            builder = Compel.integer.min(10)
+
+            expect(builder.options[:min]).to eq(10)
+          end
+
+          it 'should raise exception for invalid value' do
+            expect{ Compel.integer.min('ten') }.to \
+              raise_error \
+                Compel::TypeError, 'Builder::Integer #min value must be a valid Integer'
+          end
+
         end
 
       end
