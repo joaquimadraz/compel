@@ -23,20 +23,19 @@ module Compel
         self
       end
 
-      def coerce_values_ary!(value, method)
+      def coerce_values_ary!(values, method)
         begin
-          fail if value.nil?
+          fail if values.nil?
 
-          Coercion.coerce!(value, Coercion::Array)
+          Coercion.coerce!(values, Coercion::Array)
         rescue
           raise_array_error(method)
         end
 
-        unless value.all?{ |value| Coercion.coerce(value, self.type).valid? }
-          raise_array_values_error(method)
-        end
+        values.map{ |value| Coercion.coerce!(value, self.type) }
 
-        value
+        rescue
+          raise_array_values_error(method)
       end
 
       def coerce_value!(value, method)
@@ -47,8 +46,6 @@ module Compel
         rescue
           raise_value_error(method)
         end
-
-        value
       end
 
       def raise_array_error(method)

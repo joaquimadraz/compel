@@ -110,6 +110,27 @@ describe Compel::Builder do
 
         end
 
+        context '#max' do
+
+          it 'should set max value with string and coerce' do
+            builder.max('2016-01-01')
+
+            expect(builder.options[:max]).to eq(Date.new(2016, 1, 1))
+          end
+
+        end
+
+        context '#in' do
+
+          it 'should set max value with string and coerce' do
+            builder.in(['2016-01-01', '2016-01-02'])
+
+            expect(builder.options[:in]).to include(Date.new(2016, 1, 1))
+            expect(builder.options[:in]).to include(Date.new(2016, 1, 2))
+          end
+
+        end
+
       end
 
       context 'Date, DateTime and Time' do
