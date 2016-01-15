@@ -3,6 +3,8 @@ module Compel
 
     class Time < Schema
 
+      include CommonValue
+
       def initialize
         super(Coercion::Time)
       end

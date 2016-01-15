@@ -27,23 +27,23 @@ describe Compel::Validation do
 
   end
 
-  context 'in, within, range' do
+  context 'in, range' do
 
-    def expect_be_in_within_range(range, value)
-      [:in, :within].each do |key|
+    def expect_be_in_range(range, value)
+      [:in, :range].each do |key|
         errors = Compel::Validation.validate(value,  Compel::Coercion::String, { key => range })
         yield errors
       end
     end
 
     it 'should validate without errors' do
-      expect_be_in_within_range(['PT', 'UK'], 'PT') do |errors|
+      expect_be_in_range(['PT', 'UK'], 'PT') do |errors|
         expect(errors.empty?).to eq(true)
       end
     end
 
     it 'should validate with errors' do
-      expect_be_in_within_range(['PT', 'UK'], 'US') do |errors|
+      expect_be_in_range(['PT', 'UK'], 'US') do |errors|
         expect(errors).to include('must be within ["PT", "UK"]')
       end
     end

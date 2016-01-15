@@ -17,8 +17,6 @@ module Compel
 
     end
 
-    class Within < In; end
-
     class Range < In; end
 
   end

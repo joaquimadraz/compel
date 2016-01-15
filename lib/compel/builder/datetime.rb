@@ -3,6 +3,8 @@ module Compel
 
     class DateTime < Schema
 
+      include CommonValue
+
       def initialize
         super(Coercion::DateTime)
       end

@@ -8,19 +8,32 @@ describe Compel::Builder do
         builder = Compel.string
 
         expect(builder.type).to be(Compel::Coercion::String)
-        expect(builder.options.keys).to eq([])
+        expect(builder.options.keys).to include('required')
         expect(builder.required?).to be false
         expect(builder.default_value).to be nil
       end
 
       context 'Builder::CommonValue' do
 
-        context '#in, #range, #min, #max' do
+        context '#in, #range' do
 
           subject(:builder) { Compel.string }
 
           it 'should have value' do
-            [:in, :range, :min, :max].each do |method|
+            [:in, :range].each do |method|
+              builder.send(method, ["#{method}"])
+              expect(builder.options[method]).to eq(["#{method}"])
+            end
+          end
+
+        end
+
+        context '#min, #max' do
+
+          subject(:builder) { Compel.string }
+
+          it 'should have value' do
+            [:min, :max].each do |method|
               builder.send(method, "#{method}")
               expect(builder.options[method]).to eq("#{method}")
             end
@@ -99,9 +112,105 @@ describe Compel::Builder do
 
       end
 
+      context 'Date, DateTime and Time' do
+
+        def each_date_builder
+          [Date, DateTime, Time].each do |klass|
+            builder = Compel.send("#{klass.to_s.downcase}")
+
+            yield builder, klass
+          end
+        end
+
+        context 'in' do
+
+          def expect_raise_error_for(builder, values, klass)
+            expect{ builder.in(values) }.to \
+              raise_error \
+                Compel::TypeError,
+                  "All Builder::#{klass} #in values must be a valid #{klass}"
+          end
+
+          it 'should set in value' do
+            each_date_builder do |builder, klass|
+              builder.in([klass.new(2016, 1, 1), klass.new(2016, 1, 2)])
+
+              expect(builder.options[:in].length).to eq 2
+            end
+          end
+
+          it 'should raise_error for invalid #in values' do
+            each_date_builder do |builder, klass|
+              expect_raise_error_for(builder, [klass.new(2016, 1, 1), 'invalid_date'], klass)
+            end
+          end
+
+        end
+
+        context '#max' do
+
+          it 'should set max value' do
+            each_date_builder do |builder, klass|
+              builder.max(klass.new(2016, 1, 1))
+
+              expect(builder.options[:max]).to eq(klass.new(2016, 1, 1))
+            end
+          end
+
+          it 'should raise_error for invalid value' do
+            each_date_builder do |builder, klass|
+              expect{ builder.max(1) }.to \
+                raise_error \
+                  Compel::TypeError,
+                    "Builder::#{klass} #max value must be a valid #{klass}"
+            end
+          end
+
+        end
+
+        context '#min' do
+
+          it 'should set min value' do
+            each_date_builder do |builder, klass|
+              builder.min(klass.new(2016, 1, 1))
+
+              expect(builder.options[:min]).to eq(klass.new(2016, 1, 1))
+            end
+          end
+
+          it 'should raise_error for invalid value' do
+            each_date_builder do |builder, klass|
+              expect{ builder.min(1) }.to \
+                raise_error \
+                  Compel::TypeError,
+                    "Builder::#{klass} #min value must be a valid #{klass}"
+            end
+          end
+
+        end
+
+      end
+
       context 'String' do
 
         subject(:builder) { Compel.string }
+
+        context 'in' do
+
+          it 'should set in value' do
+            builder.in(['a', 'b'])
+
+            expect(builder.options[:in].length).to eq 2
+          end
+
+          it 'should raise_error for invalid item on array' do
+            expect{ builder.in([1, 'b']) }.to \
+              raise_error \
+                Compel::TypeError,
+                  "All Builder::String #in values must be a valid String"
+          end
+
+        end
 
         context '#format' do
 

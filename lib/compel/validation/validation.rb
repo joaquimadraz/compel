@@ -20,7 +20,6 @@ module Compel
       min: Validation::Min,
       max: Validation::Max,
       range: Validation::Range,
-      within: Validation::Within,
       format: Validation::Format,
       length: Validation::Length,
       min_length: Validation::MinLength,

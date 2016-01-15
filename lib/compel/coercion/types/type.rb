@@ -27,6 +27,14 @@ module Compel
         Coercion::Result.new(result, value, self.class)
       end
 
+      class << self
+
+        def human_name
+          "#{self.name.split('::')[-1]}"
+        end
+
+      end
+
     end
 
   end

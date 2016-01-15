@@ -10,11 +10,11 @@ module Compel
 
       def initialize(type)
         @type = type
-        @options = Hashie::Mash.new
+        @options = Hashie::Mash.new(required: false)
       end
 
       def required?
-        !!options[:required]
+        options[:required]
       end
 
       def default_value
@@ -23,6 +23,14 @@ module Compel
 
       def validate(object)
         Contract.new(object, self).validate
+      end
+
+      class << self
+
+        def human_name
+          "#{self.name.split('::')[1..-1].join('::')}"
+        end
+
       end
 
     end
