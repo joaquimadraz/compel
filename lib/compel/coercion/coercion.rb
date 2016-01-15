@@ -1,4 +1,5 @@
 require 'compel/coercion/types/type'
+require 'compel/coercion/types/date_type'
 require 'compel/coercion/types/integer'
 require 'compel/coercion/types/float'
 require 'compel/coercion/types/string'
