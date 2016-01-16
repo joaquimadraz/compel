@@ -169,6 +169,8 @@ Methods `length`, `min_length` and `max_length` turn the object to validate into
 - `min(``value``)`
 - `max(``value``)`
 - `format(``regexp``)`
+- `email`
+- `url`
 
 ==========================
 
