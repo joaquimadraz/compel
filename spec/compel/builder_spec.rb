@@ -216,7 +216,7 @@ describe Compel::Builder do
 
         subject(:builder) { Compel.string }
 
-        context 'in' do
+        context '#in' do
 
           it 'should set in value' do
             builder.in(['a', 'b'])
@@ -359,6 +359,45 @@ describe Compel::Builder do
             expect{ Compel.integer.min('ten') }.to \
               raise_error \
                 Compel::TypeError, 'Builder::Integer #min value must be a valid Integer'
+          end
+
+        end
+
+      end
+
+      context 'Any' do
+
+        context '#if' do
+
+          it 'should have a proc' do
+            _proc = ->(value) { value == 1 }
+
+            schema = Compel.any.if(_proc)
+
+            expect(schema.options[:if]).to eq _proc
+          end
+
+          it 'should have a block with string or symbol value' do
+            schema = Compel.any.if{:is_valid_one}
+            expect(schema.options[:if].call).to eq :is_valid_one
+
+            schema = Compel.any.if{'is_valid_one'}
+            expect(schema.options[:if].call).to eq 'is_valid_one'
+          end
+
+          it 'should raise_error for missing value' do
+            expect{ Compel.any.if('proc') }.to \
+              raise_error Compel::TypeError, 'invalid proc for if'
+          end
+
+          it 'should raise_error for invalid proc' do
+            expect{ Compel.any.if('proc') }.to \
+              raise_error Compel::TypeError, 'invalid proc for if'
+          end
+
+          it 'should raise_error for invalid proc arity' do
+            expect{ Compel.any.if(->(a, b) { a == b }) }.to \
+              raise_error Compel::TypeError, 'invalid proc for if'
           end
 
         end
@@ -520,6 +559,27 @@ describe Compel::Builder do
               result = schema.validate(OpenStruct)
 
               expect(result.valid?).to be true
+            end
+
+          end
+
+        end
+
+        context '#if' do
+
+          context 'valid' do
+
+            it 'should validate with custom method' do
+              def is_valid_one(value)
+                value == 1
+              end
+
+
+              schema = Compel.any.if{:is_valid_one}.required
+              schema.validate(@hash_value[:a])
+
+              schema = Compel.any.if(->(value) { value == 1 }).required
+              schema.validate(@hash_value[:a])
             end
 
           end

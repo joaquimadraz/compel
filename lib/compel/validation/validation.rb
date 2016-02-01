@@ -7,6 +7,7 @@ require 'compel/validation/conditions/format'
 require 'compel/validation/conditions/length'
 require 'compel/validation/conditions/min_length'
 require 'compel/validation/conditions/max_length'
+require 'compel/validation/conditions/if'
 
 require 'compel/validation/result'
 
@@ -24,6 +25,7 @@ module Compel
       length: Validation::Length,
       min_length: Validation::MinLength,
       max_length: Validation::MaxLength,
+      if: Validation::If,
     }
 
     def validate(value, type, options)
