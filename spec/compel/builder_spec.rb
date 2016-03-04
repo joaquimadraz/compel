@@ -8,7 +8,7 @@ describe Compel::Builder do
         builder = Compel.string
 
         expect(builder.type).to be(Compel::Coercion::String)
-        expect(builder.options.keys).to include('required')
+        expect(builder.options.keys).to include(:required)
         expect(builder.required?).to be false
         expect(builder.default_value).to be nil
       end
@@ -298,14 +298,14 @@ describe Compel::Builder do
 
           keys_schemas = schema.options[:keys]
 
-          expect(keys_schemas.a.type).to be Compel::Coercion::Float
-          expect(keys_schemas.b.type).to be Compel::Coercion::String
-          expect(keys_schemas.c.type).to be Compel::Coercion::Hash
-          expect(keys_schemas.d.type).to be Compel::Coercion::JSON
-          expect(keys_schemas.e.type).to be Compel::Coercion::Time
-          expect(keys_schemas.f.type).to be Compel::Coercion::DateTime
-          expect(keys_schemas.g.type).to be Compel::Coercion::Date
-          expect(keys_schemas.h.type).to be Compel::Coercion::Integer
+          expect(keys_schemas[:a].type).to be Compel::Coercion::Float
+          expect(keys_schemas[:b].type).to be Compel::Coercion::String
+          expect(keys_schemas[:c].type).to be Compel::Coercion::Hash
+          expect(keys_schemas[:d].type).to be Compel::Coercion::JSON
+          expect(keys_schemas[:e].type).to be Compel::Coercion::Time
+          expect(keys_schemas[:f].type).to be Compel::Coercion::DateTime
+          expect(keys_schemas[:g].type).to be Compel::Coercion::Date
+          expect(keys_schemas[:h].type).to be Compel::Coercion::Integer
         end
 
         it 'should raise error for invalid #keys' do
@@ -580,7 +580,7 @@ describe Compel::Builder do
             a: Compel.float.required
           })
 
-          expect(schema.validate({ a: nil }).errors['a']).to \
+          expect(schema.validate({ a: nil }).errors[:a]).to \
             include('is required')
         end
 
@@ -782,8 +782,8 @@ describe Compel::Builder do
             ])
 
             expect(result.valid?).to be false
-            expect(result.errors['1']['b']).to include('is required')
-            expect(result.errors['2']['b']).to include('must match format ^abc$')
+            expect(result.errors['1'][:b]).to include('is required')
+            expect(result.errors['2'][:b]).to include('must match format ^abc$')
 
             expect(result.value[0][:a]).to eq('A')
             expect(result.value[0][:b]).to eq('abc')
@@ -819,9 +819,9 @@ describe Compel::Builder do
             expect(result.value[2][:a]).to be_nil
             expect(result.value[2][:b]).to eq([1, nil, 'a'])
 
-            expect(result.errors['0']['b']).to include('is required')
-            expect(result.errors['2']['b']['1']).to include('is required')
-            expect(result.errors['2']['b']['2']).to \
+            expect(result.errors['0'][:b]).to include('is required')
+            expect(result.errors['2'][:b]['1']).to include('is required')
+            expect(result.errors['2'][:b]['2']).to \
               include("'a' is not a valid Integer")
           end
 

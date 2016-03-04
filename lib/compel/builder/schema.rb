@@ -36,7 +36,7 @@ module Compel
       protected
 
       def default_options
-        Hashie::Mash.new(required: false)
+        { required: false }
       end
 
     end
