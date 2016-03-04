@@ -12,12 +12,13 @@ module Compel
       private
 
       def symbolyze_keys(hash)
-        hash.keys.each_with_object({}) do |key, symbolyzed_hash|
-          symbolyzed_hash[key.to_sym] = hash[key]
+        {}.tap do |symbolyzed_hash|
+          hash.each do |key, value|
+            symbolyzed_hash[key.to_sym] = value
+          end
         end
       end
     end
 
   end
 end
-
