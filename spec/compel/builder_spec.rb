@@ -613,7 +613,7 @@ describe Compel::Builder do
             result = schema.validate({ a: 1, b: 2, c: 3 })
 
             expect(result.errors[:base]).to \
-              include("must be {\"a\"=>1, \"b\"=>2, \"c\"=>{\"d\"=>3, \"e\"=>4}}")
+              include("must be #{value.to_hash}")
           end
 
           it 'should validate without errors' do

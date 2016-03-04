@@ -149,8 +149,8 @@ describe Compel::Coercion do
         }, Compel::Coercion::Hash)
 
         expect(value).to eq({
-          'first_name' => 'Joaquim',
-          'last_name' => 'Adráz'
+          first_name: 'Joaquim',
+          last_name: 'Adráz'
         })
       end
 
@@ -161,20 +161,20 @@ describe Compel::Coercion do
         }, Compel::Coercion::Hash)
 
         expect(value).to eq({
-          'first_name' => 'Joaquim',
-          'last_name' => 'Adráz'
+          first_name: 'Joaquim',
+          last_name: 'Adráz'
         })
       end
 
       it 'should coerce 2' do
-        value = Compel::Coercion.coerce!(Hashie::Mash.new({
+        value = Compel::Coercion.coerce!({
           first_name: 'Joaquim',
           last_name: 'Adráz'
-        }), Compel::Coercion::Hash)
+        }, Compel::Coercion::Hash)
 
         expect(value).to eq({
-          'first_name' => 'Joaquim',
-          'last_name' => 'Adráz'
+          first_name: 'Joaquim',
+          last_name: 'Adráz'
         })
       end
 

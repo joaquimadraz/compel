@@ -4,7 +4,10 @@ module Compel
     class Hash < Type
 
       def coerce_value
-        Hashie::Mash.new(value).to_hash rescue nil
+        if ::Hash.try_convert(value)
+          # Symbolize keys
+          ::JSON.parse(value.to_json, symbolize_names: true)
+        end
       end
 
     end
