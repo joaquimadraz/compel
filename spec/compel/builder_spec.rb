@@ -557,19 +557,19 @@ describe Compel::Builder do
 
           expect(result.value).to \
             eq({
-              "first_name" => "Joaquim",
-              "birth_date" => "1989-0",
-              "address" => {
-                "line_one" => "Lisboa",
-                "post_code" => "1100",
-                "country_code" => "PT",
-                "line_two" => "-"
+              first_name: 'Joaquim',
+              birth_date: '1989-0',
+              address: {
+                line_one: 'Lisboa',
+                post_code: '1100',
+                country_code: 'PT',
+                line_two: '-'
               },
-              "errors" => {
-                "last_name" => ["is required"],
-                "birth_date" => ["'1989-0' is not a parsable date with format: %Y-%m-%d"],
-                "address" => {
-                  "post_code" => ["must match format ^\\d{4}-\\d{3}$"]
+              errors: {
+                last_name: ['is required'],
+                birth_date: ["'1989-0' is not a parsable date with format: %Y-%m-%d"],
+                address: {
+                  post_code: ["must match format ^\\d{4}-\\d{3}$"]
                 }
               }
             })
@@ -763,9 +763,9 @@ describe Compel::Builder do
             expect(result.valid?).to be true
             expect(result.value).to eq \
               [
-                Hashie::Mash.new({ a: 'A', b: 1 }),
-                Hashie::Mash.new({ a: 'B' }),
-                Hashie::Mash.new({ a: 'C', b: 3 })
+                { a: 'A', b: 1 },
+                { a: 'B' },
+                { a: 'C', b: 3 }
               ]
           end
 

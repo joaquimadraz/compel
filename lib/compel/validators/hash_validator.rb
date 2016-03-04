@@ -20,8 +20,6 @@ module Compel
           return self
         end
 
-        @input = Hashie::Mash.new(input)
-
         keys_validator = \
           HashKeysValidator.validate(input, keys_schemas)
 
@@ -32,7 +30,7 @@ module Compel
       end
 
       def serialize
-        coerced = output.is_a?(Hash) ? input.merge(output) : Hashie::Mash.new
+        coerced = output.is_a?(Hash) ? input.merge(output) : {}
 
         coerced.tap do |hash|
           if !errors.empty?
