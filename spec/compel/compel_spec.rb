@@ -100,7 +100,7 @@ describe Compel do
           result = Compel.run({}, user_schema)
 
           expect(result.valid?).to be false
-          expect(result.errors[:user]).to include('is required')
+          expect(result.errors['user']).to include('is required')
         end
 
         it 'should not compel for missing required key'  do
@@ -326,7 +326,7 @@ describe Compel do
           result = Compel.run({ admin: nil }, schema)
 
           expect(result.valid?).to be false
-          expect(result.errors[:admin]).to include('is required')
+          expect(result.errors['admin']).to include('is required')
         end
 
       end
@@ -435,7 +435,7 @@ describe Compel do
         result = Compel.run({ birth_date: '1989-08-06' }, schema)
 
         expect(result.valid?).to be false
-        expect(result.errors[:birth_date]).to \
+        expect(result.errors['birth_date']).to \
           include("'1989-08-06' is not a parsable datetime with format: %FT%T")
       end
 

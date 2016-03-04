@@ -3,7 +3,7 @@ module Compel
   class Errors
 
     def initialize
-      @errors = Hashie::Mash.new
+      @errors = {}
     end
 
     def add(key, error)
