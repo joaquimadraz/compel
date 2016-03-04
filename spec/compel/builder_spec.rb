@@ -4,7 +4,7 @@ describe Compel::Builder do
 
     context 'Build' do
 
-      it 'should build new Schema for givin type' do
+      it 'should build new Schema for given type' do
         builder = Compel.string
 
         expect(builder.type).to be(Compel::Coercion::String)
