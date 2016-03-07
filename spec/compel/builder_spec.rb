@@ -22,7 +22,7 @@ describe Compel::Builder do
           it 'should have value' do
             [:in, :range].each do |method|
               builder.send(method, ["#{method}"])
-              expect(builder.options[method]).to eq(["#{method}"])
+              expect(builder.options[method][:value]).to eq(["#{method}"])
             end
           end
 
@@ -35,7 +35,7 @@ describe Compel::Builder do
           it 'should have value' do
             [:min, :max].each do |method|
               builder.send(method, "#{method}")
-              expect(builder.options[method]).to eq("#{method}")
+              expect(builder.options[method][:value]).to eq("#{method}")
             end
           end
 
@@ -53,7 +53,7 @@ describe Compel::Builder do
 
             [:is, :default].each do |method|
               builder.send(method, "#{method}")
-              expect(builder.options[method]).to eq("#{method}")
+              expect(builder.options[method][:value]).to eq("#{method}")
             end
           end
 
@@ -78,7 +78,7 @@ describe Compel::Builder do
           it 'should have value' do
             builder.length(5)
 
-            expect(builder.options[:length]).to be 5
+            expect(builder.options[:length][:value]).to be 5
           end
 
           it 'should raise exception for invalid type' do
@@ -99,13 +99,13 @@ describe Compel::Builder do
           it 'should have value' do
             builder.format('%d-%m-%Y')
 
-            expect(builder.options[:format]).to eq('%d-%m-%Y')
+            expect(builder.options[:format][:value]).to eq('%d-%m-%Y')
           end
 
           it 'should have value' do
             builder.iso8601
 
-            expect(builder.options[:format]).to eq('%Y-%m-%d')
+            expect(builder.options[:format][:value]).to eq('%Y-%m-%d')
           end
 
         end
@@ -115,7 +115,7 @@ describe Compel::Builder do
           it 'should set max value with string and coerce' do
             builder.max('2016-01-01')
 
-            expect(builder.options[:max]).to eq(Date.new(2016, 1, 1))
+            expect(builder.options[:max][:value]).to eq(Date.new(2016, 1, 1))
           end
 
         end
@@ -125,8 +125,8 @@ describe Compel::Builder do
           it 'should set max value with string and coerce' do
             builder.in(['2016-01-01', '2016-01-02'])
 
-            expect(builder.options[:in]).to include(Date.new(2016, 1, 1))
-            expect(builder.options[:in]).to include(Date.new(2016, 1, 2))
+            expect(builder.options[:in][:value]).to include(Date.new(2016, 1, 1))
+            expect(builder.options[:in][:value]).to include(Date.new(2016, 1, 2))
           end
 
         end
@@ -156,7 +156,7 @@ describe Compel::Builder do
             each_date_builder do |builder, klass|
               builder.in([klass.new(2016, 1, 1), klass.new(2016, 1, 2)])
 
-              expect(builder.options[:in].length).to eq 2
+              expect(builder.options[:in][:value].length).to eq 2
             end
           end
 
@@ -174,7 +174,7 @@ describe Compel::Builder do
             each_date_builder do |builder, klass|
               builder.max(klass.new(2016, 1, 1))
 
-              expect(builder.options[:max]).to eq(klass.new(2016, 1, 1))
+              expect(builder.options[:max][:value]).to eq(klass.new(2016, 1, 1))
             end
           end
 
@@ -195,7 +195,7 @@ describe Compel::Builder do
             each_date_builder do |builder, klass|
               builder.min(klass.new(2016, 1, 1))
 
-              expect(builder.options[:min]).to eq(klass.new(2016, 1, 1))
+              expect(builder.options[:min][:value]).to eq(klass.new(2016, 1, 1))
             end
           end
 
@@ -221,7 +221,7 @@ describe Compel::Builder do
           it 'should set in value' do
             builder.in(['a', 'b'])
 
-            expect(builder.options[:in].length).to eq 2
+            expect(builder.options[:in][:value].length).to eq 2
           end
 
           it 'should raise exception for invalid item on array' do
@@ -243,7 +243,7 @@ describe Compel::Builder do
           it 'should have value' do
             builder.format(/1/)
 
-            expect(builder.options[:format]).to eq(/1/)
+            expect(builder.options[:format][:value]).to eq(/1/)
           end
 
         end
@@ -258,7 +258,7 @@ describe Compel::Builder do
           it 'should have value' do
             builder.min_length(4)
 
-            expect(builder.options[:min_length]).to eq(4)
+            expect(builder.options[:min_length][:value]).to eq(4)
           end
 
         end
@@ -273,7 +273,7 @@ describe Compel::Builder do
           it 'should have value' do
             builder.max_length(10)
 
-            expect(builder.options[:max_length]).to eq(10)
+            expect(builder.options[:max_length][:value]).to eq(10)
           end
 
         end
@@ -296,7 +296,7 @@ describe Compel::Builder do
             h: Compel.integer
           })
 
-          keys_schemas = schema.options[:keys]
+          keys_schemas = schema.options[:keys][:value]
 
           expect(keys_schemas[:a].type).to be Compel::Coercion::Float
           expect(keys_schemas[:b].type).to be Compel::Coercion::String
@@ -340,7 +340,7 @@ describe Compel::Builder do
         it 'should have value' do
           builder = Compel.array.items(Compel.integer)
 
-          expect(builder.options[:items].class).to be(Compel::Builder::Integer)
+          expect(builder.options[:items][:value].class).to be(Compel::Builder::Integer)
         end
 
       end
@@ -352,7 +352,7 @@ describe Compel::Builder do
           it 'should build schema' do
             builder = Compel.integer.min(10)
 
-            expect(builder.options[:min]).to eq(10)
+            expect(builder.options[:min][:value]).to eq(10)
           end
 
           it 'should raise exception for invalid value' do

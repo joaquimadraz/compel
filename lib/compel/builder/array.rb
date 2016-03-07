@@ -12,12 +12,14 @@ module Compel
           raise Compel::TypeError, '#items must be a valid Schema'
         end
 
-        options[:items] = schema
+        build_option :items, schema
+
         self
       end
 
       def is(value)
-        options[:is] = Coercion.coerce!(value, Coercion::Array)
+        build_option :is, Coercion.coerce!(value, Coercion::Array)
+
         self
       end
 

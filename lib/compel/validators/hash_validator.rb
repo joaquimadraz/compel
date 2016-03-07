@@ -12,7 +12,7 @@ module Compel
         super
 
         @errors = Errors.new
-        @keys_schemas = schema.options[:keys]
+        @keys_schemas = schema.options[:keys][:value]
       end
 
       def validate

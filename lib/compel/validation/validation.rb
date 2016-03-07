@@ -27,16 +27,21 @@ module Compel
     }
 
     def validate(value, type, options)
-      if value.nil? && !!options[:required]
+      if value.nil? && !!(options[:required] && options[:required][:value])
         return ['is required']
       end
 
       errors = Errors.new
 
-      options.each do |option, option_value|
-        next unless condition_exists?(option)
+      options.each do |name, option_values|
+        next unless condition_exists?(name)
 
-        result = condition_klass(option).validate(value, option_value, type: type)
+        cloned_options = option_values.dup
+
+        option_value = cloned_options.delete(:value)
+
+        result = condition_klass(name).validate \
+          value, option_value, cloned_options.merge(type: type)
 
         unless result.valid?
           errors.add :base, result.error_message
@@ -46,12 +51,12 @@ module Compel
       errors.to_hash[:base] || []
     end
 
-    def condition_exists?(option)
-      CONDITIONS.keys.include?(option.to_sym)
+    def condition_exists?(option_name)
+      CONDITIONS.keys.include?(option_name.to_sym)
     end
 
-    def condition_klass(option)
-      CONDITIONS[option.to_sym]
+    def condition_klass(option_name)
+      CONDITIONS[option_name.to_sym]
     end
 
     extend self

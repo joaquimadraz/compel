@@ -18,17 +18,20 @@ module Compel
       end
 
       def format(regex)
-        options[:format] = Coercion.coerce!(regex, Coercion::Regexp)
+        build_option :format, Coercion.coerce!(regex, Coercion::Regexp)
+
         self
       end
 
       def url
-        options[:format] = URL_REGEX
+        build_option :format, URL_REGEX
+
         self
       end
 
       def email
-        options[:format] = EMAIL_REGEX
+        build_option :format, EMAIL_REGEX
+
         self
       end
 

@@ -8,35 +8,35 @@ module Compel
       attr_reader :type,
                   :options
 
+      def self.human_name
+        "#{self.name.split('::')[1..-1].join('::')}"
+      end
+
       def initialize(type)
         @type = type
         @options = default_options
       end
 
       def required?
-        options[:required]
+        options[:required][:value]
       end
 
       def default_value
-        options[:default]
+        options[:default][:value] if options[:default]
       end
 
       def validate(object)
         Contract.new(object, self).validate
       end
 
-      class << self
+      def build_option(name, value, extra_options = {})
+        options[name] = { value: value }.merge(extra_options)
 
-        def human_name
-          "#{self.name.split('::')[1..-1].join('::')}"
-        end
-
+        self
       end
 
-      protected
-
       def default_options
-        { required: false }
+        { required: { value: false } }
       end
 
     end

@@ -6,11 +6,12 @@ module Compel
       def initialize
         super(Coercion::Hash)
 
-        options[:keys] = {}
+        options[:keys] = { value: {} }
       end
 
       def keys(object)
-        options[:keys] = coerce_keys_schemas(object)
+        build_option :keys, coerce_keys_schemas(object)
+
         self
       end
 

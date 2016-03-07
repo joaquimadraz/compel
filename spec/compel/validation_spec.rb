@@ -3,13 +3,13 @@ describe Compel::Validation do
   context 'required' do
 
     it 'should validate without errors' do
-      errors = Compel::Validation.validate(123, Compel::Coercion::Integer, { required: true })
+      errors = Compel::Validation.validate(123, Compel::Coercion::Integer, { required: { value: true } })
 
       expect(errors.empty?).to eq(true)
     end
 
     it 'should validate with error' do
-      errors = Compel::Validation.validate(nil,  Compel::Coercion::Integer, { required: true })
+      errors = Compel::Validation.validate(nil,  Compel::Coercion::Integer, { required: { value: true } })
 
       expect(errors.empty?).to eq(false)
       expect(errors).to eq(['is required'])
@@ -20,7 +20,7 @@ describe Compel::Validation do
   context 'length' do
 
     it 'should validate without errors' do
-      errors = Compel::Validation.validate(123,  Compel::Coercion::Integer, { length: 3 })
+      errors = Compel::Validation.validate(123,  Compel::Coercion::Integer, { length: { value: 3 } })
 
       expect(errors.empty?).to eq(true)
     end
@@ -31,7 +31,7 @@ describe Compel::Validation do
 
     def expect_be_in_range(range, value)
       [:in, :range].each do |key|
-        errors = Compel::Validation.validate(value,  Compel::Coercion::String, { key => range })
+        errors = Compel::Validation.validate(value,  Compel::Coercion::String, { key => { value: range } })
         yield errors
       end
     end
@@ -51,13 +51,13 @@ describe Compel::Validation do
     context 'range' do
 
       it 'should validate without errors' do
-        errors = Compel::Validation.validate(2, Compel::Coercion::Integer, range: (1..3))
+        errors = Compel::Validation.validate(2, Compel::Coercion::Integer, range: { value: (1..3) })
 
         expect(errors.empty?).to eq(true)
       end
 
       it 'should validate with errors' do
-        errors = Compel::Validation.validate(4, Compel::Coercion::Integer, range: (1..3))
+        errors = Compel::Validation.validate(4, Compel::Coercion::Integer, range: { value: (1..3) })
 
         expect(errors).to include('must be within 1..3')
       end
@@ -70,14 +70,14 @@ describe Compel::Validation do
 
     it 'should validate with errors' do
       format = /^abcd/
-      errors = Compel::Validation.validate('acb', Compel::Coercion::String, format: format)
+      errors = Compel::Validation.validate('acb', Compel::Coercion::String, format: { value: format })
 
       expect(errors).to include("must match format ^abcd")
     end
 
     it 'should validate without errors' do
       format = /abcd/
-      errors = Compel::Validation.validate('abcd', Compel::Coercion::String, format: format)
+      errors = Compel::Validation.validate('abcd', Compel::Coercion::String, format: { value: format })
       expect(errors.empty?).to eq(true)
     end
 
@@ -86,17 +86,17 @@ describe Compel::Validation do
   context 'is' do
 
     it 'should validate with errors' do
-      errors = Compel::Validation.validate('abcd', Compel::Coercion::Integer, is: 123)
+      errors = Compel::Validation.validate('abcd', Compel::Coercion::Integer, is: { value: 123 })
       expect(errors).to include('must be 123')
     end
 
     it 'should validate with errors 1' do
-      errors = Compel::Validation.validate(nil, Compel::Coercion::Integer, is: 123)
+      errors = Compel::Validation.validate(nil, Compel::Coercion::Integer, is: { value: 123 })
       expect(errors).to include('must be 123')
     end
 
     it 'should validate without errors' do
-      errors = Compel::Validation.validate(123, Compel::Coercion::Integer, is: 123)
+      errors = Compel::Validation.validate(123, Compel::Coercion::Integer, is: { value: 123 })
       expect(errors.empty?).to eq(true)
     end
 
@@ -105,31 +105,31 @@ describe Compel::Validation do
   context 'min' do
 
     it 'should validate without errors for Integer' do
-      errors = Compel::Validation.validate(2, Compel::Coercion::Integer, min: 1)
+      errors = Compel::Validation.validate(2, Compel::Coercion::Integer, min: { value: 1 })
 
       expect(errors.empty?).to be true
     end
 
     it 'should validate without errors for String' do
-      errors = Compel::Validation.validate('b', Compel::Coercion::String, min: 'a')
+      errors = Compel::Validation.validate('b', Compel::Coercion::String, min: { value: 'a' })
 
       expect(errors.empty?).to be true
     end
 
     it 'should validate with errors' do
-      errors = Compel::Validation.validate(1, Compel::Coercion::Integer, min: 3)
+      errors = Compel::Validation.validate(1, Compel::Coercion::Integer, min: { value: 3 })
 
       expect(errors).to include('cannot be less than 3')
     end
 
     it 'should validate with errors for String' do
-      errors = Compel::Validation.validate('a', Compel::Coercion::String, min: 'b')
+      errors = Compel::Validation.validate('a', Compel::Coercion::String, min: { value: 'b' })
 
       expect(errors).to include('cannot be less than b')
     end
 
     it 'should validate with errors for Float' do
-      errors = Compel::Validation.validate(1.54, Compel::Coercion::Float, min: 1.55)
+      errors = Compel::Validation.validate(1.54, Compel::Coercion::Float, min: { value: 1.55 })
 
       expect(errors).to include('cannot be less than 1.55')
     end
@@ -139,37 +139,37 @@ describe Compel::Validation do
   context 'max' do
 
     it 'should validate without errors' do
-      errors = Compel::Validation.validate(5, Compel::Coercion::Integer, min: 5)
+      errors = Compel::Validation.validate(5, Compel::Coercion::Integer, min: { value: 5 })
 
       expect(errors.empty?).to be true
     end
 
     it 'should validate with errors' do
-      errors = Compel::Validation.validate(3, Compel::Coercion::Integer, max: 2)
+      errors = Compel::Validation.validate(3, Compel::Coercion::Integer, max: { value: 2 })
 
       expect(errors).to include('cannot be greater than 2')
     end
 
     it 'should validate without errors for Integer' do
-      errors = Compel::Validation.validate(2, Compel::Coercion::Integer, max: 3)
+      errors = Compel::Validation.validate(2, Compel::Coercion::Integer, max: { value: 3 })
 
       expect(errors.empty?).to be true
     end
 
     it 'should validate without errors for String' do
-      errors = Compel::Validation.validate('b', Compel::Coercion::String, max: 'd')
+      errors = Compel::Validation.validate('b', Compel::Coercion::String, max: { value: 'd' })
 
       expect(errors.empty?).to be true
     end
 
     it 'should validate with errors for String' do
-      errors = Compel::Validation.validate('c', Compel::Coercion::String, max: 'b')
+      errors = Compel::Validation.validate('c', Compel::Coercion::String, max: { value: 'b' })
 
       expect(errors).to include('cannot be greater than b')
     end
 
     it 'should validate with errors for Float' do
-      errors = Compel::Validation.validate(1.56, Compel::Coercion::Float, max: 1.55)
+      errors = Compel::Validation.validate(1.56, Compel::Coercion::Float, max: { value: 1.55 })
 
       expect(errors).to include('cannot be greater than 1.55')
     end
@@ -179,19 +179,19 @@ describe Compel::Validation do
   context 'min_length' do
 
     it 'should validate with errors 1' do
-      errors = Compel::Validation.validate('a', Compel::Coercion::String, min_length: 2)
+      errors = Compel::Validation.validate('a', Compel::Coercion::String, min_length: { value: 2 })
 
       expect(errors).to include('cannot have length less than 2')
     end
 
     it 'should validate without errors' do
-      errors = Compel::Validation.validate('ab', Compel::Coercion::String, min_length: 2)
+      errors = Compel::Validation.validate('ab', Compel::Coercion::String, min_length: { value: 2 })
 
       expect(errors.empty?).to eq(true)
     end
 
     it 'should validate without errors 1' do
-      errors = Compel::Validation.validate(3, Compel::Coercion::Integer, min_length: 2)
+      errors = Compel::Validation.validate(3, Compel::Coercion::Integer, min_length: { value: 2 })
 
       expect(errors).to include('cannot have length less than 2')
     end
@@ -201,19 +201,19 @@ describe Compel::Validation do
   context 'max_length' do
 
     it 'should validate with errors 1' do
-      errors = Compel::Validation.validate('abcdef', Compel::Coercion::String, max_length: 5)
+      errors = Compel::Validation.validate('abcdef', Compel::Coercion::String, max_length: { value: 5 })
 
       expect(errors).to include('cannot have length greater than 5')
     end
 
     it 'should validate without errors' do
-      errors = Compel::Validation.validate('abcde', Compel::Coercion::String, max_length: 5)
+      errors = Compel::Validation.validate('abcde', Compel::Coercion::String, max_length: { value: 5 })
 
       expect(errors.empty?).to eq(true)
     end
 
     it 'should validate without errors 1' do
-      errors = Compel::Validation.validate(1, Compel::Coercion::Integer, max_length: 2)
+      errors = Compel::Validation.validate(1, Compel::Coercion::Integer, max_length: { value: 2 })
 
       expect(errors.empty?).to eq(true)
     end

@@ -6,7 +6,11 @@ module Compel
       attr_reader :format
 
       def coerce_value
-        @format = options[:format] || default_format
+        @format = default_format
+
+        if options[:format]
+          @format = options[:format][:value]
+        end
 
         if value.is_a?(klass)
           @value = value.strftime(format)

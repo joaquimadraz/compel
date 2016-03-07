@@ -10,7 +10,7 @@ module Compel
 
         @errors = Errors.new
         @output = []
-        @items_schema = schema.options[:items]
+        @items_schema = schema.options[:items][:value] if schema.options[:items]
       end
 
       def validate

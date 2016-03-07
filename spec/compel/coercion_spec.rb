@@ -67,7 +67,8 @@ describe Compel::Coercion do
       end
 
       it 'should coerce with format' do
-        value = Compel::Coercion.coerce!('22-12-2015', Compel::Coercion::Date, { format: '%d-%m-%Y' })
+        value = Compel::Coercion.coerce! \
+          '22-12-2015', Compel::Coercion::Date, { format: { value: '%d-%m-%Y' } }
 
         expect(value).to eq(Date.strptime('22-12-2015', '%d-%m-%Y'))
       end
@@ -98,7 +99,7 @@ describe Compel::Coercion do
       it 'should coerce' do
         [DateTime, Time].each do |time_klass|
           value = Compel::Coercion.coerce! \
-            '2015-12-22', Compel::Coercion.const_get("#{time_klass}"), format: '%Y-%m-%d'
+            '2015-12-22', Compel::Coercion.const_get("#{time_klass}"), format: { value: '%Y-%m-%d' }
 
           expect(value).to be_a time_klass
           expect(value.year).to eq(2015)

@@ -10,12 +10,14 @@ module Compel
       end
 
       def format(value)
-        options[:format] = value
+        build_option :format, value
+
         self
       end
 
       def iso8601
-        options[:format] = '%FT%T'
+        build_option :format, '%FT%T'
+
         self
       end
 
