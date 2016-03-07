@@ -21,12 +21,12 @@ module Compel
         build_option :format, Coercion.coerce!(regex, Coercion::Regexp), options
       end
 
-      def url
-        build_option :format, URL_REGEX
+      def url(options = {})
+        build_option :format, URL_REGEX, options
       end
 
-      def email
-        build_option :format, EMAIL_REGEX
+      def email(options = {})
+        build_option :format, EMAIL_REGEX, options
       end
 
     end

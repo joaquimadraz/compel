@@ -9,8 +9,8 @@ module Compel
         options[:keys] = { value: {} }
       end
 
-      def keys(object)
-        build_option :keys, coerce_keys_schemas(object)
+      def keys(object, options = {})
+        build_option :keys, coerce_keys_schemas(object), options
       end
 
       private

@@ -3,20 +3,20 @@ module Compel
 
     module CommonValue
 
-      def in(value)
-        build_option :in, coerce_values_ary!(value, :in)
+      def in(value, options = {})
+        build_option :in, coerce_values_ary!(value, :in), options
       end
 
-      def range(value)
-        build_option :range, coerce_values_ary!(value, :range)
+      def range(value, options = {})
+        build_option :range, coerce_values_ary!(value, :range), options
       end
 
-      def min(value)
-        build_option :min, coerce_value!(value, :min)
+      def min(value, options = {})
+        build_option :min, coerce_value!(value, :min), options
       end
 
-      def max(value)
-        build_option :max, coerce_value!(value, :max)
+      def max(value, options = {})
+        build_option :max, coerce_value!(value, :max), options
       end
 
       def coerce_values_ary!(values, method)

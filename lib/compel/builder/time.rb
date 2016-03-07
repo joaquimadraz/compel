@@ -9,12 +9,12 @@ module Compel
         super(Coercion::Time)
       end
 
-      def format(value)
-        build_option :format, value
+      def format(value, options = {})
+        build_option :format, value, options
       end
 
-      def iso8601
-        build_option :format, '%FT%T'
+      def iso8601(options = {})
+        build_option :format, '%FT%T', options
       end
 
     end
