@@ -11,8 +11,6 @@ module Compel
 
       def keys(object)
         build_option :keys, coerce_keys_schemas(object)
-
-        self
       end
 
       private

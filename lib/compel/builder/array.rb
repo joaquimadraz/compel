@@ -13,14 +13,10 @@ module Compel
         end
 
         build_option :items, schema
-
-        self
       end
 
       def is(value)
         build_option :is, Coercion.coerce!(value, Coercion::Array)
-
-        self
       end
 
     end

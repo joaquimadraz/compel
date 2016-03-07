@@ -11,8 +11,6 @@ module Compel
         Coercion.coerce!(value, Coercion::Boolean)
 
         build_option :is, value
-
-        self
       end
 
     end

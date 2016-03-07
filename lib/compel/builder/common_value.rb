@@ -5,26 +5,18 @@ module Compel
 
       def in(value)
         build_option :in, coerce_values_ary!(value, :in)
-
-        self
       end
 
       def range(value)
         build_option :range, coerce_values_ary!(value, :range)
-
-        self
       end
 
       def min(value)
         build_option :min, coerce_value!(value, :min)
-
-        self
       end
 
       def max(value)
         build_option :max, coerce_value!(value, :max)
-
-        self
       end
 
       def coerce_values_ary!(values, method)
