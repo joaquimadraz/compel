@@ -360,6 +360,14 @@ describe Compel do
           expect(result.errors).to include('must match format ^\\d{4}-\\d{3}$')
         end
 
+        it 'should not compel with custom message' do
+          schema = Compel.string.format(/^\d{4}-\d{3}$/, message: 'this format is not good')
+
+          result = Compel.run('110-100', schema)
+
+          expect(result.errors).to include('this format is not good')
+        end
+
       end
 
     end

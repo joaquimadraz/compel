@@ -15,14 +15,21 @@ module Compel
       def initialize(value, option_value, options = {})
         @value = value
         @value_type = options.delete(:type) || Coercion::Types::Any
+        @options = options
         @option_value = option_value
       end
 
       def validate
-        # result is an error message
-        result = validate_value
+        Validation::Result.new \
+          value, value_type, validate_value_with_error_message
+      end
 
-        Validation::Result.new(value, value_type, result)
+      private
+
+      def validate_value_with_error_message
+        error_message = validate_value
+
+        options[:message] || error_message
       end
 
     end

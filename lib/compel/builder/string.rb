@@ -17,8 +17,8 @@ module Compel
         super(Coercion::String)
       end
 
-      def format(regex)
-        build_option :format, Coercion.coerce!(regex, Coercion::Regexp)
+      def format(regex, options = {})
+        build_option :format, Coercion.coerce!(regex, Coercion::Regexp), options
       end
 
       def url
