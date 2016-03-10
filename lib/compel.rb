@@ -1,4 +1,3 @@
-require 'pry'
 require 'time'
 
 require 'compel/exceptions/type_error'
