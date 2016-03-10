@@ -50,7 +50,6 @@ describe Compel::Builder do
         context '#is, #default' do
 
           it 'should have value' do
-
             [:is, :default].each do |method|
               builder.send(method, "#{method}")
               expect(builder.options[method][:value]).to eq("#{method}")
@@ -382,6 +381,13 @@ describe Compel::Builder do
                 include('is required')
             end
 
+            it 'should use custom error message' do
+              schema = Compel.any.required(message: 'this is required')
+
+              expect(schema.validate(nil).errors).to \
+                include('this is required')
+            end
+
           end
 
           context 'valid' do
@@ -468,6 +474,13 @@ describe Compel::Builder do
                 include('must be [1, 2, 3]')
             end
 
+            it 'should use custom error message' do
+              schema = Compel.any.is(1, message: 'not one')
+
+              expect(schema.validate('two').errors).to \
+                include('not one')
+            end
+
           end
 
           context 'valid' do
@@ -502,6 +515,13 @@ describe Compel::Builder do
                 include('cannot have length different than 1')
             end
 
+            it 'should use custom error message' do
+              schema = Compel.any.length(2, message: 'not the same size')
+
+              expect(schema.validate(12).errors).to \
+                include('not the same size')
+            end
+
           end
 
           context 'valid' do
@@ -520,6 +540,36 @@ describe Compel::Builder do
               result = schema.validate(OpenStruct)
 
               expect(result.valid?).to be true
+            end
+
+          end
+
+        end
+
+        context '#min_length' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.any.min_length(2, message: 'min is two')
+
+              expect(schema.validate(1).errors).to \
+                include('min is two')
+            end
+
+          end
+
+        end
+
+        context '#max_length' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.any.max_length(2, message: 'max is two')
+
+              expect(schema.validate(123).errors).to \
+                include('max is two')
             end
 
           end
@@ -678,6 +728,12 @@ describe Compel::Builder do
             expect(result.valid?).to be false
           end
 
+          it 'should not validate and use custom error' do
+            result = Compel.string.url(message: 'not an URL').validate('url')
+
+            expect(result.errors).to include('not an URL')
+          end
+
         end
 
         context '#email' do
@@ -698,6 +754,12 @@ describe Compel::Builder do
             result = Compel.string.email.validate('email')
 
             expect(result.valid?).to be false
+          end
+
+          it 'should not validate and use custom error' do
+            result = Compel.string.email(message: 'not an EMAIL').validate('email')
+
+            expect(result.errors).to include('not an EMAIL')
           end
 
         end
@@ -880,6 +942,70 @@ describe Compel::Builder do
           expect(result.valid?).to be false
           expect(result.errors).to \
             include("'1989-0' is not a parsable datetime with format: %FT%T")
+        end
+
+      end
+
+      context 'Integer' do
+
+        context '#in' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.integer.in([1, 2], message: 'not in 1 or 2')
+
+              expect(schema.validate(3).errors).to \
+                include('not in 1 or 2')
+            end
+
+          end
+
+        end
+
+        context '#range' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.integer.range([1, 2], message: 'not between 1 or 2')
+
+              expect(schema.validate(3).errors).to \
+                include('not between 1 or 2')
+            end
+
+          end
+
+        end
+
+        context '#min' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.integer.min(5, message: 'min is five')
+
+              expect(schema.validate(4).errors).to \
+                include('min is five')
+            end
+
+          end
+
+        end
+
+        context '#max' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.integer.max(5, message: 'max is five')
+
+              expect(schema.validate(6).errors).to \
+                include('max is five')
+            end
+
+          end
+
         end
 
       end

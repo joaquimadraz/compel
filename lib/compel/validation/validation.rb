@@ -28,7 +28,7 @@ module Compel
 
     def validate(value, type, options)
       if value.nil? && !!(options[:required] && options[:required][:value])
-        return ['is required']
+        return (options[:required][:message] || ['is required'])
       end
 
       errors = Errors.new

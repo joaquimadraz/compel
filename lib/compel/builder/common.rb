@@ -4,10 +4,10 @@ module Compel
     module Common
 
       def is(value, options = {})
-        build_option :is, Coercion.coerce!(value, self.type)
+        build_option :is, Coercion.coerce!(value, self.type), options
       end
 
-      def required
+      def required(options = {})
         build_option :required, true, options
       end
 

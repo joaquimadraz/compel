@@ -9,7 +9,7 @@ describe Compel::Validation do
     end
 
     it 'should validate with error' do
-      errors = Compel::Validation.validate(nil,  Compel::Coercion::Integer, { required: { value: true } })
+      errors = Compel::Validation.validate(nil, Compel::Coercion::Integer, { required: { value: true } })
 
       expect(errors.empty?).to eq(false)
       expect(errors).to eq(['is required'])
@@ -20,7 +20,7 @@ describe Compel::Validation do
   context 'length' do
 
     it 'should validate without errors' do
-      errors = Compel::Validation.validate(123,  Compel::Coercion::Integer, { length: { value: 3 } })
+      errors = Compel::Validation.validate(123, Compel::Coercion::Integer, { length: { value: 3 } })
 
       expect(errors.empty?).to eq(true)
     end
@@ -31,7 +31,7 @@ describe Compel::Validation do
 
     def expect_be_in_range(range, value)
       [:in, :range].each do |key|
-        errors = Compel::Validation.validate(value,  Compel::Coercion::String, { key => { value: range } })
+        errors = Compel::Validation.validate(value, Compel::Coercion::String, { key => { value: range } })
         yield errors
       end
     end
