@@ -383,6 +383,14 @@ describe Compel::Builder do
                 include('is required')
             end
 
+            it 'should have an array for error messages' do
+              schema = Compel.any.required(message: 'this is required')
+              expect(schema.validate(nil).errors.class).to eq Array
+
+              schema = Compel.any.required
+              expect(schema.validate(nil).errors.class).to eq Array
+            end
+
             it 'should use custom error message' do
               schema = Compel.any.required(message: 'this is required')
 
