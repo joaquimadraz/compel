@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 describe Compel::Coercion do
 
   context 'Type coercion' do

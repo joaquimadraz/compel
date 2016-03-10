@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 describe Compel::Builder do
 
   context 'Schema' do
