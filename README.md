@@ -217,6 +217,27 @@ Method  | Behaviour
 `#valid?` | `true` or `false`
 `#raise?` | raises a `Compel::InvalidObjectError` if invalid, otherwise returns `#value`
 
+#### Custom Options
+
+`Custom error message`
+
+Examples:
+```ruby
+schema = Compel.string.required(message: 'this is really required')
+
+result = schema.validate(nil)
+
+p result.errors
+=> ["this is really required"]
+
+schema = Compel.string.is('Hello', message: 'give me an Hello!')
+
+result = schema.validate(nil)
+
+p result.errors
+=> ["give me an Hello!"]
+```
+
 ==========================
 
 ### Sinatra Integration
