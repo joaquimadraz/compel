@@ -6,7 +6,7 @@ Compel
 
 Ruby Object Coercion and Validation
 
-This is a straight forward way to validate any Ruby object: just give an object and the schema.
+This is a straight forward way to validate any Ruby object: just gmeive an object and the schema.
 
 The motivation was to create an integration for [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) to have validations before any business logic execution and to build a easy way coerce and validate params on [Sinatra](https://github.com/sinatra/sinatra).
 
@@ -219,9 +219,9 @@ Method  | Behaviour
 
 #### Custom Options
 
-**Custom error message**:
+`Custom error message`
 
-*Example 1:*
+Examples:
 ```ruby
 schema = Compel.string.required(message: 'this is really required')
 
@@ -229,9 +229,7 @@ result = schema.validate(nil)
 
 p result.errors
 => ["this is really required"]
-```
-*Example 2:*
-```ruby
+
 schema = Compel.string.is('Hello', message: 'give me an Hello!')
 
 result = schema.validate(nil)
