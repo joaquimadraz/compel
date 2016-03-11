@@ -6,7 +6,7 @@ Compel
 
 Ruby Object Coercion and Validation
 
-This is a straight forward way to validate any Ruby object: just gmeive an object and the schema.
+This is a straight forward way to validate any Ruby object: just give an object and the schema.
 
 The motivation was to create an integration for [RestMyCase](https://github.com/goncalvesjoao/rest_my_case) to have validations before any business logic execution and to build a easy way coerce and validate params on [Sinatra](https://github.com/sinatra/sinatra).
 
