@@ -5,7 +5,7 @@ module Compel
 
       def validate_value
         unless valid?
-          "#{value} is invalid"
+          "'#{value}' is invalid"
         end
       end
 

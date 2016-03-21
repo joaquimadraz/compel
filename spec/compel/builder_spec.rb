@@ -630,15 +630,70 @@ describe Compel::Builder do
           context 'valid' do
 
             it 'should validate with custom method' do
+
               def is_valid_one(value)
                 value == 1
               end
 
-              schema = Compel.any.if{:is_valid_one}.required
-              schema.validate(1)
+              result = Compel.any.if{:is_valid_one}.validate(1)
 
-              schema = Compel.any.if(->(value) { value == 1 }).required
-              schema.validate(1)
+              expect(result.valid?).to eq(true)
+
+              result = Compel.any.if(->(value) { value == 2 }).validate(1)
+
+              expect(result.valid?).to eq(false)
+              expect(result.errors).to include("'1' is invalid")
+            end
+
+            it 'should validate within an instance method' do
+
+              class CustomValidationsKlass
+
+                attr_reader :value
+
+                def initialize(value)
+                  @value = value
+                end
+
+                def validate
+                  Compel.any.if{:is_custom_valid?}.validate(value)
+                end
+
+                def validate_with_lambda(lambda)
+                  Compel.any.if(lambda).validate(value)
+                end
+
+                private
+
+                def is_custom_valid?(value)
+                  value == assert_value
+                end
+
+                def assert_value
+                  [1, 2, 3]
+                end
+
+              end
+
+              result = CustomValidationsKlass.new(1).validate
+              expect(result.valid?).to eq(false)
+              expect(result.errors).to include("'1' is invalid")
+
+              result = CustomValidationsKlass.new([1, 2, 3]).validate
+              expect(result.valid?).to eq(true)
+
+              result = \
+                CustomValidationsKlass.new('two')
+                  .validate_with_lambda(-> (value){ value == [1, 2, 3] })
+
+              expect(result.valid?).to eq(false)
+              expect(result.errors).to include("'two' is invalid")
+
+              result = \
+                CustomValidationsKlass.new([1, 2, 3])
+                  .validate_with_lambda(-> (value) { value == [1, 2, 3] })
+
+              expect(result.valid?).to eq(true)
             end
 
           end
