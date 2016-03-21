@@ -8,16 +8,17 @@ module Compel
       end
 
       def if(lambda = nil, &block)
-        options[:if] = \
+        value = \
           if lambda && lambda.is_a?(Proc) && lambda.arity == 1
             lambda
           elsif block && block.arity == 0 && (block.call.is_a?(::Symbol) || block.call.is_a?(::String))
             block
+          else
+            fail
           end
 
-        fail if options[:if].nil?
+        build_option :if, value, options
 
-        self
         rescue
           raise Compel::TypeError, 'invalid proc for if'
       end

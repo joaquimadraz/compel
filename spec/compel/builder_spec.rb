@@ -375,15 +375,15 @@ describe Compel::Builder do
 
             schema = Compel.any.if(_proc)
 
-            expect(schema.options[:if]).to eq _proc
+            expect(schema.options[:if][:value]).to eq _proc
           end
 
           it 'should have a block with string or symbol value' do
             schema = Compel.any.if{:is_valid_one}
-            expect(schema.options[:if].call).to eq :is_valid_one
+            expect(schema.options[:if][:value].call).to eq :is_valid_one
 
             schema = Compel.any.if{'is_valid_one'}
-            expect(schema.options[:if].call).to eq 'is_valid_one'
+            expect(schema.options[:if][:value].call).to eq 'is_valid_one'
           end
 
           it 'should raise_error for missing value' do
@@ -630,17 +630,15 @@ describe Compel::Builder do
           context 'valid' do
 
             it 'should validate with custom method' do
-              value_to_validate = 1
-
               def is_valid_one(value)
                 value == 1
               end
 
               schema = Compel.any.if{:is_valid_one}.required
-              schema.validate(value_to_validate)
+              schema.validate(1)
 
               schema = Compel.any.if(->(value) { value == 1 }).required
-              schema.validate(value_to_validate)
+              schema.validate(1)
             end
 
           end

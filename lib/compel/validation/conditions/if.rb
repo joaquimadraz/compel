@@ -12,7 +12,11 @@ module Compel
       private
 
       def valid?
-        eval("#{option_value.call}(#{value})", option_value.binding)
+        if option_value.arity == 1
+          option_value.call(value)
+        else
+          eval("#{option_value.call}(#{value})", option_value.binding)
+        end
       end
 
     end
