@@ -3,34 +3,28 @@ module Compel
 
     module Common
 
-      def is(value)
-        options[:is] = Coercion.coerce!(value, self.type)
-        self
+      def is(value, options = {})
+        build_option :is, Coercion.coerce!(value, self.type), options
       end
 
-      def required
-        options[:required] = true
-        self
+      def required(options = {})
+        build_option :required, true, options
       end
 
-      def default(value)
-        options[:default] = Coercion.coerce!(value, self.type)
-        self
+      def default(value, options = {})
+        build_option :default, Coercion.coerce!(value, self.type), options
       end
 
-      def length(value)
-        options[:length] = Coercion.coerce!(value, Coercion::Integer)
-        self
+      def length(value, options = {})
+        build_option :length, Coercion.coerce!(value, Coercion::Integer), options
       end
 
-      def min_length(value)
-        options[:min_length] = Coercion.coerce!(value, Coercion::Integer)
-        self
+      def min_length(value, options = {})
+        build_option :min_length, Coercion.coerce!(value, Coercion::Integer), options
       end
 
-      def max_length(value)
-        options[:max_length] = Coercion.coerce!(value, Coercion::Integer)
-        self
+      def max_length(value, options = {})
+        build_option :max_length, Coercion.coerce!(value, Coercion::Integer), options
       end
 
     end

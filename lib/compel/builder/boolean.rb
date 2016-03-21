@@ -7,11 +7,10 @@ module Compel
         super(Coercion::Boolean)
       end
 
-      def is(value)
+      def is(value, options = {})
         Coercion.coerce!(value, Coercion::Boolean)
-        options[:is] = value
 
-        self
+        build_option :is, value, options
       end
 
     end

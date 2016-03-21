@@ -9,14 +9,12 @@ module Compel
         super(Coercion::Date)
       end
 
-      def format(value)
-        options[:format] = value
-        self
+      def format(value, options = {})
+        build_option :format, value, options
       end
 
-      def iso8601
-        options[:format] = '%Y-%m-%d'
-        self
+      def iso8601(options = {})
+        build_option :format, '%Y-%m-%d', options
       end
 
     end

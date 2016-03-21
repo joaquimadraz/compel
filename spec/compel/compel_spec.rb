@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 describe Compel do
 
   context '#run' do
@@ -39,18 +41,16 @@ describe Compel do
 
           expect(result.valid?).to be true
           expect(result.value).to eq \
-            Hashie::Mash.new({
-              user: {
-                first_name: 'Joaquim',
-                last_name: 'Adráz',
-                birth_date: DateTime.parse('1989-08-06T09:00:00'),
-                age: 26,
-                admin: false,
-                blog_role: {
-                  admin: false
-                }
+            user: {
+              first_name: 'Joaquim',
+              last_name: 'Adráz',
+              birth_date: DateTime.parse('1989-08-06T09:00:00'),
+              age: 26,
+              admin: false,
+              blog_role: {
+                admin: false
               }
-            })
+            }
         end
 
       end
@@ -69,17 +69,15 @@ describe Compel do
 
           expect(result.valid?).to be false
           expect(result.value).to eq \
-            Hashie::Mash.new({
-              other_param: 1,
+            other_param: 1,
+            user: {
+              first_name: 'Joaquim',
+            },
+            errors: {
               user: {
-                first_name: 'Joaquim',
-              },
-              errors: {
-                user: {
-                  last_name: ['is required']
-                }
+                last_name: ['is required']
               }
-            })
+            }
         end
 
         it 'should not compel for invalid hash' do
@@ -114,16 +112,14 @@ describe Compel do
 
           expect(result.valid?).to be false
           expect(result.value).to eq \
-            Hashie::Mash.new({
-              user:{
-                first_name: 'Joaquim',
-              },
-              errors: {
-                user: {
-                  last_name: ['is required']
-                }
+            user:{
+              first_name: 'Joaquim',
+            },
+            errors: {
+              user: {
+                last_name: ['is required']
               }
-            })
+            }
         end
 
       end
@@ -181,17 +177,15 @@ describe Compel do
 
           expect(result.valid?).to be false
           expect(result.value).to eq \
-            Hashie::Mash.new({
+            address: {
+              line_two: 'Portugal'
+            },
+            errors: {
               address: {
-                line_two: 'Portugal'
-              },
-              errors: {
-                address: {
-                  line_one: ['is required'],
-                  post_code: ['is required']
-                }
+                line_one: ['is required'],
+                post_code: ['is required']
               }
-            })
+            }
         end
 
         it 'should not compel missing key and length invalid' do
@@ -211,25 +205,23 @@ describe Compel do
 
           expect(result.valid?).to be false
           expect(result.value).to eq \
-            Hashie::Mash.new({
-              address: {
-                line_two: 'Portugal',
-                post_code: {
-                  prefix: 1,
-                  county: {
-                    code: 'LX'
-                  }
-                }
-              },
-              errors: {
-                address: {
-                  line_one: ['is required'],
-                  post_code: {
-                    prefix: ['cannot have length different than 4']
-                  }
+            address: {
+              line_two: 'Portugal',
+              post_code: {
+                prefix: 1,
+                county: {
+                  code: 'LX'
                 }
               }
-            })
+            },
+            errors: {
+              address: {
+                line_one: ['is required'],
+                post_code: {
+                  prefix: ['cannot have length different than 4']
+                }
+              }
+            }
         end
 
         it 'should not compel for givin invalid optional value' do
@@ -248,25 +240,23 @@ describe Compel do
 
           expect(result.valid?).to be false
           expect(result.value).to eq \
-            Hashie::Mash.new({
+            address: {
+              line_one: 'Line',
+              post_code: {
+                prefix: 1100,
+                suffix: 100,
+                county: {}
+              }
+            },
+            errors: {
               address: {
-                line_one: 'Line',
                 post_code: {
-                  prefix: 1100,
-                  suffix: 100,
-                  county: {}
-                }
-              },
-              errors: {
-                address: {
-                  post_code: {
-                    county: {
-                      code: ['is required']
-                    }
+                  county: {
+                    code: ['is required']
                   }
                 }
               }
-            })
+            }
 
         end
 
@@ -279,12 +269,10 @@ describe Compel do
 
           expect(result.valid?).to be false
           expect(result.value).to eq \
-            Hashie::Mash.new({
-              address: nil,
-              errors: {
-                address: ['is required']
-              }
-            })
+            address: nil,
+            errors: {
+              address: ['is required']
+            }
         end
 
         it 'should not compel for empty object' do
@@ -292,11 +280,9 @@ describe Compel do
 
           expect(result.valid?).to be false
           expect(result.value).to eq \
-            Hashie::Mash.new({
-              errors: {
-                address: ['is required']
-              }
-            })
+            errors: {
+              address: ['is required']
+            }
         end
 
       end
@@ -374,6 +360,14 @@ describe Compel do
           result = Compel.run('110-100', schema)
 
           expect(result.errors).to include('must match format ^\\d{4}-\\d{3}$')
+        end
+
+        it 'should not compel with custom message' do
+          schema = Compel.string.format(/^\d{4}-\d{3}$/, message: 'this format is not good')
+
+          result = Compel.run('110-100', schema)
+
+          expect(result.errors).to include('this format is not good')
         end
 
       end
@@ -516,11 +510,9 @@ describe Compel do
 
           expect(make_the_call(:run!, hash)).to \
             eq \
-              Hashie::Mash.new({
-                first_name: 'Joaquim',
-                last_name: 'Adráz',
-                birth_date: DateTime.new(1988, 12, 24)
-              })
+              first_name: 'Joaquim',
+              last_name: 'Adráz',
+              birth_date: DateTime.new(1988, 12, 24)
         end
 
         it 'should raise InvalidObjectError exception for missing required key' do
@@ -539,7 +531,10 @@ describe Compel do
 
           expect{ make_the_call(:run!, hash) }.to raise_error do |exception|
             expect(exception.object).to eq \
-              Hashie::Mash.new(first_name: 'Joaquim', errors: { last_name: ['is required'] })
+              first_name: 'Joaquim',
+              errors: {
+                last_name: ['is required']
+              }
           end
         end
 

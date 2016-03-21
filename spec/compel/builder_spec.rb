@@ -1,14 +1,16 @@
+# encoding: UTF-8
+
 describe Compel::Builder do
 
   context 'Schema' do
 
     context 'Build' do
 
-      it 'should build new Schema for givin type' do
+      it 'should build new Schema for given type' do
         builder = Compel.string
 
         expect(builder.type).to be(Compel::Coercion::String)
-        expect(builder.options.keys).to include('required')
+        expect(builder.options.keys).to include(:required)
         expect(builder.required?).to be false
         expect(builder.default_value).to be nil
       end
@@ -22,7 +24,7 @@ describe Compel::Builder do
           it 'should have value' do
             [:in, :range].each do |method|
               builder.send(method, ["#{method}"])
-              expect(builder.options[method]).to eq(["#{method}"])
+              expect(builder.options[method][:value]).to eq(["#{method}"])
             end
           end
 
@@ -35,7 +37,7 @@ describe Compel::Builder do
           it 'should have value' do
             [:min, :max].each do |method|
               builder.send(method, "#{method}")
-              expect(builder.options[method]).to eq("#{method}")
+              expect(builder.options[method][:value]).to eq("#{method}")
             end
           end
 
@@ -50,10 +52,9 @@ describe Compel::Builder do
         context '#is, #default' do
 
           it 'should have value' do
-
             [:is, :default].each do |method|
               builder.send(method, "#{method}")
-              expect(builder.options[method]).to eq("#{method}")
+              expect(builder.options[method][:value]).to eq("#{method}")
             end
           end
 
@@ -78,7 +79,7 @@ describe Compel::Builder do
           it 'should have value' do
             builder.length(5)
 
-            expect(builder.options[:length]).to be 5
+            expect(builder.options[:length][:value]).to be 5
           end
 
           it 'should raise exception for invalid type' do
@@ -99,13 +100,13 @@ describe Compel::Builder do
           it 'should have value' do
             builder.format('%d-%m-%Y')
 
-            expect(builder.options[:format]).to eq('%d-%m-%Y')
+            expect(builder.options[:format][:value]).to eq('%d-%m-%Y')
           end
 
           it 'should have value' do
             builder.iso8601
 
-            expect(builder.options[:format]).to eq('%Y-%m-%d')
+            expect(builder.options[:format][:value]).to eq('%Y-%m-%d')
           end
 
         end
@@ -115,7 +116,7 @@ describe Compel::Builder do
           it 'should set max value with string and coerce' do
             builder.max('2016-01-01')
 
-            expect(builder.options[:max]).to eq(Date.new(2016, 1, 1))
+            expect(builder.options[:max][:value]).to eq(Date.new(2016, 1, 1))
           end
 
         end
@@ -125,8 +126,8 @@ describe Compel::Builder do
           it 'should set max value with string and coerce' do
             builder.in(['2016-01-01', '2016-01-02'])
 
-            expect(builder.options[:in]).to include(Date.new(2016, 1, 1))
-            expect(builder.options[:in]).to include(Date.new(2016, 1, 2))
+            expect(builder.options[:in][:value]).to include(Date.new(2016, 1, 1))
+            expect(builder.options[:in][:value]).to include(Date.new(2016, 1, 2))
           end
 
         end
@@ -156,7 +157,7 @@ describe Compel::Builder do
             each_date_builder do |builder, klass|
               builder.in([klass.new(2016, 1, 1), klass.new(2016, 1, 2)])
 
-              expect(builder.options[:in].length).to eq 2
+              expect(builder.options[:in][:value].length).to eq 2
             end
           end
 
@@ -174,7 +175,7 @@ describe Compel::Builder do
             each_date_builder do |builder, klass|
               builder.max(klass.new(2016, 1, 1))
 
-              expect(builder.options[:max]).to eq(klass.new(2016, 1, 1))
+              expect(builder.options[:max][:value]).to eq(klass.new(2016, 1, 1))
             end
           end
 
@@ -195,7 +196,7 @@ describe Compel::Builder do
             each_date_builder do |builder, klass|
               builder.min(klass.new(2016, 1, 1))
 
-              expect(builder.options[:min]).to eq(klass.new(2016, 1, 1))
+              expect(builder.options[:min][:value]).to eq(klass.new(2016, 1, 1))
             end
           end
 
@@ -221,7 +222,7 @@ describe Compel::Builder do
           it 'should set in value' do
             builder.in(['a', 'b'])
 
-            expect(builder.options[:in].length).to eq 2
+            expect(builder.options[:in][:value].length).to eq 2
           end
 
           it 'should raise exception for invalid item on array' do
@@ -243,7 +244,7 @@ describe Compel::Builder do
           it 'should have value' do
             builder.format(/1/)
 
-            expect(builder.options[:format]).to eq(/1/)
+            expect(builder.options[:format][:value]).to eq(/1/)
           end
 
         end
@@ -258,7 +259,7 @@ describe Compel::Builder do
           it 'should have value' do
             builder.min_length(4)
 
-            expect(builder.options[:min_length]).to eq(4)
+            expect(builder.options[:min_length][:value]).to eq(4)
           end
 
         end
@@ -273,7 +274,7 @@ describe Compel::Builder do
           it 'should have value' do
             builder.max_length(10)
 
-            expect(builder.options[:max_length]).to eq(10)
+            expect(builder.options[:max_length][:value]).to eq(10)
           end
 
         end
@@ -296,16 +297,16 @@ describe Compel::Builder do
             h: Compel.integer
           })
 
-          keys_schemas = schema.options[:keys]
+          keys_schemas = schema.options[:keys][:value]
 
-          expect(keys_schemas.a.type).to be Compel::Coercion::Float
-          expect(keys_schemas.b.type).to be Compel::Coercion::String
-          expect(keys_schemas.c.type).to be Compel::Coercion::Hash
-          expect(keys_schemas.d.type).to be Compel::Coercion::JSON
-          expect(keys_schemas.e.type).to be Compel::Coercion::Time
-          expect(keys_schemas.f.type).to be Compel::Coercion::DateTime
-          expect(keys_schemas.g.type).to be Compel::Coercion::Date
-          expect(keys_schemas.h.type).to be Compel::Coercion::Integer
+          expect(keys_schemas[:a].type).to be Compel::Coercion::Float
+          expect(keys_schemas[:b].type).to be Compel::Coercion::String
+          expect(keys_schemas[:c].type).to be Compel::Coercion::Hash
+          expect(keys_schemas[:d].type).to be Compel::Coercion::JSON
+          expect(keys_schemas[:e].type).to be Compel::Coercion::Time
+          expect(keys_schemas[:f].type).to be Compel::Coercion::DateTime
+          expect(keys_schemas[:g].type).to be Compel::Coercion::Date
+          expect(keys_schemas[:h].type).to be Compel::Coercion::Integer
         end
 
         it 'should raise error for invalid #keys' do
@@ -340,7 +341,7 @@ describe Compel::Builder do
         it 'should have value' do
           builder = Compel.array.items(Compel.integer)
 
-          expect(builder.options[:items].class).to be(Compel::Builder::Integer)
+          expect(builder.options[:items][:value].class).to be(Compel::Builder::Integer)
         end
 
       end
@@ -352,7 +353,7 @@ describe Compel::Builder do
           it 'should build schema' do
             builder = Compel.integer.min(10)
 
-            expect(builder.options[:min]).to eq(10)
+            expect(builder.options[:min][:value]).to eq(10)
           end
 
           it 'should raise exception for invalid value' do
@@ -419,6 +420,21 @@ describe Compel::Builder do
 
               expect(schema.validate(nil).errors).to \
                 include('is required')
+            end
+
+            it 'should have an array for error messages' do
+              schema = Compel.any.required(message: 'this is required')
+              expect(schema.validate(nil).errors.class).to eq Array
+
+              schema = Compel.any.required
+              expect(schema.validate(nil).errors.class).to eq Array
+            end
+
+            it 'should use custom error message' do
+              schema = Compel.any.required(message: 'this is required')
+
+              expect(schema.validate(nil).errors).to \
+                include('this is required')
             end
 
           end
@@ -507,6 +523,13 @@ describe Compel::Builder do
                 include('must be [1, 2, 3]')
             end
 
+            it 'should use custom error message' do
+              schema = Compel.any.is(1, message: 'not one')
+
+              expect(schema.validate('two').errors).to \
+                include('not one')
+            end
+
           end
 
           context 'valid' do
@@ -541,6 +564,13 @@ describe Compel::Builder do
                 include('cannot have length different than 1')
             end
 
+            it 'should use custom error message' do
+              schema = Compel.any.length(2, message: 'not the same size')
+
+              expect(schema.validate(12).errors).to \
+                include('not the same size')
+            end
+
           end
 
           context 'valid' do
@@ -565,21 +595,52 @@ describe Compel::Builder do
 
         end
 
+        context '#min_length' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.any.min_length(2, message: 'min is two')
+
+              expect(schema.validate(1).errors).to \
+                include('min is two')
+            end
+
+          end
+
+        end
+
+        context '#max_length' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.any.max_length(2, message: 'max is two')
+
+              expect(schema.validate(123).errors).to \
+                include('max is two')
+            end
+
+          end
+
+        end
+
         context '#if' do
 
           context 'valid' do
 
-            xit 'should validate with custom method' do
+            it 'should validate with custom method' do
+              value_to_validate = 1
+
               def is_valid_one(value)
                 value == 1
               end
 
-
               schema = Compel.any.if{:is_valid_one}.required
-              schema.validate(@hash_value[:a])
+              schema.validate(value_to_validate)
 
               schema = Compel.any.if(->(value) { value == 1 }).required
-              schema.validate(@hash_value[:a])
+              schema.validate(value_to_validate)
             end
 
           end
@@ -617,19 +678,19 @@ describe Compel::Builder do
 
           expect(result.value).to \
             eq({
-              "first_name" => "Joaquim",
-              "birth_date" => "1989-0",
-              "address" => {
-                "line_one" => "Lisboa",
-                "post_code" => "1100",
-                "country_code" => "PT",
-                "line_two" => "-"
+              first_name: 'Joaquim',
+              birth_date: '1989-0',
+              address: {
+                line_one: 'Lisboa',
+                post_code: '1100',
+                country_code: 'PT',
+                line_two: '-'
               },
-              "errors" => {
-                "last_name" => ["is required"],
-                "birth_date" => ["'1989-0' is not a parsable date with format: %Y-%m-%d"],
-                "address" => {
-                  "post_code" => ["must match format ^\\d{4}-\\d{3}$"]
+              errors: {
+                last_name: ['is required'],
+                birth_date: ["'1989-0' is not a parsable date with format: %Y-%m-%d"],
+                address: {
+                  post_code: ["must match format ^\\d{4}-\\d{3}$"]
                 }
               }
             })
@@ -640,7 +701,7 @@ describe Compel::Builder do
             a: Compel.float.required
           })
 
-          expect(schema.validate({ a: nil }).errors.a).to \
+          expect(schema.validate({ a: nil }).errors[:a]).to \
             include('is required')
         end
 
@@ -673,7 +734,7 @@ describe Compel::Builder do
             result = schema.validate({ a: 1, b: 2, c: 3 })
 
             expect(result.errors[:base]).to \
-              include("must be {\"a\"=>1, \"b\"=>2, \"c\"=>{\"d\"=>3, \"e\"=>4}}")
+              include("must be #{value.to_hash}")
           end
 
           it 'should validate without errors' do
@@ -738,6 +799,12 @@ describe Compel::Builder do
             expect(result.valid?).to be false
           end
 
+          it 'should not validate and use custom error' do
+            result = Compel.string.url(message: 'not an URL').validate('url')
+
+            expect(result.errors).to include('not an URL')
+          end
+
         end
 
         context '#email' do
@@ -758,6 +825,12 @@ describe Compel::Builder do
             result = Compel.string.email.validate('email')
 
             expect(result.valid?).to be false
+          end
+
+          it 'should not validate and use custom error' do
+            result = Compel.string.email(message: 'not an EMAIL').validate('email')
+
+            expect(result.errors).to include('not an EMAIL')
           end
 
         end
@@ -823,9 +896,9 @@ describe Compel::Builder do
             expect(result.valid?).to be true
             expect(result.value).to eq \
               [
-                Hashie::Mash.new({ a: 'A', b: 1 }),
-                Hashie::Mash.new({ a: 'B' }),
-                Hashie::Mash.new({ a: 'C', b: 3 })
+                { a: 'A', b: 1 },
+                { a: 'B' },
+                { a: 'C', b: 3 }
               ]
           end
 
@@ -940,6 +1013,70 @@ describe Compel::Builder do
           expect(result.valid?).to be false
           expect(result.errors).to \
             include("'1989-0' is not a parsable datetime with format: %FT%T")
+        end
+
+      end
+
+      context 'Integer' do
+
+        context '#in' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.integer.in([1, 2], message: 'not in 1 or 2')
+
+              expect(schema.validate(3).errors).to \
+                include('not in 1 or 2')
+            end
+
+          end
+
+        end
+
+        context '#range' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.integer.range([1, 2], message: 'not between 1 or 2')
+
+              expect(schema.validate(3).errors).to \
+                include('not between 1 or 2')
+            end
+
+          end
+
+        end
+
+        context '#min' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.integer.min(5, message: 'min is five')
+
+              expect(schema.validate(4).errors).to \
+                include('min is five')
+            end
+
+          end
+
+        end
+
+        context '#max' do
+
+          context 'invalid' do
+
+            it 'should use custom error message' do
+              schema = Compel.integer.max(5, message: 'max is five')
+
+              expect(schema.validate(6).errors).to \
+                include('max is five')
+            end
+
+          end
+
         end
 
       end

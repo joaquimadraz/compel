@@ -7,18 +7,16 @@ module Compel
         super(Coercion::Array)
       end
 
-      def items(schema)
+      def items(schema, options = {})
         if !schema.is_a?(Schema)
           raise Compel::TypeError, '#items must be a valid Schema'
         end
 
-        options[:items] = schema
-        self
+        build_option :items, schema, options
       end
 
       def is(value)
-        options[:is] = Coercion.coerce!(value, Coercion::Array)
-        self
+        build_option :is, Coercion.coerce!(value, Coercion::Array)
       end
 
     end

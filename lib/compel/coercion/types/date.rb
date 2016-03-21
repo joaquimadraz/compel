@@ -8,7 +8,7 @@ module Compel
       end
 
       def default_format
-         '%Y-%m-%d'
+        '%Y-%m-%d'
       end
 
     end

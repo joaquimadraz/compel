@@ -4,9 +4,20 @@ module Compel
     class Hash < Type
 
       def coerce_value
-        Hashie::Mash.new(value).to_hash rescue nil
+        if ::Hash.try_convert(value)
+          symbolyze_keys(value)
+        end
       end
 
+      private
+
+      def symbolyze_keys(hash)
+        {}.tap do |symbolyzed_hash|
+          hash.each do |key, value|
+            symbolyzed_hash[key.to_sym] = value
+          end
+        end
+      end
     end
 
   end

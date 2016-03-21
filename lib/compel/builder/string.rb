@@ -17,19 +17,16 @@ module Compel
         super(Coercion::String)
       end
 
-      def format(regex)
-        options[:format] = Coercion.coerce!(regex, Coercion::Regexp)
-        self
+      def format(regex, options = {})
+        build_option :format, Coercion.coerce!(regex, Coercion::Regexp), options
       end
 
-      def url
-        options[:format] = URL_REGEX
-        self
+      def url(options = {})
+        build_option :format, URL_REGEX, options
       end
 
-      def email
-        options[:format] = EMAIL_REGEX
-        self
+      def email(options = {})
+        build_option :format, EMAIL_REGEX, options
       end
 
     end

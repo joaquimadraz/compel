@@ -1,5 +1,4 @@
 require 'time'
-require 'hashie'
 
 require 'compel/exceptions/type_error'
 require 'compel/exceptions/invalid_object_error'
