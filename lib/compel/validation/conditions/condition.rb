@@ -29,7 +29,13 @@ module Compel
       def validate_value_with_error_message
         error_message = validate_value
 
-        options[:message] || error_message
+        if error_message
+          error_message_with_value(options[:message] || error_message)
+        end
+      end
+
+      def error_message_with_value(message)
+        message.gsub(/\{\{value\}\}/, "#{value}")
       end
 
     end

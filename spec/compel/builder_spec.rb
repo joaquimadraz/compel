@@ -371,7 +371,7 @@ describe Compel::Builder do
         context '#if' do
 
           it 'should have a proc' do
-            _proc = ->(value) { value == 1 }
+            _proc = Proc.new {|value| value == 1 }
 
             schema = Compel.any.if(_proc)
 
@@ -397,7 +397,7 @@ describe Compel::Builder do
           end
 
           it 'should raise_error for invalid proc arity' do
-            expect{ Compel.any.if(->(a, b) { a == b }) }.to \
+            expect{ Compel.any.if(Proc.new {|a, b| a == b }) }.to \
               raise_error Compel::TypeError, 'invalid proc for if'
           end
 
@@ -565,10 +565,10 @@ describe Compel::Builder do
             end
 
             it 'should use custom error message' do
-              schema = Compel.any.length(2, message: 'not the same size')
+              schema = Compel.any.length(2, message: '({{value}}) does not have the right size')
 
-              expect(schema.validate(12).errors).to \
-                include('not the same size')
+              expect(schema.validate(123).errors).to \
+                include('(123) does not have the right size')
             end
 
           end
@@ -589,6 +589,12 @@ describe Compel::Builder do
               result = schema.validate(OpenStruct)
 
               expect(result.valid?).to be true
+            end
+
+            it 'should validate a constant object' do
+              schema = Compel.any.length(2)
+
+              expect(schema.validate(12).valid?).to eq(true)
             end
 
           end
@@ -669,7 +675,7 @@ describe Compel::Builder do
             end
 
             it 'should validate with lambda' do
-              result = Compel.any.if(->(value) { value == 2 }).validate(1)
+              result = Compel.any.if(Proc.new {|value| value == 2 }).validate(1)
 
               expect(result.valid?).to eq(false)
               expect(result.errors).to include("'1' is invalid")
@@ -685,10 +691,20 @@ describe Compel::Builder do
             it 'should validate within an instance method 1' do
               result = \
                 CustomValidationsKlass.new('two')
-                  .validate_with_lambda(-> (value){ value == [1, 2, 3] })
+                  .validate_with_lambda(Proc.new {|value| value == [1, 2, 3] })
 
               expect(result.valid?).to eq(false)
               expect(result.errors).to include("'two' is invalid")
+            end
+
+            it 'should use custom message with parsed value' do
+              schema = \
+                Compel.any.if(Proc.new {|value| value == 2 }, message: 'give me a {{value}}!')
+
+              result = schema.validate(1)
+
+              expect(result.valid?).to eq(false)
+              expect(result.errors).to include('give me a 1!')
             end
 
           end
@@ -706,7 +722,7 @@ describe Compel::Builder do
             end
 
             it 'should validate with lambda' do
-              result = Compel.any.if(->(value) { value == 2 }).validate(2)
+              result = Compel.any.if(Proc.new {|value| value == 2 }).validate(2)
 
               expect(result.valid?).to eq(true)
             end
@@ -725,7 +741,7 @@ describe Compel::Builder do
             it 'should validate within an instance method 1' do
               result = \
                 CustomValidationsKlass.new([1, 2, 3])
-                  .validate_with_lambda(-> (value) { value == [1, 2, 3] })
+                  .validate_with_lambda(Proc.new {|value| value == [1, 2, 3] })
 
               expect(result.valid?).to eq(true)
             end
