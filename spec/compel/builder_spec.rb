@@ -721,6 +721,16 @@ describe Compel::Builder do
               expect(result.valid?).to eq(true)
             end
 
+            it 'should validate with custom method 1' do
+              def is_valid_one(value)
+                value == 1
+              end
+
+              result = Compel.any.if{|value| value == 1 }.validate(1)
+
+              expect(result.valid?).to eq(true)
+            end
+
             it 'should validate with lambda' do
               result = Compel.any.if(Proc.new {|value| value == 2 }).validate(2)
 

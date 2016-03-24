@@ -28,19 +28,21 @@ module Compel
       end
 
       def if(lambda = nil, options = {}, &block)
-        value = \
-          if lambda && lambda.is_a?(Proc) && lambda.arity == 1
-            lambda
-          elsif block && block.arity == 0 && (block.call.is_a?(::Symbol) || block.call.is_a?(::String))
-            block
-          else
-            fail
-          end
-
-        build_option :if, value, options
+        build_option :if, coerce_if_proc(lambda || block), options
 
         rescue
           raise Compel::TypeError, 'invalid proc for if'
+      end
+
+      # this is lovely, refactor later
+      def coerce_if_proc(proc)
+        if proc && proc.is_a?(Proc) &&
+          (proc.arity == 1 || proc.arity == 0 &&
+            (proc.call.is_a?(::Symbol) || proc.call.is_a?(::String)))
+          proc
+        else
+          fail
+        end
       end
 
     end
