@@ -95,6 +95,10 @@ Methods `length`, `min_length` and `max_length` turn the object to validate into
 - `length(``integer``)`
 - `min_length(``integer``)`
 - `max_length(``integer``)`
+- `if`
+  - `if(->(value){ value == 1 })`
+  - `if{|value| value == 1 }`
+  - `if{:custom_validation} # Check the specs for now, I'm rewriting the docs ;)` 
 
 ==========================
 
@@ -291,7 +295,7 @@ end
 
 Add this line to your application's Gemfile:
 
-    gem 'compel', '~> 0.3.7'
+    gem 'compel', '~> 0.4.3'
 
 And then execute:
 
