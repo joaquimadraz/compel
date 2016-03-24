@@ -387,7 +387,7 @@ describe Compel::Builder do
           end
 
           it 'should raise_error for missing value' do
-            expect{ Compel.any.if('proc') }.to \
+            expect{ Compel.any.if() }.to \
               raise_error Compel::TypeError, 'invalid proc for if'
           end
 
