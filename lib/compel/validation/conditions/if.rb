@@ -5,17 +5,42 @@ module Compel
 
       def validate_value
         unless valid?
-          "'#{value}' is invalid"
+          "is invalid"
         end
       end
 
       private
 
       def valid?
-        if option_value.arity == 1
-          option_value.call(value)
+        CustomValidator.new(option_value).valid?(value)
+      end
+
+    end
+
+    class CustomValidator
+
+      attr_reader :caller,
+                  :method
+
+      def initialize(caller)
+        ❨╯°□°❩╯︵┻━┻? caller
+      end
+
+      def valid?(value)
+        caller.send(method, value)
+      end
+
+      private
+
+      def ❨╯°□°❩╯︵┻━┻? caller
+        fail unless caller.is_a?(Proc) || caller.arity > 1
+
+        if caller.arity == 1
+          @caller = caller
+          @method = 'call'
         else
-          eval("#{option_value.call}(#{value})", option_value.binding)
+          @caller = caller.binding.receiver
+          @method = caller.call
         end
       end
 

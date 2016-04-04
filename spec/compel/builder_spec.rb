@@ -401,6 +401,11 @@ describe Compel::Builder do
               raise_error Compel::TypeError, 'invalid proc for if'
           end
 
+          it 'should raise_error for invalid proc 1' do
+            expect{ Compel.any.if(1) }.to \
+              raise_error Compel::TypeError, 'invalid proc for if'
+          end
+
         end
 
       end
@@ -671,21 +676,21 @@ describe Compel::Builder do
               result = Compel.any.if{:is_valid_one}.validate(2)
 
               expect(result.valid?).to eq(false)
-              expect(result.errors).to include("'2' is invalid")
+              expect(result.errors).to include('is invalid')
             end
 
             it 'should validate with lambda' do
               result = Compel.any.if(Proc.new {|value| value == 2 }).validate(1)
 
               expect(result.valid?).to eq(false)
-              expect(result.errors).to include("'1' is invalid")
+              expect(result.errors).to include('is invalid')
             end
 
             it 'should validate within an instance method' do
               result = CustomValidationsKlass.new(1).validate
 
               expect(result.valid?).to eq(false)
-              expect(result.errors).to include("'1' is invalid")
+              expect(result.errors).to include('is invalid')
             end
 
             it 'should validate within an instance method 1' do
@@ -694,7 +699,7 @@ describe Compel::Builder do
                   .validate_with_lambda(Proc.new {|value| value == [1, 2, 3] })
 
               expect(result.valid?).to eq(false)
-              expect(result.errors).to include("'two' is invalid")
+              expect(result.errors).to include('is invalid')
             end
 
             it 'should use custom message with parsed value' do
@@ -705,6 +710,35 @@ describe Compel::Builder do
 
               expect(result.valid?).to eq(false)
               expect(result.errors).to include('give me a 1!')
+            end
+
+            it 'should validate a date value' do
+              to_validate = '1969-01-01T00:00:00'
+
+              def validate_time(value)
+                value > Time.at(0)
+              end
+
+              result = Compel.time.if{:validate_time}.validate(to_validate)
+
+              expect(result.valid?).to eq(false)
+              expect(result.errors).to include('is invalid')
+            end
+
+            it 'should raise_error for invalid custom method arity' do
+              def custom_method_arity_two(value, extra_arg)
+                false
+              end
+
+              def custom_method_arity_zero
+                false
+              end
+
+              expect{ Compel.integer.if{:custom_method_arity_two}.validate(1) }.to \
+                raise_error ArgumentError
+
+              expect{ Compel.integer.if{:custom_method_arity_zero}.validate(1) }.to \
+                raise_error ArgumentError
             end
 
           end
@@ -752,6 +786,18 @@ describe Compel::Builder do
               result = \
                 CustomValidationsKlass.new([1, 2, 3])
                   .validate_with_lambda(Proc.new {|value| value == [1, 2, 3] })
+
+              expect(result.valid?).to eq(true)
+            end
+
+            it 'should validate a date value' do
+              to_validate = '1969-01-01T00:00:00'
+
+              def validate_time(value)
+                value < Time.at(0)
+              end
+
+              result = Compel.time.if{:validate_time}.validate(to_validate)
 
               expect(result.valid?).to eq(true)
             end
