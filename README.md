@@ -295,7 +295,7 @@ end
 
 Add this line to your application's Gemfile:
 
-    gem 'compel', '~> 0.4.3'
+    gem 'compel', '~> 0.5.0'
 
 And then execute:
 
