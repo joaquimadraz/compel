@@ -1162,6 +1162,32 @@ describe Compel::Builder do
 
         end
 
+        context '#min_length' do
+
+          it 'should validate empty array without errors' do
+            result = Compel.array.min_length(1).validate([])
+
+            expect(result.valid?).to be false
+
+            expect(result.errors[:base]).to include \
+              'cannot have length less than 1'
+          end
+
+        end
+
+        context '#max_length' do
+
+          it 'should validate empty array without errors' do
+            result = Compel.array.max_length(2).validate([1, 2, 3])
+
+            expect(result.valid?).to be false
+
+            expect(result.errors[:base]).to include \
+              'cannot have length greater than 2'
+          end
+
+        end
+
       end
 
       context 'DateTime' do

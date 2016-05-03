@@ -12,7 +12,13 @@ module Compel
       private
 
       def valid?
-        !value.nil? && "#{value}".length <= option_value
+        unless value.nil?
+          _value = value.is_a?(Array) || value.is_a?(Hash) ? value.dup : "#{value}"
+
+          return _value.length <= option_value
+        end
+
+        true
       end
 
     end
